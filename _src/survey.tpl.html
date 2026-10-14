@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>家乡文化二维码 · 问卷</title>
+<style>
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:#FFF9F2;color:#33302C;
+  font-family:"Microsoft YaHei","PingFang SC",sans-serif;-webkit-text-size-adjust:100%;}
+header{background:#fff;border-bottom:3px solid #FFE0C7;padding:14px 20px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+header h1{margin:0;font-size:24px;}
+header .sub{font-size:14px;color:#8A8078;}
+header .spacer{flex:1;}
+header a{font-size:15px;font-weight:700;color:#fff;text-decoration:none;
+  background:#2A9D8F;border-radius:22px;padding:9px 20px;box-shadow:0 3px 0 #1F7D72;transition:.12s;}
+header a:hover{background:#259184;}
+header a:active{transform:translateY(2px);box-shadow:0 1px 0 #1F7D72;}
+
+main{max-width:860px;margin:0 auto;padding:18px 20px 70px;}
+
+/* 三份问卷切换 */
+.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.tabs button{cursor:pointer;border:2.5px solid #FFD9B8;background:#fff;border-radius:24px;
+  font-family:inherit;font-size:15px;font-weight:700;color:#B4815E;padding:10px 20px;transition:.13s;}
+.tabs button.on{background:#E4572E;color:#fff;border-color:#E4572E;box-shadow:0 3px 0 #B84322;}
+.tabs button .dot{font-size:12px;opacity:.85;}
+
+/* 实名 */
+.idbox{background:#FFFDF5;border:2px solid #FFE7D3;border-radius:16px;padding:14px 16px;margin-bottom:16px;}
+.idbox h3{margin:0 0 10px;font-size:16px;color:#E4572E;}
+.field{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.field label{font-size:15px;font-weight:700;color:#5A4A3A;white-space:nowrap;}
+.field input{flex:1;min-width:0;padding:11px 12px;font-size:17px;border:2.5px solid #E8DCCD;
+  border-radius:11px;outline:none;font-family:inherit;color:#33302C;background:#fff;}
+.field input:focus{border-color:#E4572E;}
+.field select{flex:1;min-width:0;padding:11px 12px;font-size:17px;border:2.5px solid #E8DCCD;
+  border-radius:11px;outline:none;font-family:inherit;color:#33302C;background:#fff;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23E4572E' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;-webkit-appearance:none;appearance:none;
+  padding-right:34px;cursor:pointer;}
+.field select:focus{border-color:#E4572E;}
+.field-group{gap:8px;}
+.field-group label{flex:0 0 auto;}
+.field-group select{flex:1;}
+.idtip{font-size:13px;color:#2A9D8F;font-weight:700;margin:10px 0 0;}
+.whoami{background:#EAF7F4;border:2px solid #BFE4DE;border-radius:14px;padding:12px 16px;
+  font-size:16px;color:#2C6B62;font-weight:700;margin-bottom:16px;display:flex;align-items:center;
+  gap:8px;flex-wrap:wrap;}
+.whoami b{color:#E4572E;font-size:18px;}
+.whoami button{margin-left:auto;cursor:pointer;border:2px solid #BFE4DE;background:#fff;color:#2C6B62;
+  border-radius:16px;font-family:inherit;font-size:13px;font-weight:700;padding:6px 14px;}
+
+/* 题目 */
+.q{background:#fff;border:2px solid #FFE7D3;border-radius:18px;padding:16px 18px;margin-bottom:14px;}
+.q .qh{display:flex;gap:8px;align-items:flex-start;margin-bottom:12px;}
+.q .no{flex:none;width:26px;height:26px;border-radius:50%;background:#E4572E;color:#fff;
+  font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.q .qt{font-size:17px;font-weight:700;color:#4A423A;line-height:1.5;}
+.opts{display:flex;flex-wrap:wrap;gap:10px;}
+.opts.col{flex-direction:column;}
+.opt{cursor:pointer;border:2.5px solid #CFE7E3;background:#F4FBF9;color:#2C6B62;
+  border-radius:26px;padding:11px 20px;font-size:16px;font-weight:700;transition:.13s;
+  font-family:inherit;line-height:1.35;text-align:left;}
+.opts.col .opt{border-radius:14px;width:100%;}
+.opt:hover{border-color:#7FC8BE;}
+.opt.on{border-color:#2A9D8F;background:#2A9D8F;color:#fff;}
+.q textarea{width:100%;min-height:70px;padding:11px 12px;font-size:16px;line-height:1.6;
+  border:2.5px solid #E8DCCD;border-radius:12px;outline:none;resize:vertical;
+  font-family:inherit;color:#33302C;background:#FFFDFA;margin-top:4px;}
+.q textarea:focus{border-color:#E4572E;}
+.qn{font-size:13px;color:#8A8078;margin:6px 0 0;}
+
+.btn{cursor:pointer;border:none;border-radius:13px;font-family:inherit;font-weight:700;
+  font-size:18px;padding:15px 26px;transition:.12s;width:100%;margin-top:6px;}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+.btn-main{background:#E4572E;color:#fff;box-shadow:0 4px 0 #B84322;}
+.btn-main:active:enabled{transform:translateY(2px);box-shadow:0 2px 0 #B84322;}
+#msg{font-size:15px;line-height:1.6;text-align:center;min-height:22px;margin-top:12px;font-weight:700;}
+#msg.err{color:#D62828;}
+#msg.ok{color:#2A9D8F;}
+
+/* 完成弹窗 */
+.mask{position:fixed;inset:0;background:rgba(40,32,26,.55);display:none;
+  align-items:center;justify-content:center;z-index:60;padding:18px;}
+.mask.on{display:flex;}
+.modal{background:#fff;border-radius:20px;padding:26px 22px;max-width:400px;width:100%;
+  box-shadow:0 18px 50px rgba(0,0,0,.3);text-align:center;}
+.modal .em{font-size:52px;}
+.modal h3{margin:10px 0 8px;font-size:21px;color:#E4572E;}
+.modal p{margin:0 0 18px;font-size:16px;line-height:1.7;color:#5A4A3A;}
+.modal .btn{font-size:17px;}
+.modal .btn-ghost{background:#FFF;color:#5A4A3A;border:2.5px solid #E8DCCD;margin-top:10px;}
+footer{text-align:center;font-size:13px;color:#B4A99C;padding:10px 20px 40px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📋 家乡文化二维码 · 问卷</h1>
+  <div class="sub">天等县 · 点一点就好，不用打字</div>
+  <div class="spacer"></div>
+  <a href="index.html">✏️ 去做二维码</a>
+</header>
+
+<main>
+  <div class="tabs" id="tabs"></div>
+
+  <div class="idbox" id="idbox">
+    <h3>先选一下你的学号和班级（只选这一次）</h3>
+    <div class="field">
+      <label>我的学号</label>
+      <select id="author"></select>
+    </div>
+    <div class="field field-group">
+      <label>我的班级</label>
+      <select id="grade"></select>
+      <select id="klass"></select>
+    </div>
+    <p class="idtip">选一次就好，下面三份问卷都用这个身份，不用再选。</p>
+  </div>
+
+  <div class="whoami" id="whoami" style="display:none;">
+    👋 <b id="whoName"></b>，你好！下面是三份问卷，一份一份填就好。
+    <button type="button" id="changeWho">改一改</button>
+  </div>
+
+  <div id="qbox"></div>
+
+  <button class="btn btn-main" id="send">📮 交卷</button>
+  <div id="msg"></div>
+</main>
+
+<footer>天等县 · 家乡文化社团 ｜ 你的回答只给老师看 💛</footer>
+
+<div class="mask" id="mask">
+  <div class="modal">
+    <div class="em">🎉</div>
+    <h3 id="mTitle">交卷成功！</h3>
+    <p id="mText">谢谢你的回答，老师收到啦！</p>
+    <button class="btn btn-main" id="mNext">接着填下一份</button>
+    <button class="btn btn-ghost" id="mClose">留在这一页</button>
+  </div>
+</div>
+
+<script>/*__CLOUD_CONFIG__*/</script>
+<script>/*__CLOUD_SDK__*/</script>
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   一、三份问卷题目（全部点选，题面简单，适合四年级）
+   ============================================================ */
+var SURVEYS = [
+  {
+    key:'pre', name:'课前问卷', dot:'上课前填',
+    intro:'上课前，先说说你的想法吧。',
+    qs:[
+      { id:'know', type:'single', t:'你了解我们家乡（天等/崇左）的文化吗？',
+        opts:['很了解','知道一些','知道一点点','不太了解'] },
+      { id:'what', type:'multi', t:'你说的家乡文化，包括下面哪些？（可以选好几个）',
+        opts:['好吃的（指天椒、五色糯米饭）','好玩的节日','好看的风景','老手艺、老故事','别的'] },
+      { id:'ai', type:'single', t:'你以前上过用电脑、用 AI 的课吗？',
+        opts:['上过好几次','上过一两次','从来没有'] },
+      { id:'qr', type:'single', t:'你知道二维码是什么、能干什么吗？',
+        opts:['知道，我还会用','听说过，不太清楚','不知道'] },
+      { id:'want', type:'multi', t:'这节课你最想做什么？（可以选好几个）',
+        opts:['学 AI 帮忙写话','做自己的二维码','让同学扫码看我做的','给同学点赞'] },
+      { id:'hard', type:'single', t:'你觉得用电脑、打字难不难？',
+        opts:['不难','有点难','很难'] }
+    ]
+  },
+  {
+    key:'mid', name:'课中问卷', dot:'上课时填',
+    intro:'课上到一半啦，说说现在的感觉吧。',
+    qs:[
+      { id:'fun', type:'single', t:'这节课你上得开心吗？',
+        opts:['很开心','还不错','一般般','不太开心'] },
+      { id:'understood', type:'single', t:'老师说的方法，你听懂了吗？',
+        opts:['都听懂了','大部分懂','有一点点懂','还不太懂'] },
+      { id:'aihelp', type:'single', t:'AI 帮你写家乡文化的话，对你有帮助吗？',
+        opts:['帮了很大忙','有一点帮助','没什么用','还没用过'] },
+      { id:'step', type:'single', t:'你现在做到哪一步啦？',
+        opts:['还在选主题','在拼句子','在做二维码','已经交到作品墙了'] },
+      { id:'stuck', type:'multi', t:'有没有遇到困难的地方？（可以选好几个）',
+        opts:['都挺顺的','选主题有点难','句子不知道怎么选','按钮找不到','还有别的'] },
+      { id:'like', type:'single', t:'你最喜欢这个课里的哪一步？',
+        opts:['选家乡主题','点词拼句子','让 AI 帮写','生成二维码','看别人作品点赞'] }
+    ]
+  },
+  {
+    key:'post', name:'课后问卷', dot:'下课后填',
+    intro:'下课啦，最后说说你的收获吧。',
+    qs:[
+      { id:'gain', type:'multi', t:'这节课你学到了什么？（可以选好几个）',
+        opts:['家乡文化的知识','怎么用 AI 帮忙','怎么把话写进二维码','怎么给别人点赞评价'] },
+      { id:'proud', type:'single', t:'做完这节课，你对家乡是不是更自豪了？',
+        opts:['更加自豪了','有点自豪','和以前差不多','没感觉'] },
+      { id:'willshare', type:'single', t:'你愿意把二维码分享给家人或朋友看吗？',
+        opts:['很想分享','愿意','说不好','不太想'] },
+      { id:'better', type:'single', t:'这节课你觉得自己做得怎么样？',
+        opts:['我很满意','还不错','还要加油','不太满意'] },
+      { id:'again', type:'single', t:'以后还想再上这样的课吗？',
+        opts:['很想再上','想','都可以','不想'] },
+      { id:'word', type:'single', t:'这节课的内容难不难？',
+        opts:['太简单了','刚刚好','有点难','太难了'] },
+      { id:'free', type:'text', t:'想对老师说的话（可以不写）', ph:'写一句鼓励老师的话吧～' }
+    ]
+  }
+];
+
+var $ = function(id){ return document.getElementById(id); };
+var curIdx = 0;
+var STATE = {};   /* { kind: { qid: value } } */
+SURVEYS.forEach(function(s){ STATE[s.key] = {}; });
+
+/* ---------- 本地记忆：名字班级 + 填过的进度 + 已交的问卷 ---------- */
+var LS_NAME = 'cx_myname', LS_KLASS = 'cx_myklass';
+var LS_STATE = 'cx_survey_state', LS_DONE = 'cx_survey_done';
+function lsGet(k, d){ try { var v = localStorage.getItem(k); return v == null ? d : v; } catch(e){ return d; } }
+function lsSet(k, v){ try { localStorage.setItem(k, v); } catch(e){} }
+function lsJson(k, d){ try { return JSON.parse(localStorage.getItem(k) || d); } catch(e){ return JSON.parse(d); } }
+
+/* 恢复历史作答与已交状态 */
+(function(){
+  var saved = lsJson(LS_STATE, '{}');
+  SURVEYS.forEach(function(s){ if (saved[s.key]) STATE[s.key] = saved[s.key]; });
+})();
+var DONE = lsJson(LS_DONE, '{}');   /* { pre:1, mid:1 } */
+function saveState(){ lsSet(LS_STATE, JSON.stringify(STATE)); }
+function saveDone(){ lsSet(LS_DONE, JSON.stringify(DONE)); }
+
+var lockedName = lsGet(LS_NAME, ''), lockedKlass = lsGet(LS_KLASS, '');
+var idEditing = !lockedName.trim();   /* 有记住的学号→直接收起实名区；否则要选 */
+
+/* ---- 学号 / 年级 / 班级 下拉（默认：1 号 · 四年级 · 1 班） ---- */
+(function initPickers(){
+  var $ = function(id){ return document.getElementById(id); };
+  var GRADES = ['四年级', '五年级', '六年级'];
+  var CLASSES = 8;   /* 班级下拉 1—8 班；如需 1—10 / 1—15 改这里即可 */
+  var sa = $('author'), sg = $('grade'), sk = $('klass');
+  for (var i = 1; i <= 60; i++){
+    var o = document.createElement('option');
+    o.value = String(i) + '号'; o.textContent = i + ' 号';
+    sa.appendChild(o);
+  }
+  GRADES.forEach(function(g){
+    var o = document.createElement('option'); o.value = g; o.textContent = g; sg.appendChild(o);
+  });
+  sg.selectedIndex = 0;
+  for (var c = 1; c <= CLASSES; c++){
+    var oc = document.createElement('option');
+    oc.value = String(c) + '班'; oc.textContent = c + ' 班';
+    sk.appendChild(oc);
+  }
+  sk.selectedIndex = 0;
+})();
+function classLabel(){
+  var g = document.getElementById('grade').value, k = document.getElementById('klass').value;
+  var num = String(k).replace('班', '');
+  var short = { '四年级':'四', '五年级':'五', '六年级':'六' }[g] || '四';
+  return short + '（' + num + '）班';
+}
+function identity(){
+  var a, k;
+  if (idEditing){
+    a = (document.getElementById('author').value || '').trim();
+    k = classLabel();
+  } else {
+    a = lockedName.trim(); k = lockedKlass.trim();
+  }
+  return { author: a, klass: k, ok: !!a };
+}
+function showIdBox(){
+  idEditing = true;
+  $('idbox').style.display = '';
+  $('whoami').style.display = 'none';
+}
+function applyIdentity(){
+  var id = identity();
+  if (id.ok){
+    idEditing = false;
+    $('idbox').style.display = 'none';
+    $('whoami').style.display = '';
+    $('whoName').textContent = id.author + (id.klass ? '（' + id.klass + '）' : '');
+  } else {
+    showIdBox();
+  }
+}
+function needIdentity(){
+  if (!identity().ok){
+    showIdBox();
+    document.getElementById('author').focus();
+    $('msg').className = 'msg err';
+    $('msg').textContent = '先在上面选一个学号哦～';
+    window.scrollTo({ top:0, behavior:'smooth' });
+    return true;
+  }
+  return false;
+}
+$('changeWho').onclick = function(){
+  lockedName = ''; lockedKlass = '';
+  lsSet(LS_NAME, ''); lsSet(LS_KLASS, '');
+  showIdBox();
+  document.getElementById('author').focus();
+};
+
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+/* ---------- 云服务 ---------- */
+var cloud = null;
+try {
+  if (window.WorkBuddyCloud && window.CLOUD_CONFIG && window.CLOUD_CONFIG.endpoint){
+    cloud = window.WorkBuddyCloud.createWorkBuddyCloud({
+      endpoint: window.CLOUD_CONFIG.endpoint,
+      oauthRelayBaseUrl: window.CLOUD_CONFIG.oauthRelayBaseUrl,
+      publishableKey: window.CLOUD_CONFIG.publishableKey
+    });
+  }
+} catch(e){ cloud = null; }
+
+/* ---------- 切换问卷 ---------- */
+function renderTabs(){
+  var box = $('tabs'); box.innerHTML = '';
+  SURVEYS.forEach(function(s, i){
+    var b = document.createElement('button');
+    b.innerHTML = (DONE[s.key] ? '✅ ' : '') + esc(s.name) + ' <span class="dot">' + esc(s.dot) + '</span>';
+    b.className = i === curIdx ? 'on' : '';
+    b.onclick = function(){ curIdx = i; renderTabs(); renderQs(); $('msg').textContent=''; window.scrollTo({top:0,behavior:'smooth'}); };
+    box.appendChild(b);
+  });
+}
+applyIdentity();
+
+/* ---------- 渲染题目 ---------- */
+function renderQs(){
+  var s = SURVEYS[curIdx];
+  var box = $('qbox'); box.innerHTML = '';
+  var st = STATE[s.key];
+
+  s.qs.forEach(function(q, qi){
+    var wrap = document.createElement('div'); wrap.className = 'q';
+    var qh = document.createElement('div'); qh.className = 'qh';
+    var no = document.createElement('span'); no.className = 'no'; no.textContent = qi + 1;
+    var qt = document.createElement('span'); qt.className = 'qt';
+    qt.textContent = q.t + (q.type === 'multi' ? '（可多选）' : '');
+    qh.appendChild(no); qh.appendChild(qt); wrap.appendChild(qh);
+
+    if (q.type === 'text'){
+      var ta = document.createElement('textarea');
+      ta.maxLength = 80; ta.placeholder = q.ph || '';
+      ta.value = st[q.id] || '';
+      ta.oninput = function(){ st[q.id] = ta.value; saveState(); };
+      wrap.appendChild(ta);
+      var n = document.createElement('p'); n.className = 'qn'; n.textContent = '最多 80 字';
+      wrap.appendChild(n);
+    } else {
+      var opts = document.createElement('div');
+      opts.className = 'opts' + (q.type === 'multi' && q.opts.some(function(o){ return o.length > 6; }) ? ' col' : '');
+      q.opts.forEach(function(o){
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'opt'; b.textContent = o;
+        var selected = q.type === 'multi'
+          ? (st[q.id] || []).indexOf(o) >= 0
+          : st[q.id] === o;
+        if (selected) b.classList.add('on');
+        b.onclick = function(){
+          if (q.type === 'multi'){
+            var arr = st[q.id] || (st[q.id] = []);
+            var k = arr.indexOf(o);
+            if (k >= 0) arr.splice(k, 1); else arr.push(o);
+            b.classList.toggle('on', k < 0);
+          } else {
+            st[q.id] = o;
+            var sib = opts.children;
+            for (var m = 0; m < sib.length; m++) sib[m].classList.remove('on');
+            b.classList.add('on');
+          }
+          saveState();
+        };
+        opts.appendChild(b);
+      });
+      wrap.appendChild(opts);
+    }
+    box.appendChild(wrap);
+  });
+}
+
+/* ---------- 交卷 ---------- */
+$('send').onclick = async function(){
+  if (needIdentity()) return;
+  var s = SURVEYS[curIdx], st = STATE[s.key];
+  var id = identity();
+  var author = id.author, klass = id.klass;
+
+  /* 检查必答：single 都答、multi 至少选一项；text 可空 */
+  for (var i = 0; i < s.qs.length; i++){
+    var q = s.qs[i];
+    if (q.type === 'text') continue;
+    var v = st[q.id];
+    var empty = q.type === 'multi' ? (!v || !v.length) : (!v);
+    if (empty){
+      $('msg').className = 'msg err';
+      $('msg').textContent = '第 ' + (i + 1) + ' 题还没选哦～';
+      return;
+    }
+  }
+  if (!cloud){ $('msg').className = 'msg err'; $('msg').textContent = '连不上服务，稍后再交。'; return; }
+
+  var btn = $('send'); btn.disabled = true;
+  $('msg').className = 'msg'; $('msg').textContent = '正在交卷…';
+  try {
+    var res = await cloud.database.from('surveys').insert({
+      kind: s.key, author: author, klass: klass, answers: st
+    }).select();
+    if (res.error) throw res.error;
+    if (!res.data || !res.data.length) throw new Error('未写入');
+    /* 记名（只这一次） + 标记这份已交 */
+    lsSet(LS_NAME, author); lsSet(LS_KLASS, klass);
+    lockedName = author; lockedKlass = klass;
+    DONE[s.key] = 1; saveDone();
+    $('msg').className = 'msg ok'; $('msg').textContent = '';
+
+    /* 找下一份还没交的问卷 */
+    var nextIdx = -1;
+    for (var k = 0; k < SURVEYS.length; k++){ if (!DONE[SURVEYS[k].key]){ nextIdx = k; break; } }
+    var allDone = nextIdx < 0;
+    $('mTitle').textContent = allDone ? '三份都填完啦！' : (s.name + ' 交卷成功！');
+    $('mText').innerHTML = allDone ? '谢谢你，三份问卷都完成啦 🎉<br>可以去做家乡文化二维码啦！'
+      : '谢谢你的回答，老师收到啦！<br><span style="color:#8A8078;font-size:14px;">学号已经记住，剩下的问卷不用再选。</span>';
+    $('mNext').textContent = allDone ? '去做家乡文化二维码' : ('接着填「' + SURVEYS[nextIdx].name + '」');
+    $('mNext').onclick = function(){
+      $('mask').classList.remove('on');
+      if (allDone){ location.href = 'index.html'; }
+      else { curIdx = nextIdx; renderTabs(); renderQs(); $('msg').textContent = ''; window.scrollTo({top:0,behavior:'smooth'}); }
+    };
+    $('mask').classList.add('on');
+    applyIdentity();
+    renderTabs();
+  } catch(e){
+    $('msg').className = 'msg err';
+    $('msg').textContent = '交卷失败：' + (e && e.message ? e.message : '网络问题') + '，请再试一次。';
+  } finally { btn.disabled = false; }
+};
+$('mClose').onclick = function(){ $('mask').classList.remove('on'); };
+
+renderTabs(); renderQs();
+})();
+</script>
+</body>
+</html>

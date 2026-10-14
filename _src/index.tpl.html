@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>家乡文化二维码 · 天等县</title>
+<style>
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:#FFF9F2;color:#33302C;
+  font-family:"Microsoft YaHei","PingFang SC",sans-serif;-webkit-text-size-adjust:100%;}
+header{background:#fff;border-bottom:3px solid #FFE0C7;padding:14px 20px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+header h1{margin:0;font-size:24px;letter-spacing:.02em;}
+header .sub{font-size:14px;color:#8A8078;}
+header .spacer{flex:1;}
+header a.wallbtn{font-size:15px;font-weight:700;color:#fff;text-decoration:none;
+  background:#2A9D8F;border-radius:22px;padding:9px 20px;box-shadow:0 3px 0 #1F7D72;transition:.12s;}
+header a.wallbtn:hover{background:#259184;}
+header a.wallbtn:active{transform:translateY(2px);box-shadow:0 1px 0 #1F7D72;}
+header a.survbtn{font-size:15px;font-weight:700;color:#fff;text-decoration:none;
+  background:#457B9D;border-radius:22px;padding:9px 20px;box-shadow:0 3px 0 #365F7A;transition:.12s;}
+header a.survbtn:hover{background:#3F7091;}
+header a.survbtn:active{transform:translateY(2px);box-shadow:0 1px 0 #365F7A;}
+
+main{padding:18px 20px 60px;max-width:1280px;margin:0 auto;}
+.step{background:#fff;border:2px solid #FFE7D3;border-radius:18px;padding:16px 18px 18px;margin-bottom:16px;}
+.step h2{margin:0 0 4px;font-size:18px;color:#E4572E;}
+.step .tip{margin:0 0 14px;font-size:14px;color:#8A8078;}
+
+/* 主题卡片 */
+.topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(146px,1fr));gap:12px;}
+.topic{cursor:pointer;border:2.5px solid #EFE3D6;border-radius:16px;background:#FFFCF8;
+  padding:14px 8px 12px;text-align:center;transition:.14s;user-select:none;}
+.topic:hover{border-color:#FFC59B;transform:translateY(-2px);}
+.topic.on{border-color:#E4572E;background:#FFF2E9;box-shadow:0 0 0 3px #FFE3D1 inset;}
+.topic .em{font-size:34px;line-height:1.1;display:block;}
+.topic .nm{font-size:15px;font-weight:700;margin-top:8px;color:#4A423A;line-height:1.35;}
+
+/* 点词 */
+.bank{margin-bottom:14px;}
+.bank .bt{font-size:14px;font-weight:700;color:#2A9D8F;margin:0 0 8px;}
+.chips{display:flex;flex-wrap:wrap;gap:10px;}
+.chip{cursor:pointer;border:2.5px solid #CFE7E3;background:#F4FBF9;color:#2C6B62;
+  border-radius:26px;padding:11px 18px;font-size:17px;font-weight:700;transition:.13s;
+  font-family:inherit;line-height:1.3;}
+.chip:hover{border-color:#7FC8BE;}
+.chip.on{border-color:#2A9D8F;background:#2A9D8F;color:#fff;}
+
+/* 预览句 */
+.preview{background:#FFFDF5;border:2px dashed #FFD9A8;border-radius:14px;
+  padding:14px 16px;font-size:22px;line-height:1.7;font-weight:700;color:#5A4A3A;min-height:64px;}
+.preview .ph{color:#C3B8AA;font-weight:400;font-size:17px;}
+
+/* 文本框 */
+textarea{width:100%;min-height:88px;padding:12px 14px;font-size:19px;line-height:1.6;
+  border:2.5px solid #E8DCCD;border-radius:12px;outline:none;resize:vertical;
+  font-family:inherit;color:#33302C;background:#FFFDFA;}
+textarea:focus{border-color:#E4572E;}
+.counter{font-size:13px;color:#8A8078;margin:6px 0 0;}
+.counter b{color:#E4572E;}
+.counter.over b{color:#D62828;}
+
+/* 按钮 */
+.btn{cursor:pointer;border:none;border-radius:13px;font-family:inherit;font-weight:700;
+  font-size:17px;padding:13px 22px;transition:.12s;}
+.btn:disabled{opacity:.42;cursor:not-allowed;}
+.btn-ai{background:#457B9D;color:#fff;box-shadow:0 3px 0 #365F7A;}
+.btn-ai:hover:enabled{background:#3F7091;}
+.btn-ai:active:enabled{transform:translateY(2px);box-shadow:0 1px 0 #365F7A;}
+.btn-main{background:#E4572E;color:#fff;box-shadow:0 4px 0 #B84322;font-size:19px;padding:15px 26px;}
+.btn-main:hover:enabled{background:#D64E27;}
+.btn-main:active:enabled{transform:translateY(2px);box-shadow:0 2px 0 #B84322;}
+.btn-ghost{background:#FFF;color:#5A4A3A;border:2.5px solid #E8DCCD;}
+.btn-ghost:hover:enabled{border-color:#FFC59B;}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+
+/* 底部两栏 */
+.bottom{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start;}
+.bottom .left{flex:1 1 460px;min-width:300px;}
+.bottom .right{flex:0 1 360px;min-width:280px;}
+.qrbox{background:#fff;border:2px solid #FFE7D3;border-radius:18px;padding:16px;
+  display:flex;flex-direction:column;align-items:center;}
+#stage{width:min(300px,74vw);height:min(300px,74vw);border:2.5px dashed #E8DCCD;
+  border-radius:14px;display:flex;align-items:center;justify-content:center;background:#fff;
+  color:#C3B8AA;font-size:14px;text-align:center;padding:12px;margin-bottom:12px;}
+#stage canvas{display:block;width:100%;height:100%;image-rendering:pixelated;}
+#msg{font-size:14px;line-height:1.6;text-align:center;min-height:20px;margin-top:10px;}
+#msg.err{color:#D62828;font-weight:700;}
+#msg.ok{color:#2A9D8F;font-weight:700;}
+
+/* 提交区 */
+.submitbox{background:#FFFDF5;border:2px solid #FFE7D3;border-radius:16px;padding:14px 16px;}
+.submitbox h3{margin:0 0 10px;font-size:16px;color:#E4572E;}
+.field{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.field label{font-size:15px;font-weight:700;color:#5A4A3A;white-space:nowrap;}
+.field input{flex:1;min-width:0;padding:11px 12px;font-size:17px;border:2.5px solid #E8DCCD;
+  border-radius:11px;outline:none;font-family:inherit;color:#33302C;}
+.field input:focus{border-color:#E4572E;}
+.field select{flex:1;min-width:0;padding:11px 12px;font-size:17px;border:2.5px solid #E8DCCD;
+  border-radius:11px;outline:none;font-family:inherit;color:#33302C;background:#fff;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23E4572E' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;-webkit-appearance:none;appearance:none;padding-right:34px;cursor:pointer;}
+.field select:focus{border-color:#E4572E;}
+.field-group{gap:8px;}
+.field-group label{flex:0 0 auto;}
+.field-group select{flex:1;}
+
+/* 弹窗 */
+.mask{position:fixed;inset:0;background:rgba(40,32,26,.5);display:none;
+  align-items:center;justify-content:center;z-index:60;padding:18px;}
+.mask.on{display:flex;}
+.modal{background:#fff;border-radius:20px;padding:22px;max-width:420px;width:100%;
+  box-shadow:0 18px 50px rgba(0,0,0,.28);text-align:center;}
+.modal .em{font-size:44px;}
+.modal h3{margin:8px 0 6px;font-size:20px;color:#E4572E;}
+.modal p{margin:0 0 16px;font-size:15px;line-height:1.7;color:#5A4A3A;}
+.modal .btn{width:100%;}
+footer{text-align:center;font-size:13px;color:#B4A99C;padding:8px 20px 34px;line-height:1.8;}
+@media print{
+  header,.step,.submitbox,.btn,.row,#msg{display:none !important;}
+  .qrbox{border:none;padding:0;}
+  #stage{width:120mm;height:120mm;border:1.4px dashed #999;}
+  body{background:#fff;}
+  @page{size:A4;margin:18mm;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎨 家乡文化二维码</h1>
+  <div class="sub">天等县 · 点一点，就能把家乡介绍出去</div>
+  <div class="spacer"></div>
+  <a class="survbtn" href="survey.html">📋 填问卷</a>
+  <a class="wallbtn" href="wall.html">🏛️ 去看作品墙</a>
+</header>
+
+<main>
+  <!-- ① 选主题 -->
+  <section class="step">
+    <h2>① 选一个家乡主题</h2>
+    <p class="tip">点一下卡片就选好了，不用打字。</p>
+    <div class="topics" id="topics"></div>
+  </section>
+
+  <!-- ② 点词拼句 -->
+  <section class="step" id="step2" style="display:none;">
+    <h2>② 点一点，拼一句话</h2>
+    <p class="tip">每一行各点一个词，句子会自己长出来。</p>
+    <div id="banks"></div>
+    <div class="preview" id="preview"></div>
+  </section>
+
+  <!-- ③ 生成 -->
+  <section class="step" id="step3" style="display:none;">
+    <h2>③ 写进二维码</h2>
+    <p class="tip">上面拼好的句子已经帮你写好了，可以直接生成二维码；也可以自己改一改再生成。</p>
+    <textarea id="txt" maxlength="120" placeholder="上面拼好的句子会自动出现在这里，也可以自己改一改"></textarea>
+    <p class="counter" id="counter">已输入 <b>0</b> 字 ｜ 建议 40 字以内，二维码更清楚</p>
+  </section>
+
+  <div class="bottom" id="bottom" style="display:none;">
+    <div class="left">
+      <!-- 提交 -->
+      <section class="submitbox">
+        <h3>④ 送到作品墙，让大家扫码看</h3>
+        <div class="field">
+          <label>我的学号</label>
+          <select id="author"></select>
+        </div>
+        <div class="field field-group">
+          <label>我的班级</label>
+          <select id="grade"></select>
+          <select id="klass"></select>
+        </div>
+        <div class="row">
+          <button class="btn btn-main" id="go">🎯 生成二维码</button>
+          <button class="btn btn-ghost" id="submit" disabled>📮 提交到作品墙</button>
+        </div>
+        <div id="msg"></div>
+      </section>
+    </div>
+    <div class="right">
+      <div class="qrbox">
+        <div id="stage">二维码会出现在这里</div>
+        <div class="row" style="width:100%;">
+          <button class="btn btn-ghost" id="dl" style="flex:1;" disabled>💾 下载</button>
+          <button class="btn btn-ghost" id="pr" style="flex:1;" disabled>🖨️ 打印</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  天等县 · 家乡文化社团 ｜ 内容会送给作品墙展示，请写正能量的家乡文化 💛
+</footer>
+
+<!-- 成功弹窗 -->
+<div class="mask" id="mask">
+  <div class="modal">
+    <div class="em" id="mEm">🎉</div>
+    <h3 id="mTitle">提交成功！</h3>
+    <p id="mText"></p>
+    <button class="btn btn-main" id="mOk">去看看大家的作品</button>
+    <button class="btn btn-ghost" id="mClose" style="margin-top:10px;">留在这一页继续做</button>
+  </div>
+</div>
+
+<script>/*__QRCODE_LIB__*/</script>
+<script>/*__CLOUD_CONFIG__*/</script>
+<script>/*__CLOUD_SDK__*/</script>
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   一、家乡文化主题 + 点词积木（全部预设，学生只需点击）
+   ============================================================ */
+var TOPICS = [
+  { key:'pepper', emoji:'🌶️', name:'天等指天椒',
+    intro:'天等县的特产，红红的、辣辣的，被叫做“天下第一辣”。',
+    banks:[
+      { t:'开头', items:['天等指天椒','我们家乡的指天椒','红彤彤的指天椒'] },
+      { t:'中间', items:['又香又辣，特别有名','是家乡响当当的特产','晒满了屋顶，像一串串小红灯'] },
+      { t:'结尾', items:['我为家乡感到骄傲','欢迎你来尝一尝','我要把它介绍给更多人'] }
+    ] },
+  { key:'shuangjiang', emoji:'🥁', name:'壮族霜降节',
+    intro:'天等的壮族节日，入选了世界非物质文化遗产。',
+    banks:[
+      { t:'开头', items:['壮族霜降节','我们天等的霜降节','秋天里的霜降节'] },
+      { t:'中间', items:['大家敲锣打鼓，庆祝丰收','是入选世界的非遗节日','家家户户热热闹闹'] },
+      { t:'结尾', items:['家乡的节日真自豪','欢迎你和我们一起过节','我要把这份热闹讲给你听'] }
+    ] },
+  { key:'dalang', emoji:'💃', name:'壮族打榔舞',
+    intro:'壮族的传统舞蹈，动作来自做糍粑的样子。',
+    banks:[
+      { t:'开头', items:['壮族打榔舞','我们家乡的打榔舞','热闹的打榔舞'] },
+      { t:'中间', items:['敲起来咚咚响，很有力量','是祖辈传下来的舞蹈','男女老少都能一起跳'] },
+      { t:'结尾', items:['我为家乡的非遗点赞','欢迎你来看我们跳舞','我要好好把它学下来'] }
+    ] },
+  { key:'nuomi', emoji:'🍚', name:'五色糯米饭',
+    intro:'用植物染成五种颜色的糯米饭，是壮族的传统美食。',
+    banks:[
+      { t:'开头', items:['五色糯米饭','我们家乡的五色糯米饭','香喷喷的五色糯米饭'] },
+      { t:'中间', items:['用花草染出红黄紫黑，好看又好吃','是过节时必做的美食','一粒一粒都是家乡的味道'] },
+      { t:'结尾', items:['我最爱吃家乡的味道','欢迎你来尝一口','我要把做法讲给你听'] }
+    ] },
+  { key:'dukang', emoji:'🏞️', name:'都康田园',
+    intro:'天等的田园风光，山清水秀，像一幅画。',
+    banks:[
+      { t:'开头', items:['都康田园','我们天等的都康田园','清晨的都康田园'] },
+      { t:'中间', items:['青山绿水，像一幅画','稻子金黄，一片丰收的景象','山连着水，水绕着田'] },
+      { t:'结尾', items:['我的家乡真美','欢迎你来走一走','我要用画笔把它画下来'] }
+    ] },
+  { key:'litun', emoji:'⛰️', name:'立屯精神',
+    intro:'立屯的乡亲用 24 年打通一条出山隧道，很有志气。',
+    banks:[
+      { t:'开头', items:['立屯精神','我们天等的立屯精神','大山里的立屯故事'] },
+      { t:'中间', items:['用二十多年凿出一条出山的路','不怕困难，一代接一代地干','告诉我们遇到困难不能放弃'] },
+      { t:'结尾', items:['我也要做一个不怕难的人','这份坚持让我很感动','我要把这种精神学在心里'] }
+    ] },
+  { key:'huashan', emoji:'🎨', name:'左江花山岩画',
+    intro:'两千多年前画在悬崖上的画，是世界文化遗产。',
+    banks:[
+      { t:'开头', items:['左江花山岩画','我们崇左的花山岩画','悬崖上的花山岩画'] },
+      { t:'中间', items:['是两千多年前壮族先民画的','画在江边的悬崖上，很有气势','被叫做石头上的“无字天书”'] },
+      { t:'结尾', items:['我为家乡的宝贝自豪','欢迎你来一起看','我要把它的故事讲给更多人'] }
+    ] },
+  { key:'detian', emoji:'💦', name:'德天跨国瀑布',
+    intro:'在大新县，是亚洲第一大的跨国瀑布。',
+    banks:[
+      { t:'开头', items:['德天跨国瀑布','我们崇左的德天瀑布','雄伟的德天瀑布'] },
+      { t:'中间', items:['水流从天而降，声音像打雷','是亚洲有名的跨国大瀑布','水雾里还能看见彩虹'] },
+      { t:'结尾', items:['家乡的风景真壮观','欢迎你来感受一下','我要把它拍下来分享'] }
+    ] },
+  { key:'houzi', emoji:'🐒', name:'白头叶猴',
+    intro:'国家一级保护动物，只有崇左的石头山里才有。',
+    banks:[
+      { t:'开头', items:['白头叶猴','我们崇左的白头叶猴','珍稀的白头叶猴'] },
+      { t:'中间', items:['头顶白毛，在石壁上跳来跳去','是国家一级保护动物','全世界只有我们这里才有'] },
+      { t:'结尾', items:['我们要好好保护它','欢迎你来认识它','我要做保护动物的小卫士'] }
+    ] },
+  { key:'youyiguan', emoji:'🏯', name:'友谊关',
+    intro:'在凭祥，是中国九大名关之一，今天还在通关。',
+    banks:[
+      { t:'开头', items:['友谊关','我们崇左的友谊关','雄伟的友谊关'] },
+      { t:'中间', items:['是中国有名的一座边关','到今天还在忙碌地通关','见证了南疆的许多故事'] },
+      { t:'结尾', items:['我为家乡的边关自豪','欢迎你来这里看看','我要把它的故事记下来'] }
+    ] },
+  { key:'tianqin', emoji:'🎵', name:'壮族天琴',
+    intro:'壮族的传统乐器，能弹出好听的歌声。',
+    banks:[
+      { t:'开头', items:['壮族天琴','我们家乡的壮族天琴','好听的天琴声'] },
+      { t:'中间', items:['琴声清脆，像山间的泉水','是壮族祖辈传下来的乐器','一弹起来，全村人都爱听'] },
+      { t:'结尾', items:['我为家乡的音乐骄傲','欢迎你来听一听','我要把这首曲子弹好'] }
+    ] }
+];
+
+/* ============================================================
+   二、安全底线：负向内容拦截（AI 生成 + 手输都要过这一关）
+   ============================================================ */
+var BLOCK = ['死','杀','血','滚','傻','笨','丑','蠢','恶心','讨厌','恨','打人','色情','裸','性','赌博','赌','毒','枪','炸','爆炸','自杀','跳楼','恐怖','暴力','鬼','迷信','骗','偷','抢','钱','政治','政府','抗议','反','亡','病','癌','残','穷','垃圾','屎','尿','屁','fuck','shit','bitch'];
+
+function scanBad(s){
+  var t = String(s || '');
+  var low = t.toLowerCase();
+  for (var i = 0; i < BLOCK.length; i++){
+    if (low.indexOf(BLOCK[i].toLowerCase()) >= 0) return BLOCK[i];
+  }
+  return '';
+}
+
+/* 过滤控制字符 / 去首尾空白 / 压掉多余空行 */
+function clean(s){
+  return String(s || '').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '')
+    .replace(/\s+/g, ' ').trim();
+}
+
+/* ============================================================
+   三、二维码生成（同离线版：先试版本，能装下就画）
+   ============================================================ */
+if (qrcode.stringToBytesFuncs && qrcode.stringToBytesFuncs['UTF-8']){
+  qrcode.stringToBytes = qrcode.stringToBytesFuncs['UTF-8'];
+}
+function buildQR(text, ec){
+  for (var t = 1; t <= 40; t++){
+    try { var q = qrcode(t, ec); q.addData(text); q.make(); return { q:q, type:t }; }
+    catch(e){}
+  }
+  return null;
+}
+function drawQR(text, size){
+  size = size || 8;
+  var built = buildQR(text, 'M');
+  if (!built) return null;
+  var q = built.q, n = q.getModuleCount(), quiet = 4, px = n + quiet * 2;
+  var cv = document.createElement('canvas');
+  cv.width = cv.height = px * size;
+  var ctx = cv.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.fillStyle = '#000';
+  for (var r = 0; r < n; r++) for (var c = 0; c < n; c++)
+    if (q.isDark(r, c)) ctx.fillRect((c + quiet) * size, (r + quiet) * size, size, size);
+  return cv;
+}
+
+/* ============================================================
+   四、页面状态与交互
+   ============================================================ */
+var $ = function(id){ return document.getElementById(id); };
+var state = { topic:null, picks:[null, null, null], text:'', qr:null };
+
+/* ---- ④ 学号 / 年级 / 班级 下拉（默认：学号 1 号 · 四年级 · 1 班） ---- */
+(function initPickers(){
+  var GRADES = ['四年级', '五年级', '六年级'];
+  var CLASSES = 8;   /* 班级下拉 1—8 班；如需 1—10 / 1—15 改这里即可 */
+  var sa = $('author'), sg = $('grade'), sk = $('klass');
+  for (var i = 1; i <= 60; i++){
+    var o = document.createElement('option');
+    o.value = String(i); o.textContent = i + ' 号';
+    sa.appendChild(o);
+  }
+  sg.innerHTML = '';
+  GRADES.forEach(function(g){
+    var o = document.createElement('option'); o.value = g; o.textContent = g; sg.appendChild(o);
+  });
+  sg.selectedIndex = 0;               /* 默认四年级 */
+  for (var c = 1; c <= CLASSES; c++){
+    var oc = document.createElement('option');
+    oc.value = String(c) + '班'; oc.textContent = c + ' 班';
+    sk.appendChild(oc);
+  }
+  sk.selectedIndex = 0;               /* 默认 1 班 */
+})();
+/* 拼出完整班级串，如「四（2）班」 */
+function classLabel(){
+  var g = $('grade').value, k = $('klass').value;
+  var num = String(k).replace('班', '');
+  var short = { '四年级':'四', '五年级':'五', '六年级':'六' }[g] || '四';
+  return short + '（' + num + '）班';
+}
+
+/* ---- ① 主题卡片 ---- */
+var topicsBox = $('topics');
+TOPICS.forEach(function(tp){
+  var d = document.createElement('div');
+  d.className = 'topic';
+  d.innerHTML = '<span class="em">' + tp.emoji + '</span><span class="nm">' + tp.name + '</span>';
+  d.onclick = function(){ pickTopic(tp.key); };
+  topicsBox.appendChild(d);
+});
+
+function pickTopic(key){
+  var tp = null;
+  for (var i = 0; i < TOPICS.length; i++) if (TOPICS[i].key === key) tp = TOPICS[i];
+  if (!tp) return;
+  state.topic = tp;
+  state.picks = [null, null, null];
+  state.text = '';
+  // 卡片高亮
+  var cards = topicsBox.children;
+  for (var j = 0; j < cards.length; j++) cards[j].classList.toggle('on', TOPICS[j].key === key);
+  // 渲染词条
+  var banks = $('banks');
+  banks.innerHTML = '';
+  tp.banks.forEach(function(bk, bi){
+    var wrap = document.createElement('div');
+    wrap.className = 'bank';
+    var h = document.createElement('p'); h.className = 'bt'; h.textContent = '第' + (bi+1) + '行 · ' + bk.t;
+    wrap.appendChild(h);
+    var chips = document.createElement('div'); chips.className = 'chips';
+    bk.items.forEach(function(it){
+      var c = document.createElement('button');
+      c.type = 'button'; c.className = 'chip'; c.textContent = it;
+      c.onclick = function(){
+        var sib = chips.children;
+        for (var k = 0; k < sib.length; k++) sib[k].classList.remove('on');
+        c.classList.add('on');
+        state.picks[bi] = it;
+        refreshPreview();
+      };
+      chips.appendChild(c);
+    });
+    wrap.appendChild(chips);
+    banks.appendChild(wrap);
+  });
+  $('step2').style.display = '';
+  $('step3').style.display = '';
+  $('bottom').style.display = 'flex';
+  refreshPreview();
+  $('txt').value = '';
+  updateCounter();
+  resetQR();
+  $('msg').textContent = '';
+  $('step2').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+/* ---- ② 拼句预览 ---- */
+function composed(){
+  if (!state.topic) return '';
+  var p = state.picks;
+  if (!p[0] || !p[1] || !p[2]) return '';
+  return p[0] + '，' + p[1] + '。' + p[2] + '。';
+}
+function refreshPreview(){
+  var s = composed();
+  var box = $('preview');
+  if (s){ box.textContent = s; }
+  else {
+    var got = 0;
+    for (var i = 0; i < 3; i++) if (state.picks[i]) got++;
+    box.innerHTML = '<span class="ph">' + (got === 0 ? '每行点一个词，句子就会出现在这里 ✨'
+      : '还差 ' + (3 - got) + ' 个词，继续点一点 👆') + '</span>';
+  }
+  // ★ 关掉 AI 后：拼好的句子即为最终内容，自动填进文本框（孩子也能自己改一改）
+  var t = composed();
+  if (t){ txt.value = t; state.text = t; updateCounter(); }
+}
+
+/* ---- ③ 文本与计数 ---- */
+var txt = $('txt');
+function updateCounter(){
+  var n = txt.value.length;
+  var c = $('counter');
+  c.innerHTML = '已输入 <b>' + n + '</b> 字 ｜ ' + (n === 0 ? '建议 40 字以内，二维码更清楚'
+    : n <= 40 ? '✓ 长度刚好，扫起来很清楚'
+    : n <= 60 ? '有点长啦，能再精简一点更好'
+    : '太长了，二维码会变糊，建议删掉一些');
+  c.className = 'counter' + (n > 60 ? ' over' : '');
+}
+txt.addEventListener('input', function(){ state.text = txt.value; updateCounter(); });
+
+/* ---- 二维码预览 ---- */
+function resetQR(){
+  state.qr = null;
+  $('stage').innerHTML = '二维码会出现在这里';
+  $('dl').disabled = $('pr').disabled = true;
+  $('submit').disabled = true;
+}
+function renderQR(){
+  var s = clean(state.text);
+  if (!s){ $('msg').className = 'msg err'; $('msg').textContent = '先写好一句话，再点生成。'; return; }
+  if (s.length > 100){
+    $('msg').className = 'msg err';
+    $('msg').textContent = '内容太长（' + s.length + ' 字），二维码会糊，请精简到 40 字左右。';
+    return;
+  }
+  var bad = scanBad(s);
+  if (bad){
+    $('msg').className = 'msg err';
+    $('msg').textContent = '这句话里有不合适的内容，换一句吧～';
+    return;
+  }
+  var cv = drawQR(s, 8);
+  if (!cv){ $('msg').className = 'msg err'; $('msg').textContent = '内容太长，二维码装不下，请精简。'; return; }
+  var st = $('stage'); st.innerHTML = ''; st.appendChild(cv);
+  state.qr = s;
+  $('dl').disabled = $('pr').disabled = false;
+  $('submit').disabled = false;
+  $('msg').className = 'msg ok';
+  $('msg').textContent = '二维码做好啦！可以提交到作品墙了 🎉';
+}
+
+$('go').onclick = function(){
+  state.text = txt.value;
+  if (!clean(state.text)){
+    if (composed()){ txt.value = composed(); state.text = txt.value; updateCounter(); }
+    else { $('msg').className = 'msg err'; $('msg').textContent = '先写好一句话，再点生成。'; return; }
+  }
+  renderQR();
+};
+
+/* ---- 下载 / 打印 ---- */
+$('dl').onclick = function(){
+  var cv = $('stage').querySelector('canvas'); if (!cv) return;
+  var a = document.createElement('a');
+  a.download = '家乡文化二维码-' + new Date().toISOString().slice(0,10) + '.png';
+  a.href = cv.toDataURL('image/png'); a.click();
+};
+$('pr').onclick = function(){ window.print(); };
+
+/* ============================================================
+   五、AI 帮写已移除（2026-10-13）
+   —— 四年级教学不使用生成式人工智能。写进二维码的内容改为
+      由学生「点词拼句」自动生成（见 refreshPreview 自动填充），
+      文本仍过 scanBad 安全闸。下面仅保留云服务连接（作品墙提交需要）。
+   ============================================================ */
+
+var cloud = null;
+try {
+  if (window.WorkBuddyCloud && window.CLOUD_CONFIG && window.CLOUD_CONFIG.endpoint){
+    cloud = window.WorkBuddyCloud.createWorkBuddyCloud({
+      endpoint: window.CLOUD_CONFIG.endpoint,
+      oauthRelayBaseUrl: window.CLOUD_CONFIG.oauthRelayBaseUrl,
+      publishableKey: window.CLOUD_CONFIG.publishableKey
+    });
+  }
+} catch(e){ cloud = null; }
+
+
+/* ============================================================
+   六、提交到作品墙
+   ============================================================ */
+function setMsg(cls, t){ $('msg').className = 'msg ' + (cls || ''); $('msg').textContent = t; }
+
+$('submit').onclick = async function(){
+  var s = clean(state.text);
+  if (!state.qr){ setMsg('err', '先生成二维码，再提交哦。'); return; }
+  var author = clean($('author').value) + '号', klass = classLabel();
+  if (!clean($('author').value)){ setMsg('err', '先选一个学号吧～'); $('author').focus(); return; }
+  var bad = scanBad(s) || scanBad(klass);
+  if (bad){ setMsg('err', '内容里有不合适的地方，改一改再提交吧～'); return; }
+  if (!cloud){
+    setMsg('err', '现在连不上作品墙（网络或服务未就绪），可以先下载二维码，稍后再交。');
+    return;
+  }
+  var btn = $('submit'); btn.disabled = true; setMsg('', '正在送到作品墙…');
+  try {
+    var res = await cloud.database.from('works').insert({
+      author: author, klass: klass,
+      topic: state.topic.key, topic_name: state.topic.name,
+      content: s
+    }).select();
+    if (res.error) throw res.error;
+    if (!res.data || !res.data.length){ setMsg('err', '提交没有成功，请再试一次。'); return; }
+    setMsg('ok', '');
+    showDone(author, s);
+  } catch(e){
+    setMsg('err', '提交失败：' + (e && e.message ? e.message : '网络问题') + '，请再试一次。');
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+/* ---- 成功弹窗 ---- */
+function showDone(author, content){
+  $('mText').innerHTML = '“' + escapeHtml(content) + '”<br>已经挂到作品墙上啦，快去和大家互相点赞吧！';
+  $('mask').classList.add('on');
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+  });
+}
+$('mOk').onclick = function(){ location.href = 'wall.html'; };
+$('mClose').onclick = function(){ $('mask').classList.remove('on'); };
+
+updateCounter();
+})();
+</script>
+</body>
+</html>

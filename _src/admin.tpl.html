@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>数据面板 · 家乡文化二维码</title>
+<style>
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:#F4F6F8;color:#2E3238;
+  font-family:"Microsoft YaHei","PingFang SC",sans-serif;-webkit-text-size-adjust:100%;}
+header{background:#2B3A4A;color:#fff;padding:14px 20px;display:flex;align-items:center;
+  gap:14px;flex-wrap:wrap;position:sticky;top:0;z-index:20;}
+header h1{margin:0;font-size:21px;}
+header .sub{font-size:13px;color:#A9B8C6;}
+header .spacer{flex:1;}
+header a,header button{font-size:14px;font-weight:700;color:#fff;text-decoration:none;
+  background:#3E5468;border:none;border-radius:20px;padding:9px 18px;cursor:pointer;font-family:inherit;transition:.12s;}
+header a:hover,header button:hover{background:#4A6480;}
+header .danger{background:#C0392B;}
+header .danger:hover{background:#A93226;}
+
+main{max-width:1360px;margin:0 auto;padding:18px 20px 80px;}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:14px;margin-bottom:20px;}
+.kpi{background:#fff;border-radius:14px;padding:16px 18px;border:1px solid #E3E8ED;
+  box-shadow:0 2px 8px rgba(43,58,74,.05);}
+.kpi .v{font-size:30px;font-weight:800;color:#2B3A4A;line-height:1.1;}
+.kpi .l{font-size:13px;color:#7A8794;margin-top:6px;font-weight:700;}
+.kpi.acc .v{color:#E4572E;}
+.kpi.grn .v{color:#2A9D8F;}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.tabs button{cursor:pointer;border:2px solid #D7DEE5;background:#fff;border-radius:20px;
+  font-family:inherit;font-size:14px;font-weight:700;color:#5B6875;padding:9px 18px;transition:.12s;}
+.tabs button.on{background:#2B3A4A;color:#fff;border-color:#2B3A4A;}
+
+.panel{background:#fff;border-radius:16px;border:1px solid #E3E8ED;padding:18px;
+  box-shadow:0 2px 10px rgba(43,58,74,.05);}
+.panel h2{margin:0 0 14px;font-size:17px;color:#2B3A4A;}
+.panel h2 .n{font-size:13px;color:#8A96A3;font-weight:400;margin-left:8px;}
+
+table{width:100%;border-collapse:collapse;font-size:14px;}
+th,td{padding:10px 10px;text-align:left;border-bottom:1px solid #EDF1F5;vertical-align:top;}
+th{font-size:13px;color:#7A8794;font-weight:700;background:#F9FBFD;position:sticky;top:60px;}
+td.num{text-align:center;font-weight:700;color:#2B3A4A;white-space:nowrap;}
+td .em{color:#C9B8A8;}
+tr:hover td{background:#FCFDFE;}
+.tag{display:inline-block;font-size:12px;font-weight:700;border-radius:12px;padding:2px 10px;
+  background:#EAF7F4;color:#2C6B62;margin:1px 2px;}
+.tag.pre{background:#FFF1E6;color:#B4642A;}
+.tag.mid{background:#E8F1FB;color:#2C5F8A;}
+.tag.post{background:#EAF7EC;color:#2F7A45;}
+.who{font-weight:700;color:#2B3A4A;}
+
+.bars{margin:6px 0 18px;}
+.bar{margin-bottom:10px;}
+.bar .bl{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px;}
+.bar .bl b{color:#2B3A4A;}
+.bar .track{height:20px;background:#EEF2F6;border-radius:10px;overflow:hidden;}
+.bar .fill{height:100%;background:#2A9D8F;border-radius:10px;transition:width .4s;}
+.qblock{border-top:1px dashed #E3E8ED;padding:14px 0 4px;}
+.qblock:first-of-type{border-top:none;}
+.qblock .qt{font-size:15px;font-weight:700;color:#2B3A4A;margin-bottom:10px;}
+.freetxt{font-size:14px;color:#5B6875;background:#F9FBFD;border-radius:10px;padding:9px 12px;
+  margin:6px 0;line-height:1.6;}
+.freetxt b{color:#2B3A4A;}
+
+.empty{text-align:center;color:#9AA6B2;font-size:16px;padding:50px 20px;}
+.msg{font-size:14px;text-align:center;padding:8px;font-weight:700;}
+.msg.err{color:#C0392B;}
+footer{text-align:center;font-size:12px;color:#A9B0B8;padding:10px 20px 30px;}
+
+/* 一键清除确认框 */
+.mask{position:fixed;inset:0;background:rgba(30,36,42,.6);display:none;align-items:center;
+  justify-content:center;z-index:90;padding:18px;}
+.mask.on{display:flex;}
+.modal{background:#fff;border-radius:18px;padding:24px 22px;max-width:440px;width:100%;
+  box-shadow:0 18px 50px rgba(0,0,0,.35);}
+.modal h3{margin:0 0 6px;font-size:20px;color:#C0392B;}
+.modal p{margin:0 0 14px;font-size:15px;line-height:1.7;color:#4A545F;}
+.modal .warn{background:#FFF4F2;border:1px solid #F5C9C2;border-radius:12px;padding:11px 14px;
+  font-size:14px;color:#A93226;line-height:1.7;margin-bottom:14px;}
+.modal label{display:block;font-size:14px;font-weight:700;color:#4A545F;margin-bottom:6px;}
+.modal input{width:100%;padding:12px;font-size:16px;border:2px solid #D7DEE5;border-radius:11px;
+  outline:none;font-family:inherit;}
+.modal input:focus{border-color:#C0392B;}
+.mrow{display:flex;gap:10px;margin-top:16px;}
+.mrow button{flex:1;cursor:pointer;border:none;border-radius:12px;font-family:inherit;
+  font-weight:700;font-size:15px;padding:13px;transition:.12s;}
+.mrow .ghost{background:#fff;color:#5B6875;border:2px solid #D7DEE5;}
+.mrow .dngr{background:#C0392B;color:#fff;box-shadow:0 3px 0 #93261B;}
+.mrow .dngr:active:enabled{transform:translateY(2px);box-shadow:0 1px 0 #93261B;}
+.mrow button:disabled{opacity:.5;cursor:not-allowed;}
+
+/* 登录 */
+.lock{max-width:380px;margin:80px auto;background:#fff;border-radius:18px;padding:28px 24px;
+  border:1px solid #E3E8ED;box-shadow:0 6px 24px rgba(43,58,74,.08);text-align:center;}
+.lock .em{font-size:46px;}
+.lock h2{margin:10px 0 6px;font-size:20px;color:#2B3A4A;}
+.lock p{margin:0 0 18px;font-size:14px;color:#7A8794;line-height:1.6;}
+.lock input{width:100%;padding:13px;font-size:17px;border:2px solid #D7DEE5;border-radius:12px;
+  outline:none;font-family:inherit;text-align:center;letter-spacing:.08em;}
+.lock input:focus{border-color:#2B3A4A;}
+.lock button{width:100%;margin-top:14px;cursor:pointer;border:none;border-radius:12px;
+  background:#2B3A4A;color:#fff;font-family:inherit;font-weight:700;font-size:16px;padding:14px;}
+.lock .msg{min-height:20px;margin-top:10px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📊 数据面板</h1>
+  <div class="sub">家乡文化二维码 · 教师管理</div>
+  <div class="spacer"></div>
+  <a href="wall.html">🏛️ 作品墙</a>
+  <a href="index.html">✏️ 生成器</a>
+  <button id="refresh">🔄 刷新</button>
+  <button id="exportBtn">⬇️ 导出 Excel</button>
+  <button class="danger" id="clearBtn">🧹 一键清除</button>
+</header>
+
+<main>
+  <!-- 登录 -->
+  <div class="lock" id="lock">
+    <div class="em">🔒</div>
+    <h2>请输入管理员密码</h2>
+    <p>这里能看到所有同学的数据，请老师本人操作。</p>
+    <input type="password" id="pw" placeholder="管理员密码" autocomplete="off">
+    <button id="loginBtn">进入数据面板</button>
+    <div class="msg err" id="lmsg"></div>
+  </div>
+
+  <!-- 面板主体 -->
+  <div id="dashboard" style="display:none;">
+    <div class="kpis" id="kpis"></div>
+    <div class="tabs" id="tabs"></div>
+    <div id="panels"></div>
+  </div>
+</main>
+
+<footer>数据来自云服务 · 仅本页可见 · 密码请老师保密</footer>
+
+<!-- 一键清除确认 -->
+<div class="mask" id="clearMask">
+  <div class="modal">
+    <h3>⚠️ 一键清除</h3>
+    <p>这会<strong>永久删除</strong>作品墙上的内容，删了就找不回来。</p>
+    <div class="warn">
+      请选择要清除的数据（可勾选）：<br>
+      <label style="margin-top:8px;"><input type="checkbox" id="ckWorks" style="width:auto;margin-right:6px;" checked> 作品（同学做的二维码）</label>
+      <label style="margin-top:4px;"><input type="checkbox" id="ckRatings" style="width:auto;margin-right:6px;" checked> 评分（同学点的赞）</label>
+      <label style="margin-top:4px;"><input type="checkbox" id="ckSurveys" style="width:auto;margin-right:6px;"> 问卷（课前/课中/课后）</label>
+    </div>
+    <label>再输一次管理员密码确认</label>
+    <input type="password" id="clearPw" placeholder="管理员密码" autocomplete="off">
+    <div class="msg err" id="cmsg"></div>
+    <div class="mrow">
+      <button class="ghost" id="clearCancel">取消</button>
+      <button class="dngr" id="clearOk">确认清除</button>
+    </div>
+  </div>
+</div>
+
+<script>/*__QRCODE_LIB__*/</script>
+<script>/*__CLOUD_CONFIG__*/</script>
+<script>/*__CLOUD_SDK__*/</script>
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   管理员密码（改这里即可）：晨曦2026
+   ============================================================ */
+var ADMIN_PW = 'cx2026';
+
+var $ = function(id){ return document.getElementById(id); };
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+var EMJ = { pepper:'🌶️', shuangjiang:'🥁', dalang:'💃', nuomi:'🍚', dukang:'🏞️', litun:'⛰️',
+  huashan:'🎨', detian:'💦', houzi:'🐒', youyiguan:'🏯', tianqin:'🎵' };
+
+/* ---------- 云服务 ---------- */
+var cloud = null;
+try {
+  if (window.WorkBuddyCloud && window.CLOUD_CONFIG && window.CLOUD_CONFIG.endpoint){
+    cloud = window.WorkBuddyCloud.createWorkBuddyCloud({
+      endpoint: window.CLOUD_CONFIG.endpoint,
+      oauthRelayBaseUrl: window.CLOUD_CONFIG.oauthRelayBaseUrl,
+      publishableKey: window.CLOUD_CONFIG.publishableKey
+    });
+  }
+} catch(e){ cloud = null; }
+
+/* ---------- 问卷题目元数据（与 survey.html 一一对应，用于统计题面） ---------- */
+var META = {
+  pre:{ name:'课前问卷',
+    qs:[
+      { id:'know', t:'了解家乡文化吗', opts:['很了解','知道一些','知道一点点','不太了解'] },
+      { id:'what', t:'说的家乡文化包括哪些', multi:true, opts:['好吃的（指天椒、五色糯米饭）','好玩的节日','好看的风景','老手艺、老故事','别的'] },
+      { id:'ai', t:'以前上过用电脑、用 AI 的课吗', opts:['上过好几次','上过一两次','从来没有'] },
+      { id:'qr', t:'知道二维码是什么吗', opts:['知道，我还会用','听说过，不太清楚','不知道'] },
+      { id:'want', t:'最想做什么', multi:true, opts:['学 AI 帮忙写话','做自己的二维码','让同学扫码看我做的','给同学点赞'] },
+      { id:'hard', t:'觉得打字难不难', opts:['不难','有点难','很难'] }
+    ] },
+  mid:{ name:'课中问卷',
+    qs:[
+      { id:'fun', t:'这节课开心吗', opts:['很开心','还不错','一般般','不太开心'] },
+      { id:'understood', t:'方法听懂了吗', opts:['都听懂了','大部分懂','有一点点懂','还不太懂'] },
+      { id:'aihelp', t:'AI 帮忙有没有用', opts:['帮了很大忙','有一点帮助','没什么用','还没用过'] },
+      { id:'step', t:'做到哪一步了', opts:['还在选主题','在拼句子','在做二维码','已经交到作品墙了'] },
+      { id:'stuck', t:'遇到困难的地方', multi:true, opts:['都挺顺的','选主题有点难','句子不知道怎么选','按钮找不到','还有别的'] },
+      { id:'like', t:'最喜欢哪一步', opts:['选家乡主题','点词拼句子','让 AI 帮写','生成二维码','看别人作品点赞'] }
+    ] },
+  post:{ name:'课后问卷',
+    qs:[
+      { id:'gain', t:'学到了什么', multi:true, opts:['家乡文化的知识','怎么用 AI 帮忙','怎么把话写进二维码','怎么给别人点赞评价'] },
+      { id:'proud', t:'对家乡更自豪了吗', opts:['更加自豪了','有点自豪','和以前差不多','没感觉'] },
+      { id:'willshare', t:'愿意分享给家人吗', opts:['很想分享','愿意','说不好','不太想'] },
+      { id:'better', t:'觉得自己做得怎么样', opts:['我很满意','还不错','还要加油','不太满意'] },
+      { id:'again', t:'还想再上这样的课吗', opts:['很想再上','想','都可以','不想'] },
+      { id:'word', t:'内容难不难', opts:['太简单了','刚刚好','有点难','太难了'] },
+      { id:'free', t:'想对老师说的话', text:true }
+    ] }
+};
+
+/* ---------- 数据 ---------- */
+var WORKS = [], RATINGS = [], SURVEYS = [];
+var tab = 'overview';
+
+function loadAll(){
+  if (!cloud){ $('panels').innerHTML = '<div class="panel"><div class="empty">连不上云服务，检查网络后点「刷新」。</div></div>'; return; }
+  $('panels').innerHTML = '<div class="panel"><div class="empty">正在加载数据…</div></div>';
+  Promise.all([
+    cloud.database.from('works').select('*').order('created_at', { ascending:false }).limit(1000),
+    cloud.database.from('ratings').select('*').limit(10000),
+    cloud.database.from('surveys').select('*').order('created_at', { ascending:false }).limit(3000)
+  ]).then(function(res){
+    if (res[0].error) throw res[0].error;
+    WORKS = res[0].data || [];
+    RATINGS = (res[1] && res[1].data) || [];
+    SURVEYS = (res[2] && res[2].data) || [];
+    renderAll();
+  }).catch(function(e){
+    $('panels').innerHTML = '<div class="panel"><div class="empty">加载失败：'
+      + esc(e && e.message ? e.message : '网络问题') + '</div></div>';
+  });
+}
+
+/* ---------- 汇总工具 ---------- */
+function byAuthor(){
+  var m = {};
+  WORKS.forEach(function(w){
+    var k = (w.author || '未知') + '\u0001' + (w.klass || '');
+    if (!m[k]) m[k] = { author:w.author||'未知', klass:w.klass||'', works:[], stars:0, rates:0 };
+    m[k].works.push(w);
+  });
+  var agg = {};
+  RATINGS.forEach(function(r){
+    var o = agg[r.work_id] || (agg[r.work_id] = { sum:0, n:0 });
+    o.sum += parseInt(r.stars,10)||0; o.n++;
+  });
+  Object.keys(m).forEach(function(k){
+    m[k].works.forEach(function(w){
+      var a = agg[w.id];
+      if (a){ m[k].stars += a.sum; m[k].rates += a.n; }
+    });
+    m[k].avg = m[k].rates ? (m[k].stars / m[k].rates).toFixed(2) : '—';
+    m[k].count = m[k].works.length;
+  });
+  return Object.keys(m).map(function(k){ return m[k]; })
+    .sort(function(a,b){ return b.count - a.count || (b.rates - a.rates); });
+}
+function workAgg(){
+  var agg = {};
+  RATINGS.forEach(function(r){
+    var o = agg[r.work_id] || (agg[r.work_id] = { sum:0, n:0 });
+    o.sum += parseInt(r.stars,10)||0; o.n++;
+  });
+  return agg;
+}
+function fmt(s){
+  if (!s) return '';
+  try {
+    var d = new Date(s);
+    var p = function(n){ return (n<10?'0':'')+n; };
+    return (d.getMonth()+1) + '月' + d.getDate() + '日 ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  } catch(e){ return s; }
+}
+
+/* ---------- KPI ---------- */
+function renderKpis(){
+  var students = {};
+  WORKS.forEach(function(w){ if (w.author) students[w.author] = 1; });
+  var rated = {}, authors = {};
+  RATINGS.forEach(function(r){ rated[r.rater_id] = 1; });
+  var surveyN = SURVEYS.length;
+  var avg = RATINGS.length ? (RATINGS.reduce(function(s,r){ return s+(parseInt(r.stars,10)||0); },0)/RATINGS.length).toFixed(2) : '—';
+  var k = [
+    { v:WORKS.length, l:'作品总数', c:'acc' },
+    { v:Object.keys(students).length, l:'参与学生数', c:'' },
+    { v:RATINGS.length, l:'点赞总数', c:'grn' },
+    { v:avg, l:'平均星级', c:'' },
+    { v:surveyN, l:'问卷提交数', c:'' },
+    { v:SURVEYS.filter(function(s){ return s.kind==='pre'; }).length + '/' +
+       SURVEYS.filter(function(s){ return s.kind==='mid'; }).length + '/' +
+       SURVEYS.filter(function(s){ return s.kind==='post'; }).length, l:'课前/中/后份数', c:'' }
+  ];
+  $('kpis').innerHTML = k.map(function(x){
+    return '<div class="kpi ' + x.c + '"><div class="v">' + esc(x.v) + '</div><div class="l">' + x.l + '</div></div>';
+  }).join('');
+}
+
+/* ---------- 各面板 ---------- */
+function renderTabs(){
+  var t = [
+    { k:'overview', n:'总览' },
+    { k:'works', n:'作品统计' },
+    { k:'rates', n:'评分统计' },
+    { k:'pre', n:'课前问卷' },
+    { k:'mid', n:'课中问卷' },
+    { k:'post', n:'课后问卷' }
+  ];
+  $('tabs').innerHTML = t.map(function(x){
+    return '<button data-t="' + x.k + '"' + (x.k===tab?' class="on"':'') + '>' + x.n + '</button>';
+  }).join('');
+  $('tabs').querySelectorAll('button').forEach(function(b){
+    b.onclick = function(){ tab = b.getAttribute('data-t'); renderTabs(); renderPanel(); };
+  });
+}
+
+function renderPanel(){
+  var html = '';
+  if (tab === 'overview') html = panelOverview();
+  else if (tab === 'works') html = panelWorks();
+  else if (tab === 'rates') html = panelRates();
+  else html = panelSurvey(tab);
+  $('panels').innerHTML = html;
+}
+
+function panelOverview(){
+  var by = byAuthor();
+  if (!by.length) return '<div class="panel"><div class="empty">还没有作品数据。等同学们提交后回来看～</div></div>';
+  var rows = by.map(function(s){
+    var names = s.works.map(function(w){ return (EMJ[w.topic]||'🏵️')+' '+esc(w.topic_name||''); }).join(' ');
+    return '<tr><td class="who">'+esc(s.author)+(s.klass?'<br><span style="font-size:12px;color:#8A96A3;font-weight:400;">'+esc(s.klass)+'</span>':'')+'</td>'
+      + '<td class="num">'+s.count+'</td><td>'+names+'</td><td class="num">'+(s.rates||0)+'</td><td class="num">'+s.avg+'</td></tr>';
+  }).join('');
+  return '<div class="panel"><h2>学生作品总览<span class="n">共 '+by.length+' 人</span></h2>'
+    + '<table><thead><tr><th>学生</th><th style="text-align:center;">作品数</th><th>做了什么主题</th>'
+    + '<th style="text-align:center;">被赞</th><th style="text-align:center;">平均★</th></tr></thead><tbody>'
+    + rows + '</tbody></table></div>';
+}
+
+function panelWorks(){
+  if (!WORKS.length) return '<div class="panel"><div class="empty">还没有作品。</div></div>';
+  var agg = workAgg();
+  var rows = WORKS.map(function(w){
+    var a = agg[w.id] || { sum:0, n:0 };
+    var avg = a.n ? (a.sum/a.n).toFixed(1) : '—';
+    return '<tr><td class="who">'+esc(w.author||'未知')+(w.klass?' · '+esc(w.klass):'')+'</td>'
+      + '<td><span class="tag">'+(EMJ[w.topic]||'🏵️')+' '+esc(w.topic_name||'')+'</span></td>'
+      + '<td>'+esc(w.content||'')+'</td>'
+      + '<td class="num">'+avg+'<br><span style="font-size:12px;color:#8A96A3;font-weight:400;">'+(a.n||0)+'赞</span></td>'
+      + '<td style="white-space:nowrap;color:#8A96A3;font-size:13px;">'+fmt(w.created_at)+'</td></tr>';
+  }).join('');
+  return '<div class="panel"><h2>作品统计<span class="n">共 '+WORKS.length+' 件</span></h2>'
+    + '<table><thead><tr><th>作者</th><th>主题</th><th>内容</th><th style="text-align:center;">★</th><th>提交时间</th></tr></thead><tbody>'
+    + rows + '</tbody></table></div>';
+}
+
+function panelRates(){
+  if (!RATINGS.length) return '<div class="panel"><div class="empty">还没有点赞数据。</div></div>';
+  var agg = workAgg();
+  var wmap = {};
+  WORKS.forEach(function(w){ wmap[w.id] = w; });
+  /* 平均分排行 */
+  var rank = Object.keys(agg).map(function(id){
+    var w = wmap[id], a = agg[id];
+    return { w:w, avg:a.sum/a.n, n:a.n };
+  }).filter(function(x){ return x.w; }).sort(function(a,b){ return b.avg - a.avg || b.n - a.n; });
+  var rrows = rank.map(function(x,i){
+    return '<tr><td class="num">'+(i+1)+'</td><td class="who">'+esc(x.w.author||'')+'</td>'
+      + '<td>'+esc(x.w.content||'')+'</td><td class="num">'+x.avg.toFixed(2)+'</td><td class="num">'+x.n+'</td></tr>';
+  }).join('');
+  /* 评分明细（谁给谁） */
+  var drows = RATINGS.slice().sort(function(a,b){ return (b.id||0)-(a.id||0); }).slice(0,200).map(function(r){
+    var w = wmap[r.work_id];
+    return '<tr><td>'+esc(w ? (w.author||'') : '（作品已删）')+'</td>'
+      + '<td>'+esc(w ? (w.content||'').slice(0,26) : '')+'</td>'
+      + '<td class="num">'+(parseInt(r.stars,10)||0)+'★</td>'
+      + '<td>'+esc(r.comment||'')+'</td>'
+      + '<td style="white-space:nowrap;color:#8A96A3;font-size:13px;">'+fmt(r.created_at)+'</td></tr>';
+  }).join('');
+  return '<div class="panel" style="margin-bottom:16px;"><h2>作品平均分排行<span class="n">共 '+rank.length+' 件被赞</span></h2>'
+    + '<table><thead><tr><th style="text-align:center;">名次</th><th>作者</th><th>内容</th>'
+    + '<th style="text-align:center;">平均★</th><th style="text-align:center;">人数</th></tr></thead><tbody>'+rrows+'</tbody></table></div>'
+    + '<div class="panel"><h2>评分明细<span class="n">最多显示最近 200 条</span></h2>'
+    + '<table><thead><tr><th>被评学生</th><th>内容</th><th style="text-align:center;">给分</th>'
+    + '<th>留言</th><th>时间</th></tr></thead><tbody>'+drows+'</tbody></table></div>';
+}
+
+function panelSurvey(kind){
+  var meta = META[kind];
+  var list = SURVEYS.filter(function(s){ return s.kind === kind; });
+  if (!list.length) return '<div class="panel"><div class="empty">还没有「'+meta.name+'」的数据。</div></div>';
+  var html = '<div class="panel" style="margin-bottom:16px;"><h2>'+meta.name+' · 题目汇总<span class="n">共 '+list.length+' 份</span></h2>';
+  meta.qs.forEach(function(q){
+    if (q.text){
+      var freetxt = list.map(function(s){
+        var v = (s.answers||{})[q.id];
+        return v ? '<div class="freetxt"><b>'+esc(s.author)+'</b>：'+esc(v)+'</div>' : '';
+      }).join('');
+      html += '<div class="qblock"><div class="qt">'+esc(q.t)+'</div>'+(freetxt||'<div style="font-size:13px;color:#9AA6B2;">没人填</div>')+'</div>';
+      return;
+    }
+    var count = {};
+    q.opts.forEach(function(o){ count[o] = 0; });
+    var extraOther = 0;
+    list.forEach(function(s){
+      var v = (s.answers||{})[q.id];
+      if (q.multi){
+        (Array.isArray(v)?v:[]).forEach(function(o){
+          if (count[o] !== undefined) count[o]++; else extraOther++;
+        });
+      } else {
+        if (count[v] !== undefined) count[v]++;
+      }
+    });
+    var total = 0; Object.keys(count).forEach(function(o){ total += count[o]; });
+    var bars = q.opts.map(function(o){
+      var n = count[o];
+      var pct = total ? Math.round(n/total*100) : 0;
+      return '<div class="bar"><div class="bl"><span>'+esc(o)+'</span><b>'+n+' 人 · '+pct+'%</b></div>'
+        + '<div class="track"><div class="fill" style="width:'+pct+'%"></div></div></div>';
+    }).join('');
+    html += '<div class="qblock"><div class="qt">'+esc(q.t)+(q.multi?'（多选）':'')+'</div><div class="bars">'+bars+'</div></div>';
+  });
+  html += '</div>';
+  /* 按人对照 */
+  var rows = list.map(function(s){
+    var cells = meta.qs.filter(function(q){ return !q.text; }).map(function(q){
+      var v = (s.answers||{})[q.id];
+      if (q.multi) return esc((Array.isArray(v)?v:[]).join('、'));
+      return esc(v||'');
+    }).join('</td><td>');
+    return '<tr><td class="who">'+esc(s.author)+(s.klass?'<br><span style="font-size:12px;color:#8A96A3;font-weight:400;">'+esc(s.klass)+'</span>':'')+'</td><td>'+cells+'</td></tr>';
+  }).join('');
+  var head = meta.qs.filter(function(q){ return !q.text; }).map(function(q,i){
+    return '<th>'+(i+1)+'. '+esc(q.t)+'</th>';
+  }).join('');
+  html += '<div class="panel"><h2>按人对照<span class="n">横向看每个学生的作答</span></h2>'
+    + '<div style="overflow-x:auto;"><table><thead><tr><th>学生</th>'+head+'</tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+  return html;
+}
+
+function renderAll(){ renderKpis(); renderTabs(); renderPanel(); }
+
+/* ============================================================
+   一键清除
+   ============================================================ */
+$('clearBtn').onclick = function(){
+  $('ckWorks').checked = $('ckRatings').checked = true;
+  $('ckSurveys').checked = false;
+  $('clearPw').value = ''; $('cmsg').textContent = '';
+  $('clearMask').classList.add('on');
+  setTimeout(function(){ $('clearPw').focus(); }, 60);
+};
+$('clearCancel').onclick = function(){ $('clearMask').classList.remove('on'); };
+
+$('clearOk').onclick = async function(){
+  var pw = $('clearPw').value;
+  if (pw !== ADMIN_PW){ $('cmsg').className = 'msg err'; $('cmsg').textContent = '密码不对，清除取消。'; return; }
+  var doW = $('ckWorks').checked, doR = $('ckRatings').checked, doS = $('ckSurveys').checked;
+  if (!doW && !doR && !doS){ $('cmsg').className = 'msg err'; $('cmsg').textContent = '至少勾选一样要清除的。'; return; }
+  if (!cloud){ $('cmsg').className = 'msg err'; $('cmsg').textContent = '连不上云服务。'; return; }
+
+  var btn = $('clearOk'); btn.disabled = true;
+  $('cmsg').className = 'msg'; $('cmsg').textContent = '正在清除…';
+  try {
+    /* 先删评分，再删作品（顺序无关，但先评后作更干净） */
+    if (doR){ var r1 = await cloud.database.from('ratings').delete().neq('id', -1); if (r1 && r1.error) throw r1.error; }
+    if (doW){ var r2 = await cloud.database.from('works').delete().neq('id', -1); if (r2 && r2.error) throw r2.error; }
+    if (doS){ var r3 = await cloud.database.from('surveys').delete().neq('id', -1); if (r3 && r3.error) throw r3.error; }
+    $('cmsg').className = 'msg err'; $('cmsg').style.color = '#2A9D8F';
+    $('cmsg').textContent = '清除完成 ✓';
+    setTimeout(function(){ $('clearMask').classList.remove('on'); $('cmsg').style.color=''; loadAll(); }, 700);
+  } catch(e){
+    $('cmsg').className = 'msg err';
+    $('cmsg').textContent = '清除失败：' + (e && e.message ? e.message : '网络问题');
+  } finally { btn.disabled = false; }
+};
+
+/* ============================================================
+   导出 Excel（CSV，UTF-8 BOM，Excel 可直接打开）
+   ============================================================ */
+function csvCell(v){
+  var s = String(v == null ? '' : v).replace(/"/g,'""');
+  return '"' + s + '"';
+}
+function downloadCsv(name, rows){
+  var csv = '\ufeff' + rows.map(function(r){ return r.map(csvCell).join(','); }).join('\r\n');
+  var blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name + '-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1500);
+}
+$('exportBtn').onclick = function(){
+  if (!WORKS.length && !RATINGS.length && !SURVEYS.length){ alert('现在还没有数据可以导出。'); return; }
+  var agg = workAgg();
+  /* 1. 作品 */
+  var rows = [['学号','班级','主题','内容','被赞人数','平均星级','提交时间']];
+  WORKS.forEach(function(w){
+    var a = agg[w.id] || { sum:0, n:0 };
+    rows.push([w.author||'', w.klass||'', w.topic_name||'', w.content||'', a.n||0,
+      a.n ? (a.sum/a.n).toFixed(2) : '', w.created_at||'']);
+  });
+  downloadCsv('家乡文化二维码-作品', rows);
+  /* 2. 评分 */
+  if (RATINGS.length){
+    var wmap = {}; WORKS.forEach(function(w){ wmap[w.id] = w; });
+    var rr = [['被评学生','作品内容','给分','留言','时间']];
+    RATINGS.forEach(function(r){
+      var w = wmap[r.work_id];
+      rr.push([w?(w.author||''):'（已删）', w?(w.content||''):'', parseInt(r.stars,10)||0,
+        r.comment||'', r.created_at||'']);
+    });
+    setTimeout(function(){ downloadCsv('家乡文化二维码-评分', rr); }, 400);
+  }
+  /* 3. 问卷 */
+  if (SURVEYS.length){
+    ['pre','mid','post'].forEach(function(kind, ki){
+      var list = SURVEYS.filter(function(s){ return s.kind === kind; });
+      if (!list.length) return;
+      var meta = META[kind];
+      var head = ['学号','班级'].concat(meta.qs.map(function(q){ return q.t; }));
+      var body = [head];
+      list.forEach(function(s){
+        var row = [s.author||'', s.klass||''];
+        meta.qs.forEach(function(q){
+          var v = (s.answers||{})[q.id];
+          row.push(q.multi ? (Array.isArray(v)?v.join('、'):'') : (v||''));
+        });
+        body.push(row);
+      });
+      setTimeout(function(){ downloadCsv('家乡文化二维码-'+meta.name, body); }, 800 + ki*400);
+    });
+  }
+};
+
+/* ---------- 登录 ---------- */
+$('loginBtn').onclick = doLogin;
+$('pw').addEventListener('keydown', function(e){ if (e.key === 'Enter') doLogin(); });
+function doLogin(){
+  if ($('pw').value === ADMIN_PW){
+    try { sessionStorage.setItem('cx_admin', '1'); } catch(e){}
+    $('lock').style.display = 'none';
+    $('dashboard').style.display = '';
+    loadAll();
+  } else {
+    $('lmsg').textContent = '密码不对，请再试一次。';
+    $('pw').value = ''; $('pw').focus();
+  }
+}
+$('refresh').onclick = loadAll;
+
+/* 会话内已登录则跳过 */
+try { if (sessionStorage.getItem('cx_admin') === '1'){ $('lock').style.display='none'; $('dashboard').style.display=''; loadAll(); } } catch(e){}
+})();
+</script>
+</body>
+</html>

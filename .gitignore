@@ -1,0 +1,19 @@
+# 云端密钥配置（真值只留在本地，不入库）
+_src/cloud-config.json
+
+# 自动备份目录（构建时产生的旧版副本，不入库）
+_src/_bak/
+
+# 临时/调试文件
+_src/_chk_*.js
+_src/_test*.js
+_src/_dbg.js
+_src/_jscheck.js
+_src/_jsc/
+_online_*.html
+_shots/
+
+# 系统文件
+Thumbs.db
+desktop.ini
+.DS_Store

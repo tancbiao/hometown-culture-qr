@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>家乡文化作品墙 · 天等县</title>
+<style>
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:#FFF9F2;color:#33302C;
+  font-family:"Microsoft YaHei","PingFang SC",sans-serif;-webkit-text-size-adjust:100%;}
+header{background:#fff;border-bottom:3px solid #FFE0C7;padding:14px 20px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+header h1{margin:0;font-size:24px;}
+header .sub{font-size:14px;color:#8A8078;}
+header .spacer{flex:1;}
+header a{font-size:15px;font-weight:700;color:#fff;text-decoration:none;
+  background:#E4572E;border-radius:22px;padding:9px 20px;box-shadow:0 3px 0 #B84322;transition:.12s;}
+header a:hover{background:#D64E27;}
+header a:active{transform:translateY(2px);box-shadow:0 1px 0 #B84322;}
+header button.adminbtn{font-size:14px;font-weight:700;color:#5A4A3A;background:#fff;border:2.5px solid #E8DCCD;
+  border-radius:22px;padding:8px 16px;cursor:pointer;font-family:inherit;transition:.12s;}
+header button.adminbtn:hover{border-color:#FFC59B;background:#FFFDF8;}
+
+.bar{max-width:1320px;margin:0 auto;padding:14px 20px 0;display:flex;gap:12px;
+  align-items:center;flex-wrap:wrap;}
+.stat{font-size:15px;color:#5A4A3A;font-weight:700;}
+.stat b{color:#E4572E;font-size:19px;}
+.seg{margin-left:auto;display:flex;border:2.5px solid #FFD9B8;border-radius:24px;overflow:hidden;background:#fff;}
+.seg button{border:none;background:transparent;font-family:inherit;font-size:15px;font-weight:700;
+  color:#B4815E;padding:9px 18px;cursor:pointer;}
+.seg button.on{background:#E4572E;color:#fff;}
+.refresh{border:2.5px solid #E8DCCD;background:#fff;border-radius:24px;font-family:inherit;
+  font-size:15px;font-weight:700;color:#5A4A3A;padding:9px 18px;cursor:pointer;}
+
+main{max-width:1320px;margin:0 auto;padding:16px 20px 60px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:16px;}
+.card{background:#fff;border:2px solid #FFE7D3;border-radius:18px;padding:14px;
+  display:flex;flex-direction:column;transition:.15s;}
+.card:hover{box-shadow:0 8px 22px rgba(228,87,46,.13);transform:translateY(-2px);}
+.card .qr{width:132px;height:132px;margin:0 auto 10px;border:2px solid #F0E6DA;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;background:#fff;cursor:zoom-in;overflow:hidden;}
+.card .qr canvas{width:100%;height:100%;image-rendering:pixelated;}
+.card .txt{font-size:17px;line-height:1.6;font-weight:700;color:#4A423A;flex:1;
+  word-break:break-word;min-height:56px;}
+.card .tp{display:inline-block;font-size:13px;font-weight:700;color:#2C6B62;background:#EAF7F4;
+  border-radius:14px;padding:3px 12px;margin-bottom:8px;}
+.card .meta{display:flex;align-items:center;gap:8px;font-size:13px;color:#8A8078;margin-top:10px;}
+.card .meta .who{font-weight:700;color:#5A4A3A;}
+.card .act{margin-top:10px;display:flex;align-items:center;gap:10px;}
+.card .stars{font-size:15px;color:#F2A100;font-weight:700;flex:1;}
+.card .rate{cursor:pointer;border:none;border-radius:11px;background:#2A9D8F;color:#fff;
+  font-family:inherit;font-weight:700;font-size:14px;padding:9px 14px;box-shadow:0 3px 0 #1F7D72;}
+.card .rate:active{transform:translateY(2px);box-shadow:0 1px 0 #1F7D72;}
+.card .rate.done{background:#B7CFCB;box-shadow:0 3px 0 #9BB8B4;}
+
+.empty{text-align:center;color:#B4A99C;font-size:17px;padding:70px 20px;line-height:2;}
+.empty .em{font-size:52px;display:block;margin-bottom:10px;}
+
+/* 弹窗 */
+.mask{position:fixed;inset:0;background:rgba(40,32,26,.55);display:none;
+  align-items:center;justify-content:center;z-index:60;padding:18px;}
+.mask.on{display:flex;}
+.modal{background:#fff;border-radius:20px;padding:22px;max-width:430px;width:100%;
+  box-shadow:0 18px 50px rgba(0,0,0,.3);max-height:92vh;overflow:auto;}
+.modal h3{margin:0 0 4px;font-size:20px;color:#E4572E;}
+.modal .q{font-size:16px;line-height:1.6;color:#5A4A3A;background:#FFFDF5;border-radius:12px;
+  padding:10px 12px;margin:10px 0 14px;word-break:break-word;}
+.pick{display:flex;gap:8px;justify-content:center;margin-bottom:6px;}
+.pick .st{font-size:38px;cursor:pointer;color:#E3D8CB;transition:.12s;line-height:1;user-select:none;}
+.pick .st.on,.pick .st:hover{color:#F2A100;transform:scale(1.12);}
+.plabel{text-align:center;font-size:14px;color:#8A8078;margin:0 0 14px;}
+textarea{width:100%;min-height:74px;padding:11px 12px;font-size:16px;line-height:1.6;
+  border:2.5px solid #E8DCCD;border-radius:12px;outline:none;resize:vertical;
+  font-family:inherit;color:#33302C;background:#FFFDFA;}
+textarea:focus{border-color:#E4572E;}
+/* 可点选的鼓励语（可选，不写就用默认） */
+.cmtwrap{margin-top:12px;}
+.cmtwrap .ct{font-size:13px;color:#8A8078;margin:0 0 7px;font-weight:700;}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;}
+.chip{cursor:pointer;border:2px solid #E8DCCD;background:#FFFDFA;color:#5A4A3A;
+  border-radius:999px;padding:7px 13px;font-size:14px;font-family:inherit;font-weight:600;
+  transition:.12s;line-height:1.2;}
+.chip:hover{border-color:#F2A100;background:#FFF8EC;}
+.chip.on{background:#E4572E;border-color:#E4572E;color:#fff;box-shadow:0 2px 0 #B84322;}
+.mrow{display:flex;gap:10px;margin-top:14px;}
+.btn{cursor:pointer;border:none;border-radius:12px;font-family:inherit;font-weight:700;
+  font-size:16px;padding:12px 18px;flex:1;transition:.12s;}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+.btn-main{background:#E4572E;color:#fff;box-shadow:0 3px 0 #B84322;}
+.btn-main:active:enabled{transform:translateY(2px);box-shadow:0 1px 0 #B84322;}
+.btn-ghost{background:#FFF;color:#5A4A3A;border:2.5px solid #E8DCCD;}
+.mmsg{font-size:14px;text-align:center;margin-top:10px;min-height:18px;}
+.mmsg.err{color:#D62828;font-weight:700;}
+.mmsg.ok{color:#2A9D8F;font-weight:700;}
+
+/* 管理员登录/清除弹窗 */
+.mrow{display:flex;gap:10px;margin-top:14px;}
+.mrow .btn{flex:1;}
+.modal input.pw{width:100%;padding:12px;font-size:16px;border:2.5px solid #E8DCCD;border-radius:11px;
+  outline:none;font-family:inherit;text-align:center;letter-spacing:.06em;}
+.modal input.pw:focus{border-color:#E4572E;}
+.warnbox{background:#FFF4F2;border:2px solid #F5C9C2;border-radius:12px;padding:11px 13px;
+  font-size:14px;color:#A93226;line-height:1.7;margin:12px 0;}
+.warnbox label{display:flex;align-items:center;gap:8px;font-weight:700;margin-top:6px;font-size:14px;}
+.warnbox input[type=checkbox]{width:18px;height:18px;flex:none;accent-color:#A93226;}
+
+/* 看大图 */
+.viewer .big{width:min(340px,80vw);height:min(340px,80vw);margin:6px auto 8px;}
+.viewer .big canvas{width:100%;height:100%;image-rendering:pixelated;}
+.viewer .cap{font-size:16px;line-height:1.7;color:#4A423A;font-weight:700;text-align:center;}
+.viewer .who{font-size:14px;color:#8A8078;text-align:center;margin-top:8px;}
+footer{text-align:center;font-size:13px;color:#B4A99C;padding:10px 20px 40px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🏛️ 家乡文化作品墙</h1>
+  <div class="sub">天等县 · 扫码看看，给同学点个赞</div>
+  <div class="spacer"></div>
+  <button class="adminbtn" id="adminBtn">🔒 管理员</button>
+  <a href="index.html">✏️ 我也要做一个</a>
+</header>
+
+<div class="bar">
+  <span class="stat">一共 <b id="cnt">0</b> 件作品</span>
+  <div class="seg">
+    <button data-sort="new" class="on">最新发布</button>
+    <button data-sort="hot">最受欢迎</button>
+  </div>
+  <button class="refresh" id="refresh">🔄 刷新</button>
+</div>
+
+<main>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none;">
+    <span class="em">🌱</span>
+    还没有作品呢，<br>快去做第一个吧！
+  </div>
+</main>
+
+<footer>用 AI 帮忙，让家乡文化被更多人看见 💛</footer>
+
+<!-- 评分弹窗 -->
+<div class="mask" id="rateMask">
+  <div class="modal">
+    <h3>给他的家乡文化点赞</h3>
+    <div class="q" id="rateQ"></div>
+    <div class="pick" id="pick">
+      <span class="st" data-v="1">★</span><span class="st" data-v="2">★</span>
+      <span class="st" data-v="3">★</span><span class="st" data-v="4">★</span>
+      <span class="st" data-v="5">★</span>
+    </div>
+    <p class="plabel" id="plabel">点星星打分（1—5 星）</p>
+    <div class="cmtwrap">
+      <p class="ct">想夸他一句？点一个吧（也可以自己写，或者不写）</p>
+      <div class="chips" id="cmtChips"></div>
+      <textarea id="cmt" maxlength="60" placeholder="也可以在这里自己写一句鼓励的话（不写也行）"></textarea>
+    </div>
+    <div class="mrow">
+      <button class="btn btn-ghost" id="rcancel">再想想</button>
+      <button class="btn btn-main" id="rok">提交点赞</button>
+    </div>
+    <div class="mmsg" id="rmsg"></div>
+  </div>
+</div>
+
+<!-- 看大图 -->
+<div class="mask viewer" id="viewMask">
+  <div class="modal">
+    <div class="big" id="big"></div>
+    <div class="cap" id="bigCap"></div>
+    <div class="who" id="bigWho"></div>
+    <div class="mrow"><button class="btn btn-ghost" id="vclose">关闭</button></div>
+  </div>
+</div>
+
+<!-- 管理员登录 -->
+<div class="mask" id="adminMask">
+  <div class="modal">
+    <h3>🔒 管理员登录</h3>
+    <div class="q" style="font-size:15px;color:#8A8078;">请老师输入管理员密码，进入后可清除数据、查看数据面板。</div>
+    <input type="password" class="pw" id="adminPw" placeholder="管理员密码" autocomplete="off">
+    <div class="mmsg err" id="adminMsg"></div>
+    <div class="mrow">
+      <button class="btn btn-ghost" id="adminCancel">取消</button>
+      <button class="btn btn-main" id="adminOk">进入</button>
+    </div>
+  </div>
+</div>
+
+<!-- 管理员菜单 -->
+<div class="mask" id="adminMenu">
+  <div class="modal">
+    <h3>✅ 管理员模式</h3>
+    <div class="q" style="font-size:15px;color:#8A8078;">老师你好，请选择要做什么：</div>
+    <div class="mrow" style="flex-direction:column;gap:10px;">
+      <button class="btn btn-main" id="mGoPanel" style="width:100%;">📊 进入数据面板</button>
+      <button class="btn btn-ghost" id="mClear" style="width:100%;border-color:#F5C9C2;color:#C0392B;">🧹 一键清除作品数据</button>
+      <button class="btn btn-ghost" id="mCloseMenu" style="width:100%;">返回作品墙</button>
+    </div>
+  </div>
+</div>
+
+<!-- 一键清除 -->
+<div class="mask" id="clearMask">
+  <div class="modal">
+    <h3>⚠️ 一键清除</h3>
+    <div class="q" style="font-size:15px;">清除后<strong>无法恢复</strong>，请老师确认。</div>
+    <div class="warnbox">
+      要清除哪些数据？
+      <label><input type="checkbox" id="ckWorks" checked> 作品（同学做的二维码）</label>
+      <label><input type="checkbox" id="ckRatings" checked> 评分（同学点的赞）</label>
+      <label><input type="checkbox" id="ckSurveys"> 问卷（课前/课中/课后）</label>
+    </div>
+    <input type="password" class="pw" id="clearPw" placeholder="再输一次管理员密码" autocomplete="off">
+    <div class="mmsg err" id="clearMsg"></div>
+    <div class="mrow">
+      <button class="btn btn-ghost" id="clearCancel">取消</button>
+      <button class="btn btn-main" id="clearDo" style="background:#C0392B;box-shadow:0 3px 0 #93261B;">确认清除</button>
+    </div>
+  </div>
+</div>
+
+<script>/*__QRCODE_LIB__*/</script>
+<script>/*__CLOUD_CONFIG__*/</script>
+<script>/*__CLOUD_SDK__*/</script>
+<script>
+(function(){
+'use strict';
+
+var EMJ = { pepper:'🌶️', shuangjiang:'🥁', dalang:'💃', nuomi:'🍚', dukang:'🏞️', litun:'⛰️',
+  huashan:'🎨', detian:'💦', houzi:'🐒', youyiguan:'🏯', tianqin:'🎵' };
+
+/* ---------- 可选鼓励语（学生点一下就好，不用打字；不选也能提交） ---------- */
+var PRAISE = [
+  '介绍得真好，我学到啦！👍',
+  '哇，原来家乡这么美！',
+  '写得真好，为你点赞！',
+  '谢谢你让我认识天等 💛',
+  '真棒，你的家乡真厉害！',
+  '这句话我很喜欢，加油！',
+  '太有才了，继续加油！',
+  '看完好想去看一看呀～',
+  '真有家乡味，好棒！',
+  '你的介绍很用心，赞一个！',
+  '说得真好，我要向你学习！',
+  '家乡因为你更精彩！'
+];
+
+/* ---------- 二维码 ---------- */
+if (qrcode.stringToBytesFuncs && qrcode.stringToBytesFuncs['UTF-8']){
+  qrcode.stringToBytes = qrcode.stringToBytesFuncs['UTF-8'];
+}
+function makeQR(text, size){
+  size = size || 5;
+  for (var t = 1; t <= 40; t++){
+    try {
+      var q = qrcode(t, 'M'); q.addData(text); q.make();
+      var n = q.getModuleCount(), quiet = 4, px = n + quiet * 2;
+      var cv = document.createElement('canvas');
+      cv.width = cv.height = px * size;
+      var ctx = cv.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cv.width, cv.height);
+      ctx.fillStyle = '#000';
+      for (var r = 0; r < n; r++) for (var c = 0; c < n; c++)
+        if (q.isDark(r, c)) ctx.fillRect((c+quiet)*size, (r+quiet)*size, size, size);
+      return cv;
+    } catch(e){}
+  }
+  return null;
+}
+
+/* ---------- 云服务 ---------- */
+var cloud = null;
+try {
+  if (window.WorkBuddyCloud && window.CLOUD_CONFIG && window.CLOUD_CONFIG.endpoint){
+    cloud = window.WorkBuddyCloud.createWorkBuddyCloud({
+      endpoint: window.CLOUD_CONFIG.endpoint,
+      oauthRelayBaseUrl: window.CLOUD_CONFIG.oauthRelayBaseUrl,
+      publishableKey: window.CLOUD_CONFIG.publishableKey
+    });
+  }
+} catch(e){ cloud = null; }
+
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+  });
+}
+function raterId(){
+  var k = 'cx_rater_id', v = null;
+  try { v = localStorage.getItem(k); } catch(e){}
+  if (!v){
+    v = 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    try { localStorage.setItem(k, v); } catch(e){}
+  }
+  return v;
+}
+function myRated(){
+  try { return JSON.parse(localStorage.getItem('cx_rated') || '{}'); } catch(e){ return {}; }
+}
+function markRated(id){
+  var m = myRated(); m[id] = 1;
+  try { localStorage.setItem('cx_rated', JSON.stringify(m)); } catch(e){}
+}
+
+var WORKS = [], RATING_AGG = {};
+var sortMode = 'new';
+var $ = function(id){ return document.getElementById(id); };
+
+/* ---------- 加载 ---------- */
+function load(){
+  $('grid').innerHTML = '<div class="empty" style="grid-column:1/-1;">正在加载作品…</div>';
+  if (!cloud){ render(); return; }
+  Promise.all([
+    cloud.database.from('works').select('*').order('created_at', { ascending:false }).limit(300),
+    cloud.database.from('ratings').select('work_id, stars').limit(5000)
+  ]).then(function(res){
+    var w = res[0], r = res[1];
+    if (w.error) throw w.error;
+    WORKS = w.data || [];
+    var agg = {};
+    (r.data || []).forEach(function(x){
+      var o = agg[x.work_id] || (agg[x.work_id] = { sum:0, n:0 });
+      o.sum += (parseInt(x.stars, 10) || 0); o.n += 1;
+    });
+    RATING_AGG = agg;
+    render();
+  }).catch(function(e){
+    $('grid').innerHTML = '<div class="empty" style="grid-column:1/-1;">加载失败：'
+      + esc(e && e.message ? e.message : '网络问题') + '<br>点右上角「刷新」再试一次</div>';
+  });
+}
+
+/* ---------- 渲染 ---------- */
+function render(){
+  var grid = $('grid');
+  var list = WORKS.slice();
+  if (sortMode === 'hot'){
+    list.sort(function(a, b){
+      var A = RATING_AGG[a.id] || { sum:0, n:0 }, B = RATING_AGG[b.id] || { sum:0, n:0 };
+      var av = A.n ? A.sum / A.n : 0, bv = B.n ? B.sum / B.n : 0;
+      if (bv !== av) return bv - av;
+      return B.n - A.n;
+    });
+  }
+  $('cnt').textContent = list.length;
+  $('empty').style.display = list.length ? 'none' : '';
+  grid.innerHTML = '';
+  var rated = myRated();
+
+  list.forEach(function(w){
+    var agg = RATING_AGG[w.id] || { sum:0, n:0 };
+    var avg = agg.n ? (agg.sum / agg.n).toFixed(1) : '—';
+    var card = document.createElement('div');
+    card.className = 'card';
+
+    var qbox = document.createElement('div');
+    qbox.className = 'qr';
+    var cv = makeQR(w.content || '', 5);
+    if (cv) qbox.appendChild(cv);
+    qbox.title = '点一下看大图';
+
+    var tp = document.createElement('span');
+    tp.className = 'tp';
+    tp.textContent = (EMJ[w.topic] || '🏵️') + ' ' + (w.topic_name || '家乡文化');
+
+    var tx = document.createElement('div');
+    tx.className = 'txt'; tx.textContent = w.content || '';
+
+    var meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.innerHTML = '<span class="who">' + esc(w.author || '同学') + '</span>'
+      + (w.klass ? '<span>· ' + esc(w.klass) + '</span>' : '');
+
+    var act = document.createElement('div');
+    act.className = 'act';
+    var stEl = document.createElement('span');
+    stEl.className = 'stars'; stEl.textContent = '★ ' + avg + (agg.n ? '（' + agg.n + '人赞）' : '（还没人赞）');
+    var rb = document.createElement('button');
+    rb.className = 'rate' + (rated[w.id] ? ' done' : '');
+    rb.textContent = rated[w.id] ? '已赞过 ✓' : '👍 点赞';
+    rb.disabled = !!rated[w.id];
+    rb.onclick = function(){ openRate(w); };
+
+    act.appendChild(stEl); act.appendChild(rb);
+    card.appendChild(qbox); card.appendChild(tp); card.appendChild(tx); card.appendChild(meta); card.appendChild(act);
+    grid.appendChild(card);
+
+    qbox.onclick = function(){ openView(w, avg, agg.n); };
+  });
+}
+
+/* ---------- 看大图 ---------- */
+function openView(w, avg, n){
+  var big = $('big'); big.innerHTML = '';
+  var cv = makeQR(w.content || '', 9);
+  if (cv) big.appendChild(cv);
+  $('bigCap').textContent = w.content || '';
+  $('bigWho').textContent = (w.author || '同学') + (w.klass ? ' · ' + w.klass : '')
+    + ' ｜ ★ ' + avg + (n ? '（' + n + '人赞）' : '');
+  $('viewMask').classList.add('on');
+}
+$('vclose').onclick = function(){ $('viewMask').classList.remove('on'); };
+
+/* ---------- 评分 ---------- */
+var cur = { work:null, stars:0 };
+document.querySelectorAll('#pick .st').forEach(function(el){
+  el.onclick = function(){
+    cur.stars = parseInt(el.getAttribute('data-v'), 10);
+    document.querySelectorAll('#pick .st').forEach(function(x){
+      x.classList.toggle('on', parseInt(x.getAttribute('data-v'),10) <= cur.stars);
+    });
+    $('plabel').textContent = ['','一星','二星','三星','四星','五星'][cur.stars] + ' · '
+      + ['','继续加油','还不错','挺好的','很棒','太棒了'][cur.stars];
+  };
+});
+/* ---------- 鼓励语点选区 ---------- */
+var chipsBuilt = false;
+function buildChips(){
+  if (chipsBuilt) return;
+  var box = $('cmtChips');
+  PRAISE.forEach(function(txt){
+    var c = document.createElement('button');
+    c.type = 'button'; c.className = 'chip'; c.textContent = txt;
+    c.onclick = function(){
+      var on = c.classList.contains('on');
+      document.querySelectorAll('#cmtChips .chip').forEach(function(x){ x.classList.remove('on'); });
+      var ta = $('cmt');
+      if (on){ c.classList.remove('on'); ta.value = ''; }   /* 再点一下取消 */
+      else { c.classList.add('on'); ta.value = txt; }
+      ta.focus();
+    };
+    box.appendChild(c);
+  });
+  chipsBuilt = true;
+}
+
+function openRate(w){
+  cur.work = w; cur.stars = 0; $('cmt').value = '';
+  buildChips();
+  document.querySelectorAll('#cmtChips .chip').forEach(function(x){ x.classList.remove('on'); });
+  $('rateQ').textContent = w.content || '';
+  document.querySelectorAll('#pick .st').forEach(function(x){ x.classList.remove('on'); });
+  $('plabel').textContent = '点星星打分（1—5 星）';
+  $('rmsg').textContent = ''; $('rmsg').className = 'mmsg';
+  $('rateMask').classList.add('on');
+}
+$('rcancel').onclick = function(){ $('rateMask').classList.remove('on'); };
+
+$('rok').onclick = async function(){
+  if (!cur.stars){ $('rmsg').className = 'mmsg err'; $('rmsg').textContent = '先点一下星星吧～'; return; }
+  if (!cloud){ $('rmsg').className = 'mmsg err'; $('rmsg').textContent = '连不上服务，稍后再试。'; return; }
+  var btn = $('rok'); btn.disabled = true;
+  $('rmsg').className = 'mmsg'; $('rmsg').textContent = '正在提交…';
+  try {
+    var cmt = ($('cmt').value || '').trim();
+    if (!cmt){ cmt = PRAISE[Math.floor(Math.random() * PRAISE.length)]; }  /* 没写就用一句默认的 */
+    var res = await cloud.database.from('ratings').insert({
+      work_id: cur.work.id, rater_id: raterId(), stars: cur.stars,
+      comment: cmt.slice(0, 60)
+    }).select();
+    if (res.error) throw res.error;
+    if (!res.data || !res.data.length) throw new Error('未写入');
+    markRated(cur.work.id);
+    var agg = RATING_AGG[cur.work.id] || (RATING_AGG[cur.work.id] = { sum:0, n:0 });
+    agg.sum += cur.stars; agg.n += 1;
+    $('rmsg').className = 'mmsg ok'; $('rmsg').textContent = '点赞成功，谢谢你！';
+    render();
+    setTimeout(function(){ $('rateMask').classList.remove('on'); }, 650);
+  } catch(e){
+    $('rmsg').className = 'mmsg err';
+    $('rmsg').textContent = '提交失败：' + (e && e.message ? e.message : '网络问题');
+  } finally { btn.disabled = false; }
+};
+
+/* ---------- 排序 / 刷新 ---------- */
+document.querySelectorAll('.seg button').forEach(function(b){
+  b.onclick = function(){
+    document.querySelectorAll('.seg button').forEach(function(x){ x.classList.remove('on'); });
+    b.classList.add('on');
+    sortMode = b.getAttribute('data-sort');
+    render();
+  };
+});
+$('refresh').onclick = load;
+document.querySelectorAll('.mask').forEach(function(m){
+  m.onclick = function(e){ if (e.target === m) m.classList.remove('on'); };
+});
+
+/* ============================================================
+   管理员：密码 = 晨曦2026
+   ============================================================ */
+var ADMIN_PW = 'cx2026';
+
+$('adminBtn').onclick = function(){
+  $('adminPw').value = ''; $('adminMsg').textContent = '';
+  $('adminMask').classList.add('on');
+  setTimeout(function(){ $('adminPw').focus(); }, 60);
+};
+$('adminCancel').onclick = function(){ $('adminMask').classList.remove('on'); };
+$('adminPw').addEventListener('keydown', function(e){ if (e.key === 'Enter') adminLogin(); });
+$('adminOk').onclick = adminLogin;
+
+function adminLogin(){
+  if ($('adminPw').value !== ADMIN_PW){
+    $('adminMsg').className = 'mmsg err';
+    $('adminMsg').textContent = '密码不对，请再试一次。';
+    $('adminPw').value = ''; $('adminPw').focus();
+    return;
+  }
+  try { sessionStorage.setItem('cx_admin', '1'); } catch(e){}
+  $('adminMask').classList.remove('on');
+  /* 进入管理员菜单 */
+  $('adminMenu').classList.add('on');
+}
+var $m = function(id){ return document.getElementById(id); };
+$m('mGoPanel').onclick = function(){ location.href = 'admin.html'; };
+$m('mClear').onclick = function(){
+  $('adminMenu').classList.remove('on');
+  $('ckWorks').checked = $('ckRatings').checked = true;
+  $('ckSurveys').checked = false;
+  $('clearPw').value = ''; $('clearMsg').textContent = '';
+  $('clearMask').classList.add('on');
+  setTimeout(function(){ $('clearPw').focus(); }, 60);
+};
+$m('mCloseMenu').onclick = function(){ $('adminMenu').classList.remove('on'); };
+$('clearCancel').onclick = function(){ $('clearMask').classList.remove('on'); };
+$('clearDo').onclick = async function(){
+  if ($('clearPw').value !== ADMIN_PW){
+    $('clearMsg').className = 'mmsg err';
+    $('clearMsg').textContent = '密码不对，清除取消。';
+    return;
+  }
+  var doW = $('ckWorks').checked, doR = $('ckRatings').checked, doS = $('ckSurveys').checked;
+  if (!doW && !doR && !doS){
+    $('clearMsg').className = 'mmsg err'; $('clearMsg').textContent = '至少勾选一样。'; return;
+  }
+  if (!cloud){ $('clearMsg').className = 'mmsg err'; $('clearMsg').textContent = '连不上云服务。'; return; }
+  var btn = $('clearDo'); btn.disabled = true;
+  $('clearMsg').className = 'mmsg'; $('clearMsg').style.color = ''; $('clearMsg').textContent = '正在清除…';
+  try {
+    if (doR){ var r1 = await cloud.database.from('ratings').delete().neq('id', -1); if (r1 && r1.error) throw r1.error; }
+    if (doW){ var r2 = await cloud.database.from('works').delete().neq('id', -1); if (r2 && r2.error) throw r2.error; }
+    if (doS){ var r3 = await cloud.database.from('surveys').delete().neq('id', -1); if (r3 && r3.error) throw r3.error; }
+    $('clearMsg').className = 'mmsg ok'; $('clearMsg').textContent = '清除完成 ✓';
+    setTimeout(function(){ $('clearMask').classList.remove('on'); $('clearMsg').style.color=''; load(); }, 700);
+  } catch(e){
+    $('clearMsg').className = 'mmsg err';
+    $('clearMsg').textContent = '清除失败：' + (e && e.message ? e.message : '网络问题');
+  } finally { btn.disabled = false; }
+};
+
+/* 已解锁过：双击标题进入数据面板 */
+load();
+})();
+</script>
+</body>
+</html>

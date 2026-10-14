@@ -1,0 +1,2880 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>数据面板 · 家乡文化二维码</title>
+<style>
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:#F4F6F8;color:#2E3238;
+  font-family:"Microsoft YaHei","PingFang SC",sans-serif;-webkit-text-size-adjust:100%;}
+header{background:#2B3A4A;color:#fff;padding:14px 20px;display:flex;align-items:center;
+  gap:14px;flex-wrap:wrap;position:sticky;top:0;z-index:20;}
+header h1{margin:0;font-size:21px;}
+header .sub{font-size:13px;color:#A9B8C6;}
+header .spacer{flex:1;}
+header a,header button{font-size:14px;font-weight:700;color:#fff;text-decoration:none;
+  background:#3E5468;border:none;border-radius:20px;padding:9px 18px;cursor:pointer;font-family:inherit;transition:.12s;}
+header a:hover,header button:hover{background:#4A6480;}
+header .danger{background:#C0392B;}
+header .danger:hover{background:#A93226;}
+
+main{max-width:1360px;margin:0 auto;padding:18px 20px 80px;}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:14px;margin-bottom:20px;}
+.kpi{background:#fff;border-radius:14px;padding:16px 18px;border:1px solid #E3E8ED;
+  box-shadow:0 2px 8px rgba(43,58,74,.05);}
+.kpi .v{font-size:30px;font-weight:800;color:#2B3A4A;line-height:1.1;}
+.kpi .l{font-size:13px;color:#7A8794;margin-top:6px;font-weight:700;}
+.kpi.acc .v{color:#E4572E;}
+.kpi.grn .v{color:#2A9D8F;}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.tabs button{cursor:pointer;border:2px solid #D7DEE5;background:#fff;border-radius:20px;
+  font-family:inherit;font-size:14px;font-weight:700;color:#5B6875;padding:9px 18px;transition:.12s;}
+.tabs button.on{background:#2B3A4A;color:#fff;border-color:#2B3A4A;}
+
+.panel{background:#fff;border-radius:16px;border:1px solid #E3E8ED;padding:18px;
+  box-shadow:0 2px 10px rgba(43,58,74,.05);}
+.panel h2{margin:0 0 14px;font-size:17px;color:#2B3A4A;}
+.panel h2 .n{font-size:13px;color:#8A96A3;font-weight:400;margin-left:8px;}
+
+table{width:100%;border-collapse:collapse;font-size:14px;}
+th,td{padding:10px 10px;text-align:left;border-bottom:1px solid #EDF1F5;vertical-align:top;}
+th{font-size:13px;color:#7A8794;font-weight:700;background:#F9FBFD;position:sticky;top:60px;}
+td.num{text-align:center;font-weight:700;color:#2B3A4A;white-space:nowrap;}
+td .em{color:#C9B8A8;}
+tr:hover td{background:#FCFDFE;}
+.tag{display:inline-block;font-size:12px;font-weight:700;border-radius:12px;padding:2px 10px;
+  background:#EAF7F4;color:#2C6B62;margin:1px 2px;}
+.tag.pre{background:#FFF1E6;color:#B4642A;}
+.tag.mid{background:#E8F1FB;color:#2C5F8A;}
+.tag.post{background:#EAF7EC;color:#2F7A45;}
+.who{font-weight:700;color:#2B3A4A;}
+
+.bars{margin:6px 0 18px;}
+.bar{margin-bottom:10px;}
+.bar .bl{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px;}
+.bar .bl b{color:#2B3A4A;}
+.bar .track{height:20px;background:#EEF2F6;border-radius:10px;overflow:hidden;}
+.bar .fill{height:100%;background:#2A9D8F;border-radius:10px;transition:width .4s;}
+.qblock{border-top:1px dashed #E3E8ED;padding:14px 0 4px;}
+.qblock:first-of-type{border-top:none;}
+.qblock .qt{font-size:15px;font-weight:700;color:#2B3A4A;margin-bottom:10px;}
+.freetxt{font-size:14px;color:#5B6875;background:#F9FBFD;border-radius:10px;padding:9px 12px;
+  margin:6px 0;line-height:1.6;}
+.freetxt b{color:#2B3A4A;}
+
+.empty{text-align:center;color:#9AA6B2;font-size:16px;padding:50px 20px;}
+.msg{font-size:14px;text-align:center;padding:8px;font-weight:700;}
+.msg.err{color:#C0392B;}
+footer{text-align:center;font-size:12px;color:#A9B0B8;padding:10px 20px 30px;}
+
+/* 一键清除确认框 */
+.mask{position:fixed;inset:0;background:rgba(30,36,42,.6);display:none;align-items:center;
+  justify-content:center;z-index:90;padding:18px;}
+.mask.on{display:flex;}
+.modal{background:#fff;border-radius:18px;padding:24px 22px;max-width:440px;width:100%;
+  box-shadow:0 18px 50px rgba(0,0,0,.35);}
+.modal h3{margin:0 0 6px;font-size:20px;color:#C0392B;}
+.modal p{margin:0 0 14px;font-size:15px;line-height:1.7;color:#4A545F;}
+.modal .warn{background:#FFF4F2;border:1px solid #F5C9C2;border-radius:12px;padding:11px 14px;
+  font-size:14px;color:#A93226;line-height:1.7;margin-bottom:14px;}
+.modal label{display:block;font-size:14px;font-weight:700;color:#4A545F;margin-bottom:6px;}
+.modal input{width:100%;padding:12px;font-size:16px;border:2px solid #D7DEE5;border-radius:11px;
+  outline:none;font-family:inherit;}
+.modal input:focus{border-color:#C0392B;}
+.mrow{display:flex;gap:10px;margin-top:16px;}
+.mrow button{flex:1;cursor:pointer;border:none;border-radius:12px;font-family:inherit;
+  font-weight:700;font-size:15px;padding:13px;transition:.12s;}
+.mrow .ghost{background:#fff;color:#5B6875;border:2px solid #D7DEE5;}
+.mrow .dngr{background:#C0392B;color:#fff;box-shadow:0 3px 0 #93261B;}
+.mrow .dngr:active:enabled{transform:translateY(2px);box-shadow:0 1px 0 #93261B;}
+.mrow button:disabled{opacity:.5;cursor:not-allowed;}
+
+/* 登录 */
+.lock{max-width:380px;margin:80px auto;background:#fff;border-radius:18px;padding:28px 24px;
+  border:1px solid #E3E8ED;box-shadow:0 6px 24px rgba(43,58,74,.08);text-align:center;}
+.lock .em{font-size:46px;}
+.lock h2{margin:10px 0 6px;font-size:20px;color:#2B3A4A;}
+.lock p{margin:0 0 18px;font-size:14px;color:#7A8794;line-height:1.6;}
+.lock input{width:100%;padding:13px;font-size:17px;border:2px solid #D7DEE5;border-radius:12px;
+  outline:none;font-family:inherit;text-align:center;letter-spacing:.08em;}
+.lock input:focus{border-color:#2B3A4A;}
+.lock button{width:100%;margin-top:14px;cursor:pointer;border:none;border-radius:12px;
+  background:#2B3A4A;color:#fff;font-family:inherit;font-weight:700;font-size:16px;padding:14px;}
+.lock .msg{min-height:20px;margin-top:10px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📊 数据面板</h1>
+  <div class="sub">家乡文化二维码 · 教师管理</div>
+  <div class="spacer"></div>
+  <a href="wall.html">🏛️ 作品墙</a>
+  <a href="index.html">✏️ 生成器</a>
+  <button id="refresh">🔄 刷新</button>
+  <button id="exportBtn">⬇️ 导出 Excel</button>
+  <button class="danger" id="clearBtn">🧹 一键清除</button>
+</header>
+
+<main>
+  <!-- 登录 -->
+  <div class="lock" id="lock">
+    <div class="em">🔒</div>
+    <h2>请输入管理员密码</h2>
+    <p>这里能看到所有同学的数据，请老师本人操作。</p>
+    <input type="password" id="pw" placeholder="管理员密码" autocomplete="off">
+    <button id="loginBtn">进入数据面板</button>
+    <div class="msg err" id="lmsg"></div>
+  </div>
+
+  <!-- 面板主体 -->
+  <div id="dashboard" style="display:none;">
+    <div class="kpis" id="kpis"></div>
+    <div class="tabs" id="tabs"></div>
+    <div id="panels"></div>
+  </div>
+</main>
+
+<footer>数据来自云服务 · 仅本页可见 · 密码请老师保密</footer>
+
+<!-- 一键清除确认 -->
+<div class="mask" id="clearMask">
+  <div class="modal">
+    <h3>⚠️ 一键清除</h3>
+    <p>这会<strong>永久删除</strong>作品墙上的内容，删了就找不回来。</p>
+    <div class="warn">
+      请选择要清除的数据（可勾选）：<br>
+      <label style="margin-top:8px;"><input type="checkbox" id="ckWorks" style="width:auto;margin-right:6px;" checked> 作品（同学做的二维码）</label>
+      <label style="margin-top:4px;"><input type="checkbox" id="ckRatings" style="width:auto;margin-right:6px;" checked> 评分（同学点的赞）</label>
+      <label style="margin-top:4px;"><input type="checkbox" id="ckSurveys" style="width:auto;margin-right:6px;"> 问卷（课前/课中/课后）</label>
+    </div>
+    <label>再输一次管理员密码确认</label>
+    <input type="password" id="clearPw" placeholder="管理员密码" autocomplete="off">
+    <div class="msg err" id="cmsg"></div>
+    <div class="mrow">
+      <button class="ghost" id="clearCancel">取消</button>
+      <button class="dngr" id="clearOk">确认清除</button>
+    </div>
+  </div>
+</div>
+
+<script>/* ===== qrcode-generator v2.0.4 · MIT · Kazuhiko Arase ===== */
+//---------------------------------------------------------------------
+//
+// QR Code Generator for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//  http://www.opensource.org/licenses/mit-license.php
+//
+// The word 'QR Code' is registered trademark of
+// DENSO WAVE INCORPORATED
+//  http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+
+var qrcode = function() {
+
+  //---------------------------------------------------------------------
+  // qrcode
+  //---------------------------------------------------------------------
+
+  /**
+   * qrcode
+   * @param typeNumber 1 to 40
+   * @param errorCorrectionLevel 'L','M','Q','H'
+   */
+  var qrcode = function(typeNumber, errorCorrectionLevel) {
+
+    var PAD0 = 0xEC;
+    var PAD1 = 0x11;
+
+    var _typeNumber = typeNumber;
+    var _errorCorrectionLevel = QRErrorCorrectionLevel[errorCorrectionLevel];
+    var _modules = null;
+    var _moduleCount = 0;
+    var _dataCache = null;
+    var _dataList = [];
+
+    var _this = {};
+
+    var makeImpl = function(test, maskPattern) {
+
+      _moduleCount = _typeNumber * 4 + 17;
+      _modules = function(moduleCount) {
+        var modules = new Array(moduleCount);
+        for (var row = 0; row < moduleCount; row += 1) {
+          modules[row] = new Array(moduleCount);
+          for (var col = 0; col < moduleCount; col += 1) {
+            modules[row][col] = null;
+          }
+        }
+        return modules;
+      }(_moduleCount);
+
+      setupPositionProbePattern(0, 0);
+      setupPositionProbePattern(_moduleCount - 7, 0);
+      setupPositionProbePattern(0, _moduleCount - 7);
+      setupPositionAdjustPattern();
+      setupTimingPattern();
+      setupTypeInfo(test, maskPattern);
+
+      if (_typeNumber >= 7) {
+        setupTypeNumber(test);
+      }
+
+      if (_dataCache == null) {
+        _dataCache = createData(_typeNumber, _errorCorrectionLevel, _dataList);
+      }
+
+      mapData(_dataCache, maskPattern);
+    };
+
+    var setupPositionProbePattern = function(row, col) {
+
+      for (var r = -1; r <= 7; r += 1) {
+
+        if (row + r <= -1 || _moduleCount <= row + r) continue;
+
+        for (var c = -1; c <= 7; c += 1) {
+
+          if (col + c <= -1 || _moduleCount <= col + c) continue;
+
+          if ( (0 <= r && r <= 6 && (c == 0 || c == 6) )
+              || (0 <= c && c <= 6 && (r == 0 || r == 6) )
+              || (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+            _modules[row + r][col + c] = true;
+          } else {
+            _modules[row + r][col + c] = false;
+          }
+        }
+      }
+    };
+
+    var getBestMaskPattern = function() {
+
+      var minLostPoint = 0;
+      var pattern = 0;
+
+      for (var i = 0; i < 8; i += 1) {
+
+        makeImpl(true, i);
+
+        var lostPoint = QRUtil.getLostPoint(_this);
+
+        if (i == 0 || minLostPoint > lostPoint) {
+          minLostPoint = lostPoint;
+          pattern = i;
+        }
+      }
+
+      return pattern;
+    };
+
+    var setupTimingPattern = function() {
+
+      for (var r = 8; r < _moduleCount - 8; r += 1) {
+        if (_modules[r][6] != null) {
+          continue;
+        }
+        _modules[r][6] = (r % 2 == 0);
+      }
+
+      for (var c = 8; c < _moduleCount - 8; c += 1) {
+        if (_modules[6][c] != null) {
+          continue;
+        }
+        _modules[6][c] = (c % 2 == 0);
+      }
+    };
+
+    var setupPositionAdjustPattern = function() {
+
+      var pos = QRUtil.getPatternPosition(_typeNumber);
+
+      for (var i = 0; i < pos.length; i += 1) {
+
+        for (var j = 0; j < pos.length; j += 1) {
+
+          var row = pos[i];
+          var col = pos[j];
+
+          if (_modules[row][col] != null) {
+            continue;
+          }
+
+          for (var r = -2; r <= 2; r += 1) {
+
+            for (var c = -2; c <= 2; c += 1) {
+
+              if (r == -2 || r == 2 || c == -2 || c == 2
+                  || (r == 0 && c == 0) ) {
+                _modules[row + r][col + c] = true;
+              } else {
+                _modules[row + r][col + c] = false;
+              }
+            }
+          }
+        }
+      }
+    };
+
+    var setupTypeNumber = function(test) {
+
+      var bits = QRUtil.getBCHTypeNumber(_typeNumber);
+
+      for (var i = 0; i < 18; i += 1) {
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+        _modules[Math.floor(i / 3)][i % 3 + _moduleCount - 8 - 3] = mod;
+      }
+
+      for (var i = 0; i < 18; i += 1) {
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+        _modules[i % 3 + _moduleCount - 8 - 3][Math.floor(i / 3)] = mod;
+      }
+    };
+
+    var setupTypeInfo = function(test, maskPattern) {
+
+      var data = (_errorCorrectionLevel << 3) | maskPattern;
+      var bits = QRUtil.getBCHTypeInfo(data);
+
+      // vertical
+      for (var i = 0; i < 15; i += 1) {
+
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+
+        if (i < 6) {
+          _modules[i][8] = mod;
+        } else if (i < 8) {
+          _modules[i + 1][8] = mod;
+        } else {
+          _modules[_moduleCount - 15 + i][8] = mod;
+        }
+      }
+
+      // horizontal
+      for (var i = 0; i < 15; i += 1) {
+
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+
+        if (i < 8) {
+          _modules[8][_moduleCount - i - 1] = mod;
+        } else if (i < 9) {
+          _modules[8][15 - i - 1 + 1] = mod;
+        } else {
+          _modules[8][15 - i - 1] = mod;
+        }
+      }
+
+      // fixed module
+      _modules[_moduleCount - 8][8] = (!test);
+    };
+
+    var mapData = function(data, maskPattern) {
+
+      var inc = -1;
+      var row = _moduleCount - 1;
+      var bitIndex = 7;
+      var byteIndex = 0;
+      var maskFunc = QRUtil.getMaskFunction(maskPattern);
+
+      for (var col = _moduleCount - 1; col > 0; col -= 2) {
+
+        if (col == 6) col -= 1;
+
+        while (true) {
+
+          for (var c = 0; c < 2; c += 1) {
+
+            if (_modules[row][col - c] == null) {
+
+              var dark = false;
+
+              if (byteIndex < data.length) {
+                dark = ( ( (data[byteIndex] >>> bitIndex) & 1) == 1);
+              }
+
+              var mask = maskFunc(row, col - c);
+
+              if (mask) {
+                dark = !dark;
+              }
+
+              _modules[row][col - c] = dark;
+              bitIndex -= 1;
+
+              if (bitIndex == -1) {
+                byteIndex += 1;
+                bitIndex = 7;
+              }
+            }
+          }
+
+          row += inc;
+
+          if (row < 0 || _moduleCount <= row) {
+            row -= inc;
+            inc = -inc;
+            break;
+          }
+        }
+      }
+    };
+
+    var createBytes = function(buffer, rsBlocks) {
+
+      var offset = 0;
+
+      var maxDcCount = 0;
+      var maxEcCount = 0;
+
+      var dcdata = new Array(rsBlocks.length);
+      var ecdata = new Array(rsBlocks.length);
+
+      for (var r = 0; r < rsBlocks.length; r += 1) {
+
+        var dcCount = rsBlocks[r].dataCount;
+        var ecCount = rsBlocks[r].totalCount - dcCount;
+
+        maxDcCount = Math.max(maxDcCount, dcCount);
+        maxEcCount = Math.max(maxEcCount, ecCount);
+
+        dcdata[r] = new Array(dcCount);
+
+        for (var i = 0; i < dcdata[r].length; i += 1) {
+          dcdata[r][i] = 0xff & buffer.getBuffer()[i + offset];
+        }
+        offset += dcCount;
+
+        var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+        var rawPoly = qrPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+        var modPoly = rawPoly.mod(rsPoly);
+        ecdata[r] = new Array(rsPoly.getLength() - 1);
+        for (var i = 0; i < ecdata[r].length; i += 1) {
+          var modIndex = i + modPoly.getLength() - ecdata[r].length;
+          ecdata[r][i] = (modIndex >= 0)? modPoly.getAt(modIndex) : 0;
+        }
+      }
+
+      var totalCodeCount = 0;
+      for (var i = 0; i < rsBlocks.length; i += 1) {
+        totalCodeCount += rsBlocks[i].totalCount;
+      }
+
+      var data = new Array(totalCodeCount);
+      var index = 0;
+
+      for (var i = 0; i < maxDcCount; i += 1) {
+        for (var r = 0; r < rsBlocks.length; r += 1) {
+          if (i < dcdata[r].length) {
+            data[index] = dcdata[r][i];
+            index += 1;
+          }
+        }
+      }
+
+      for (var i = 0; i < maxEcCount; i += 1) {
+        for (var r = 0; r < rsBlocks.length; r += 1) {
+          if (i < ecdata[r].length) {
+            data[index] = ecdata[r][i];
+            index += 1;
+          }
+        }
+      }
+
+      return data;
+    };
+
+    var createData = function(typeNumber, errorCorrectionLevel, dataList) {
+
+      var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectionLevel);
+
+      var buffer = qrBitBuffer();
+
+      for (var i = 0; i < dataList.length; i += 1) {
+        var data = dataList[i];
+        buffer.put(data.getMode(), 4);
+        buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber) );
+        data.write(buffer);
+      }
+
+      // calc num max data.
+      var totalDataCount = 0;
+      for (var i = 0; i < rsBlocks.length; i += 1) {
+        totalDataCount += rsBlocks[i].dataCount;
+      }
+
+      if (buffer.getLengthInBits() > totalDataCount * 8) {
+        throw 'code length overflow. ('
+          + buffer.getLengthInBits()
+          + '>'
+          + totalDataCount * 8
+          + ')';
+      }
+
+      // end code
+      if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+        buffer.put(0, 4);
+      }
+
+      // padding
+      while (buffer.getLengthInBits() % 8 != 0) {
+        buffer.putBit(false);
+      }
+
+      // padding
+      while (true) {
+
+        if (buffer.getLengthInBits() >= totalDataCount * 8) {
+          break;
+        }
+        buffer.put(PAD0, 8);
+
+        if (buffer.getLengthInBits() >= totalDataCount * 8) {
+          break;
+        }
+        buffer.put(PAD1, 8);
+      }
+
+      return createBytes(buffer, rsBlocks);
+    };
+
+    _this.addData = function(data, mode) {
+
+      mode = mode || 'Byte';
+
+      var newData = null;
+
+      switch(mode) {
+      case 'Numeric' :
+        newData = qrNumber(data);
+        break;
+      case 'Alphanumeric' :
+        newData = qrAlphaNum(data);
+        break;
+      case 'Byte' :
+        newData = qr8BitByte(data);
+        break;
+      case 'Kanji' :
+        newData = qrKanji(data);
+        break;
+      default :
+        throw 'mode:' + mode;
+      }
+
+      _dataList.push(newData);
+      _dataCache = null;
+    };
+
+    _this.isDark = function(row, col) {
+      if (row < 0 || _moduleCount <= row || col < 0 || _moduleCount <= col) {
+        throw row + ',' + col;
+      }
+      return _modules[row][col];
+    };
+
+    _this.getModuleCount = function() {
+      return _moduleCount;
+    };
+
+    _this.make = function() {
+      if (_typeNumber < 1) {
+        var typeNumber = 1;
+
+        for (; typeNumber < 40; typeNumber++) {
+          var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, _errorCorrectionLevel);
+          var buffer = qrBitBuffer();
+
+          for (var i = 0; i < _dataList.length; i++) {
+            var data = _dataList[i];
+            buffer.put(data.getMode(), 4);
+            buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber) );
+            data.write(buffer);
+          }
+
+          var totalDataCount = 0;
+          for (var i = 0; i < rsBlocks.length; i++) {
+            totalDataCount += rsBlocks[i].dataCount;
+          }
+
+          if (buffer.getLengthInBits() <= totalDataCount * 8) {
+            break;
+          }
+        }
+
+        _typeNumber = typeNumber;
+      }
+
+      makeImpl(false, getBestMaskPattern() );
+    };
+
+    _this.createTableTag = function(cellSize, margin) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var qrHtml = '';
+
+      qrHtml += '<table style="';
+      qrHtml += ' border-width: 0px; border-style: none;';
+      qrHtml += ' border-collapse: collapse;';
+      qrHtml += ' padding: 0px; margin: ' + margin + 'px;';
+      qrHtml += '">';
+      qrHtml += '<tbody>';
+
+      for (var r = 0; r < _this.getModuleCount(); r += 1) {
+
+        qrHtml += '<tr>';
+
+        for (var c = 0; c < _this.getModuleCount(); c += 1) {
+          qrHtml += '<td style="';
+          qrHtml += ' border-width: 0px; border-style: none;';
+          qrHtml += ' border-collapse: collapse;';
+          qrHtml += ' padding: 0px; margin: 0px;';
+          qrHtml += ' width: ' + cellSize + 'px;';
+          qrHtml += ' height: ' + cellSize + 'px;';
+          qrHtml += ' background-color: ';
+          qrHtml += _this.isDark(r, c)? '#000000' : '#ffffff';
+          qrHtml += ';';
+          qrHtml += '"/>';
+        }
+
+        qrHtml += '</tr>';
+      }
+
+      qrHtml += '</tbody>';
+      qrHtml += '</table>';
+
+      return qrHtml;
+    };
+
+    _this.createSvgTag = function(cellSize, margin, alt, title) {
+
+      var opts = {};
+      if (typeof arguments[0] == 'object') {
+        // Called by options.
+        opts = arguments[0];
+        // overwrite cellSize and margin.
+        cellSize = opts.cellSize;
+        margin = opts.margin;
+        alt = opts.alt;
+        title = opts.title;
+      }
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      // Compose alt property surrogate
+      alt = (typeof alt === 'string') ? {text: alt} : alt || {};
+      alt.text = alt.text || null;
+      alt.id = (alt.text) ? alt.id || 'qrcode-description' : null;
+
+      // Compose title property surrogate
+      title = (typeof title === 'string') ? {text: title} : title || {};
+      title.text = title.text || null;
+      title.id = (title.text) ? title.id || 'qrcode-title' : null;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var c, mc, r, mr, qrSvg='', rect;
+
+      rect = 'l' + cellSize + ',0 0,' + cellSize +
+        ' -' + cellSize + ',0 0,-' + cellSize + 'z ';
+
+      qrSvg += '<svg version="1.1" xmlns="http://www.w3.org/2000/svg"';
+      qrSvg += !opts.scalable ? ' width="' + size + 'px" height="' + size + 'px"' : '';
+      qrSvg += ' viewBox="0 0 ' + size + ' ' + size + '" ';
+      qrSvg += ' preserveAspectRatio="xMinYMin meet"';
+      qrSvg += (title.text || alt.text) ? ' role="img" aria-labelledby="' +
+          escapeXml([title.id, alt.id].join(' ').trim() ) + '"' : '';
+      qrSvg += '>';
+      qrSvg += (title.text) ? '<title id="' + escapeXml(title.id) + '">' +
+          escapeXml(title.text) + '</title>' : '';
+      qrSvg += (alt.text) ? '<description id="' + escapeXml(alt.id) + '">' +
+          escapeXml(alt.text) + '</description>' : '';
+      qrSvg += '<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>';
+      qrSvg += '<path d="';
+
+      for (r = 0; r < _this.getModuleCount(); r += 1) {
+        mr = r * cellSize + margin;
+        for (c = 0; c < _this.getModuleCount(); c += 1) {
+          if (_this.isDark(r, c) ) {
+            mc = c*cellSize+margin;
+            qrSvg += 'M' + mc + ',' + mr + rect;
+          }
+        }
+      }
+
+      qrSvg += '" stroke="transparent" fill="black"/>';
+      qrSvg += '</svg>';
+
+      return qrSvg;
+    };
+
+    _this.createDataURL = function(cellSize, margin) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      return createDataURL(size, size, function(x, y) {
+        if (min <= x && x < max && min <= y && y < max) {
+          var c = Math.floor( (x - min) / cellSize);
+          var r = Math.floor( (y - min) / cellSize);
+          return _this.isDark(r, c)? 0 : 1;
+        } else {
+          return 1;
+        }
+      } );
+    };
+
+    _this.createImgTag = function(cellSize, margin, alt) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+
+      var img = '';
+      img += '<img';
+      img += '\u0020src="';
+      img += _this.createDataURL(cellSize, margin);
+      img += '"';
+      img += '\u0020width="';
+      img += size;
+      img += '"';
+      img += '\u0020height="';
+      img += size;
+      img += '"';
+      if (alt) {
+        img += '\u0020alt="';
+        img += escapeXml(alt);
+        img += '"';
+      }
+      img += '/>';
+
+      return img;
+    };
+
+    var escapeXml = function(s) {
+      var escaped = '';
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charAt(i);
+        switch(c) {
+        case '<': escaped += '&lt;'; break;
+        case '>': escaped += '&gt;'; break;
+        case '&': escaped += '&amp;'; break;
+        case '"': escaped += '&quot;'; break;
+        default : escaped += c; break;
+        }
+      }
+      return escaped;
+    };
+
+    var _createHalfASCII = function(margin) {
+      var cellSize = 1;
+      margin = (typeof margin == 'undefined')? cellSize * 2 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      var y, x, r1, r2, p;
+
+      var blocks = {
+        '██': '█',
+        '█ ': '▀',
+        ' █': '▄',
+        '  ': ' '
+      };
+
+      var blocksLastLineNoMargin = {
+        '██': '▀',
+        '█ ': '▀',
+        ' █': ' ',
+        '  ': ' '
+      };
+
+      var ascii = '';
+      for (y = 0; y < size; y += 2) {
+        r1 = Math.floor((y - min) / cellSize);
+        r2 = Math.floor((y + 1 - min) / cellSize);
+        for (x = 0; x < size; x += 1) {
+          p = '█';
+
+          if (min <= x && x < max && min <= y && y < max && _this.isDark(r1, Math.floor((x - min) / cellSize))) {
+            p = ' ';
+          }
+
+          if (min <= x && x < max && min <= y+1 && y+1 < max && _this.isDark(r2, Math.floor((x - min) / cellSize))) {
+            p += ' ';
+          }
+          else {
+            p += '█';
+          }
+
+          // Output 2 characters per pixel, to create full square. 1 character per pixels gives only half width of square.
+          ascii += (margin < 1 && y+1 >= max) ? blocksLastLineNoMargin[p] : blocks[p];
+        }
+
+        ascii += '\n';
+      }
+
+      if (size % 2 && margin > 0) {
+        return ascii.substring(0, ascii.length - size - 1) + Array(size+1).join('▀');
+      }
+
+      return ascii.substring(0, ascii.length-1);
+    };
+
+    _this.createASCII = function(cellSize, margin) {
+      cellSize = cellSize || 1;
+
+      if (cellSize < 2) {
+        return _createHalfASCII(margin);
+      }
+
+      cellSize -= 1;
+      margin = (typeof margin == 'undefined')? cellSize * 2 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      var y, x, r, p;
+
+      var white = Array(cellSize+1).join('██');
+      var black = Array(cellSize+1).join('  ');
+
+      var ascii = '';
+      var line = '';
+      for (y = 0; y < size; y += 1) {
+        r = Math.floor( (y - min) / cellSize);
+        line = '';
+        for (x = 0; x < size; x += 1) {
+          p = 1;
+
+          if (min <= x && x < max && min <= y && y < max && _this.isDark(r, Math.floor((x - min) / cellSize))) {
+            p = 0;
+          }
+
+          // Output 2 characters per pixel, to create full square. 1 character per pixels gives only half width of square.
+          line += p ? white : black;
+        }
+
+        for (r = 0; r < cellSize; r += 1) {
+          ascii += line + '\n';
+        }
+      }
+
+      return ascii.substring(0, ascii.length-1);
+    };
+
+    _this.renderTo2dContext = function(context, cellSize) {
+      cellSize = cellSize || 2;
+      var length = _this.getModuleCount();
+      for (var row = 0; row < length; row++) {
+        for (var col = 0; col < length; col++) {
+          context.fillStyle = _this.isDark(row, col) ? 'black' : 'white';
+          context.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+        }
+      }
+    }
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrcode.stringToBytes
+  //---------------------------------------------------------------------
+
+  qrcode.stringToBytesFuncs = {
+    'default' : function(s) {
+      var bytes = [];
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charCodeAt(i);
+        bytes.push(c & 0xff);
+      }
+      return bytes;
+    }
+  };
+
+  qrcode.stringToBytes = qrcode.stringToBytesFuncs['default'];
+
+  //---------------------------------------------------------------------
+  // qrcode.createStringToBytes
+  //---------------------------------------------------------------------
+
+  /**
+   * @param unicodeData base64 string of byte array.
+   * [16bit Unicode],[16bit Bytes], ...
+   * @param numChars
+   */
+  qrcode.createStringToBytes = function(unicodeData, numChars) {
+
+    // create conversion map.
+
+    var unicodeMap = function() {
+
+      var bin = base64DecodeInputStream(unicodeData);
+      var read = function() {
+        var b = bin.read();
+        if (b == -1) throw 'eof';
+        return b;
+      };
+
+      var count = 0;
+      var unicodeMap = {};
+      while (true) {
+        var b0 = bin.read();
+        if (b0 == -1) break;
+        var b1 = read();
+        var b2 = read();
+        var b3 = read();
+        var k = String.fromCharCode( (b0 << 8) | b1);
+        var v = (b2 << 8) | b3;
+        unicodeMap[k] = v;
+        count += 1;
+      }
+      if (count != numChars) {
+        throw count + ' != ' + numChars;
+      }
+
+      return unicodeMap;
+    }();
+
+    var unknownChar = '?'.charCodeAt(0);
+
+    return function(s) {
+      var bytes = [];
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charCodeAt(i);
+        if (c < 128) {
+          bytes.push(c);
+        } else {
+          var b = unicodeMap[s.charAt(i)];
+          if (typeof b == 'number') {
+            if ( (b & 0xff) == b) {
+              // 1byte
+              bytes.push(b);
+            } else {
+              // 2bytes
+              bytes.push(b >>> 8);
+              bytes.push(b & 0xff);
+            }
+          } else {
+            bytes.push(unknownChar);
+          }
+        }
+      }
+      return bytes;
+    };
+  };
+
+  //---------------------------------------------------------------------
+  // QRMode
+  //---------------------------------------------------------------------
+
+  var QRMode = {
+    MODE_NUMBER :    1 << 0,
+    MODE_ALPHA_NUM : 1 << 1,
+    MODE_8BIT_BYTE : 1 << 2,
+    MODE_KANJI :     1 << 3
+  };
+
+  //---------------------------------------------------------------------
+  // QRErrorCorrectionLevel
+  //---------------------------------------------------------------------
+
+  var QRErrorCorrectionLevel = {
+    L : 1,
+    M : 0,
+    Q : 3,
+    H : 2
+  };
+
+  //---------------------------------------------------------------------
+  // QRMaskPattern
+  //---------------------------------------------------------------------
+
+  var QRMaskPattern = {
+    PATTERN000 : 0,
+    PATTERN001 : 1,
+    PATTERN010 : 2,
+    PATTERN011 : 3,
+    PATTERN100 : 4,
+    PATTERN101 : 5,
+    PATTERN110 : 6,
+    PATTERN111 : 7
+  };
+
+  //---------------------------------------------------------------------
+  // QRUtil
+  //---------------------------------------------------------------------
+
+  var QRUtil = function() {
+
+    var PATTERN_POSITION_TABLE = [
+      [],
+      [6, 18],
+      [6, 22],
+      [6, 26],
+      [6, 30],
+      [6, 34],
+      [6, 22, 38],
+      [6, 24, 42],
+      [6, 26, 46],
+      [6, 28, 50],
+      [6, 30, 54],
+      [6, 32, 58],
+      [6, 34, 62],
+      [6, 26, 46, 66],
+      [6, 26, 48, 70],
+      [6, 26, 50, 74],
+      [6, 30, 54, 78],
+      [6, 30, 56, 82],
+      [6, 30, 58, 86],
+      [6, 34, 62, 90],
+      [6, 28, 50, 72, 94],
+      [6, 26, 50, 74, 98],
+      [6, 30, 54, 78, 102],
+      [6, 28, 54, 80, 106],
+      [6, 32, 58, 84, 110],
+      [6, 30, 58, 86, 114],
+      [6, 34, 62, 90, 118],
+      [6, 26, 50, 74, 98, 122],
+      [6, 30, 54, 78, 102, 126],
+      [6, 26, 52, 78, 104, 130],
+      [6, 30, 56, 82, 108, 134],
+      [6, 34, 60, 86, 112, 138],
+      [6, 30, 58, 86, 114, 142],
+      [6, 34, 62, 90, 118, 146],
+      [6, 30, 54, 78, 102, 126, 150],
+      [6, 24, 50, 76, 102, 128, 154],
+      [6, 28, 54, 80, 106, 132, 158],
+      [6, 32, 58, 84, 110, 136, 162],
+      [6, 26, 54, 82, 110, 138, 166],
+      [6, 30, 58, 86, 114, 142, 170]
+    ];
+    var G15 = (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0);
+    var G18 = (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0);
+    var G15_MASK = (1 << 14) | (1 << 12) | (1 << 10) | (1 << 4) | (1 << 1);
+
+    var _this = {};
+
+    var getBCHDigit = function(data) {
+      var digit = 0;
+      while (data != 0) {
+        digit += 1;
+        data >>>= 1;
+      }
+      return digit;
+    };
+
+    _this.getBCHTypeInfo = function(data) {
+      var d = data << 10;
+      while (getBCHDigit(d) - getBCHDigit(G15) >= 0) {
+        d ^= (G15 << (getBCHDigit(d) - getBCHDigit(G15) ) );
+      }
+      return ( (data << 10) | d) ^ G15_MASK;
+    };
+
+    _this.getBCHTypeNumber = function(data) {
+      var d = data << 12;
+      while (getBCHDigit(d) - getBCHDigit(G18) >= 0) {
+        d ^= (G18 << (getBCHDigit(d) - getBCHDigit(G18) ) );
+      }
+      return (data << 12) | d;
+    };
+
+    _this.getPatternPosition = function(typeNumber) {
+      return PATTERN_POSITION_TABLE[typeNumber - 1];
+    };
+
+    _this.getMaskFunction = function(maskPattern) {
+
+      switch (maskPattern) {
+
+      case QRMaskPattern.PATTERN000 :
+        return function(i, j) { return (i + j) % 2 == 0; };
+      case QRMaskPattern.PATTERN001 :
+        return function(i, j) { return i % 2 == 0; };
+      case QRMaskPattern.PATTERN010 :
+        return function(i, j) { return j % 3 == 0; };
+      case QRMaskPattern.PATTERN011 :
+        return function(i, j) { return (i + j) % 3 == 0; };
+      case QRMaskPattern.PATTERN100 :
+        return function(i, j) { return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 == 0; };
+      case QRMaskPattern.PATTERN101 :
+        return function(i, j) { return (i * j) % 2 + (i * j) % 3 == 0; };
+      case QRMaskPattern.PATTERN110 :
+        return function(i, j) { return ( (i * j) % 2 + (i * j) % 3) % 2 == 0; };
+      case QRMaskPattern.PATTERN111 :
+        return function(i, j) { return ( (i * j) % 3 + (i + j) % 2) % 2 == 0; };
+
+      default :
+        throw 'bad maskPattern:' + maskPattern;
+      }
+    };
+
+    _this.getErrorCorrectPolynomial = function(errorCorrectLength) {
+      var a = qrPolynomial([1], 0);
+      for (var i = 0; i < errorCorrectLength; i += 1) {
+        a = a.multiply(qrPolynomial([1, QRMath.gexp(i)], 0) );
+      }
+      return a;
+    };
+
+    _this.getLengthInBits = function(mode, type) {
+
+      if (1 <= type && type < 10) {
+
+        // 1 - 9
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 10;
+        case QRMode.MODE_ALPHA_NUM : return 9;
+        case QRMode.MODE_8BIT_BYTE : return 8;
+        case QRMode.MODE_KANJI     : return 8;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else if (type < 27) {
+
+        // 10 - 26
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 12;
+        case QRMode.MODE_ALPHA_NUM : return 11;
+        case QRMode.MODE_8BIT_BYTE : return 16;
+        case QRMode.MODE_KANJI     : return 10;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else if (type < 41) {
+
+        // 27 - 40
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 14;
+        case QRMode.MODE_ALPHA_NUM : return 13;
+        case QRMode.MODE_8BIT_BYTE : return 16;
+        case QRMode.MODE_KANJI     : return 12;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else {
+        throw 'type:' + type;
+      }
+    };
+
+    _this.getLostPoint = function(qrcode) {
+
+      var moduleCount = qrcode.getModuleCount();
+
+      var lostPoint = 0;
+
+      // LEVEL1
+
+      for (var row = 0; row < moduleCount; row += 1) {
+        for (var col = 0; col < moduleCount; col += 1) {
+
+          var sameCount = 0;
+          var dark = qrcode.isDark(row, col);
+
+          for (var r = -1; r <= 1; r += 1) {
+
+            if (row + r < 0 || moduleCount <= row + r) {
+              continue;
+            }
+
+            for (var c = -1; c <= 1; c += 1) {
+
+              if (col + c < 0 || moduleCount <= col + c) {
+                continue;
+              }
+
+              if (r == 0 && c == 0) {
+                continue;
+              }
+
+              if (dark == qrcode.isDark(row + r, col + c) ) {
+                sameCount += 1;
+              }
+            }
+          }
+
+          if (sameCount > 5) {
+            lostPoint += (3 + sameCount - 5);
+          }
+        }
+      };
+
+      // LEVEL2
+
+      for (var row = 0; row < moduleCount - 1; row += 1) {
+        for (var col = 0; col < moduleCount - 1; col += 1) {
+          var count = 0;
+          if (qrcode.isDark(row, col) ) count += 1;
+          if (qrcode.isDark(row + 1, col) ) count += 1;
+          if (qrcode.isDark(row, col + 1) ) count += 1;
+          if (qrcode.isDark(row + 1, col + 1) ) count += 1;
+          if (count == 0 || count == 4) {
+            lostPoint += 3;
+          }
+        }
+      }
+
+      // LEVEL3
+
+      for (var row = 0; row < moduleCount; row += 1) {
+        for (var col = 0; col < moduleCount - 6; col += 1) {
+          if (qrcode.isDark(row, col)
+              && !qrcode.isDark(row, col + 1)
+              &&  qrcode.isDark(row, col + 2)
+              &&  qrcode.isDark(row, col + 3)
+              &&  qrcode.isDark(row, col + 4)
+              && !qrcode.isDark(row, col + 5)
+              &&  qrcode.isDark(row, col + 6) ) {
+            lostPoint += 40;
+          }
+        }
+      }
+
+      for (var col = 0; col < moduleCount; col += 1) {
+        for (var row = 0; row < moduleCount - 6; row += 1) {
+          if (qrcode.isDark(row, col)
+              && !qrcode.isDark(row + 1, col)
+              &&  qrcode.isDark(row + 2, col)
+              &&  qrcode.isDark(row + 3, col)
+              &&  qrcode.isDark(row + 4, col)
+              && !qrcode.isDark(row + 5, col)
+              &&  qrcode.isDark(row + 6, col) ) {
+            lostPoint += 40;
+          }
+        }
+      }
+
+      // LEVEL4
+
+      var darkCount = 0;
+
+      for (var col = 0; col < moduleCount; col += 1) {
+        for (var row = 0; row < moduleCount; row += 1) {
+          if (qrcode.isDark(row, col) ) {
+            darkCount += 1;
+          }
+        }
+      }
+
+      var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+      lostPoint += ratio * 10;
+
+      return lostPoint;
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // QRMath
+  //---------------------------------------------------------------------
+
+  var QRMath = function() {
+
+    var EXP_TABLE = new Array(256);
+    var LOG_TABLE = new Array(256);
+
+    // initialize tables
+    for (var i = 0; i < 8; i += 1) {
+      EXP_TABLE[i] = 1 << i;
+    }
+    for (var i = 8; i < 256; i += 1) {
+      EXP_TABLE[i] = EXP_TABLE[i - 4]
+        ^ EXP_TABLE[i - 5]
+        ^ EXP_TABLE[i - 6]
+        ^ EXP_TABLE[i - 8];
+    }
+    for (var i = 0; i < 255; i += 1) {
+      LOG_TABLE[EXP_TABLE[i] ] = i;
+    }
+
+    var _this = {};
+
+    _this.glog = function(n) {
+
+      if (n < 1) {
+        throw 'glog(' + n + ')';
+      }
+
+      return LOG_TABLE[n];
+    };
+
+    _this.gexp = function(n) {
+
+      while (n < 0) {
+        n += 255;
+      }
+
+      while (n >= 256) {
+        n -= 255;
+      }
+
+      return EXP_TABLE[n];
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // qrPolynomial
+  //---------------------------------------------------------------------
+
+  function qrPolynomial(num, shift) {
+
+    if (typeof num.length == 'undefined') {
+      throw num.length + '/' + shift;
+    }
+
+    var _num = function() {
+      var offset = 0;
+      while (offset < num.length && num[offset] == 0) {
+        offset += 1;
+      }
+      var _num = new Array(num.length - offset + shift);
+      for (var i = 0; i < num.length - offset; i += 1) {
+        _num[i] = num[i + offset];
+      }
+      return _num;
+    }();
+
+    var _this = {};
+
+    _this.getAt = function(index) {
+      return _num[index];
+    };
+
+    _this.getLength = function() {
+      return _num.length;
+    };
+
+    _this.multiply = function(e) {
+
+      var num = new Array(_this.getLength() + e.getLength() - 1);
+
+      for (var i = 0; i < _this.getLength(); i += 1) {
+        for (var j = 0; j < e.getLength(); j += 1) {
+          num[i + j] ^= QRMath.gexp(QRMath.glog(_this.getAt(i) ) + QRMath.glog(e.getAt(j) ) );
+        }
+      }
+
+      return qrPolynomial(num, 0);
+    };
+
+    _this.mod = function(e) {
+
+      if (_this.getLength() - e.getLength() < 0) {
+        return _this;
+      }
+
+      var ratio = QRMath.glog(_this.getAt(0) ) - QRMath.glog(e.getAt(0) );
+
+      var num = new Array(_this.getLength() );
+      for (var i = 0; i < _this.getLength(); i += 1) {
+        num[i] = _this.getAt(i);
+      }
+
+      for (var i = 0; i < e.getLength(); i += 1) {
+        num[i] ^= QRMath.gexp(QRMath.glog(e.getAt(i) ) + ratio);
+      }
+
+      // recursive call
+      return qrPolynomial(num, 0).mod(e);
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // QRRSBlock
+  //---------------------------------------------------------------------
+
+  var QRRSBlock = function() {
+
+    var RS_BLOCK_TABLE = [
+
+      // L
+      // M
+      // Q
+      // H
+
+      // 1
+      [1, 26, 19],
+      [1, 26, 16],
+      [1, 26, 13],
+      [1, 26, 9],
+
+      // 2
+      [1, 44, 34],
+      [1, 44, 28],
+      [1, 44, 22],
+      [1, 44, 16],
+
+      // 3
+      [1, 70, 55],
+      [1, 70, 44],
+      [2, 35, 17],
+      [2, 35, 13],
+
+      // 4
+      [1, 100, 80],
+      [2, 50, 32],
+      [2, 50, 24],
+      [4, 25, 9],
+
+      // 5
+      [1, 134, 108],
+      [2, 67, 43],
+      [2, 33, 15, 2, 34, 16],
+      [2, 33, 11, 2, 34, 12],
+
+      // 6
+      [2, 86, 68],
+      [4, 43, 27],
+      [4, 43, 19],
+      [4, 43, 15],
+
+      // 7
+      [2, 98, 78],
+      [4, 49, 31],
+      [2, 32, 14, 4, 33, 15],
+      [4, 39, 13, 1, 40, 14],
+
+      // 8
+      [2, 121, 97],
+      [2, 60, 38, 2, 61, 39],
+      [4, 40, 18, 2, 41, 19],
+      [4, 40, 14, 2, 41, 15],
+
+      // 9
+      [2, 146, 116],
+      [3, 58, 36, 2, 59, 37],
+      [4, 36, 16, 4, 37, 17],
+      [4, 36, 12, 4, 37, 13],
+
+      // 10
+      [2, 86, 68, 2, 87, 69],
+      [4, 69, 43, 1, 70, 44],
+      [6, 43, 19, 2, 44, 20],
+      [6, 43, 15, 2, 44, 16],
+
+      // 11
+      [4, 101, 81],
+      [1, 80, 50, 4, 81, 51],
+      [4, 50, 22, 4, 51, 23],
+      [3, 36, 12, 8, 37, 13],
+
+      // 12
+      [2, 116, 92, 2, 117, 93],
+      [6, 58, 36, 2, 59, 37],
+      [4, 46, 20, 6, 47, 21],
+      [7, 42, 14, 4, 43, 15],
+
+      // 13
+      [4, 133, 107],
+      [8, 59, 37, 1, 60, 38],
+      [8, 44, 20, 4, 45, 21],
+      [12, 33, 11, 4, 34, 12],
+
+      // 14
+      [3, 145, 115, 1, 146, 116],
+      [4, 64, 40, 5, 65, 41],
+      [11, 36, 16, 5, 37, 17],
+      [11, 36, 12, 5, 37, 13],
+
+      // 15
+      [5, 109, 87, 1, 110, 88],
+      [5, 65, 41, 5, 66, 42],
+      [5, 54, 24, 7, 55, 25],
+      [11, 36, 12, 7, 37, 13],
+
+      // 16
+      [5, 122, 98, 1, 123, 99],
+      [7, 73, 45, 3, 74, 46],
+      [15, 43, 19, 2, 44, 20],
+      [3, 45, 15, 13, 46, 16],
+
+      // 17
+      [1, 135, 107, 5, 136, 108],
+      [10, 74, 46, 1, 75, 47],
+      [1, 50, 22, 15, 51, 23],
+      [2, 42, 14, 17, 43, 15],
+
+      // 18
+      [5, 150, 120, 1, 151, 121],
+      [9, 69, 43, 4, 70, 44],
+      [17, 50, 22, 1, 51, 23],
+      [2, 42, 14, 19, 43, 15],
+
+      // 19
+      [3, 141, 113, 4, 142, 114],
+      [3, 70, 44, 11, 71, 45],
+      [17, 47, 21, 4, 48, 22],
+      [9, 39, 13, 16, 40, 14],
+
+      // 20
+      [3, 135, 107, 5, 136, 108],
+      [3, 67, 41, 13, 68, 42],
+      [15, 54, 24, 5, 55, 25],
+      [15, 43, 15, 10, 44, 16],
+
+      // 21
+      [4, 144, 116, 4, 145, 117],
+      [17, 68, 42],
+      [17, 50, 22, 6, 51, 23],
+      [19, 46, 16, 6, 47, 17],
+
+      // 22
+      [2, 139, 111, 7, 140, 112],
+      [17, 74, 46],
+      [7, 54, 24, 16, 55, 25],
+      [34, 37, 13],
+
+      // 23
+      [4, 151, 121, 5, 152, 122],
+      [4, 75, 47, 14, 76, 48],
+      [11, 54, 24, 14, 55, 25],
+      [16, 45, 15, 14, 46, 16],
+
+      // 24
+      [6, 147, 117, 4, 148, 118],
+      [6, 73, 45, 14, 74, 46],
+      [11, 54, 24, 16, 55, 25],
+      [30, 46, 16, 2, 47, 17],
+
+      // 25
+      [8, 132, 106, 4, 133, 107],
+      [8, 75, 47, 13, 76, 48],
+      [7, 54, 24, 22, 55, 25],
+      [22, 45, 15, 13, 46, 16],
+
+      // 26
+      [10, 142, 114, 2, 143, 115],
+      [19, 74, 46, 4, 75, 47],
+      [28, 50, 22, 6, 51, 23],
+      [33, 46, 16, 4, 47, 17],
+
+      // 27
+      [8, 152, 122, 4, 153, 123],
+      [22, 73, 45, 3, 74, 46],
+      [8, 53, 23, 26, 54, 24],
+      [12, 45, 15, 28, 46, 16],
+
+      // 28
+      [3, 147, 117, 10, 148, 118],
+      [3, 73, 45, 23, 74, 46],
+      [4, 54, 24, 31, 55, 25],
+      [11, 45, 15, 31, 46, 16],
+
+      // 29
+      [7, 146, 116, 7, 147, 117],
+      [21, 73, 45, 7, 74, 46],
+      [1, 53, 23, 37, 54, 24],
+      [19, 45, 15, 26, 46, 16],
+
+      // 30
+      [5, 145, 115, 10, 146, 116],
+      [19, 75, 47, 10, 76, 48],
+      [15, 54, 24, 25, 55, 25],
+      [23, 45, 15, 25, 46, 16],
+
+      // 31
+      [13, 145, 115, 3, 146, 116],
+      [2, 74, 46, 29, 75, 47],
+      [42, 54, 24, 1, 55, 25],
+      [23, 45, 15, 28, 46, 16],
+
+      // 32
+      [17, 145, 115],
+      [10, 74, 46, 23, 75, 47],
+      [10, 54, 24, 35, 55, 25],
+      [19, 45, 15, 35, 46, 16],
+
+      // 33
+      [17, 145, 115, 1, 146, 116],
+      [14, 74, 46, 21, 75, 47],
+      [29, 54, 24, 19, 55, 25],
+      [11, 45, 15, 46, 46, 16],
+
+      // 34
+      [13, 145, 115, 6, 146, 116],
+      [14, 74, 46, 23, 75, 47],
+      [44, 54, 24, 7, 55, 25],
+      [59, 46, 16, 1, 47, 17],
+
+      // 35
+      [12, 151, 121, 7, 152, 122],
+      [12, 75, 47, 26, 76, 48],
+      [39, 54, 24, 14, 55, 25],
+      [22, 45, 15, 41, 46, 16],
+
+      // 36
+      [6, 151, 121, 14, 152, 122],
+      [6, 75, 47, 34, 76, 48],
+      [46, 54, 24, 10, 55, 25],
+      [2, 45, 15, 64, 46, 16],
+
+      // 37
+      [17, 152, 122, 4, 153, 123],
+      [29, 74, 46, 14, 75, 47],
+      [49, 54, 24, 10, 55, 25],
+      [24, 45, 15, 46, 46, 16],
+
+      // 38
+      [4, 152, 122, 18, 153, 123],
+      [13, 74, 46, 32, 75, 47],
+      [48, 54, 24, 14, 55, 25],
+      [42, 45, 15, 32, 46, 16],
+
+      // 39
+      [20, 147, 117, 4, 148, 118],
+      [40, 75, 47, 7, 76, 48],
+      [43, 54, 24, 22, 55, 25],
+      [10, 45, 15, 67, 46, 16],
+
+      // 40
+      [19, 148, 118, 6, 149, 119],
+      [18, 75, 47, 31, 76, 48],
+      [34, 54, 24, 34, 55, 25],
+      [20, 45, 15, 61, 46, 16]
+    ];
+
+    var qrRSBlock = function(totalCount, dataCount) {
+      var _this = {};
+      _this.totalCount = totalCount;
+      _this.dataCount = dataCount;
+      return _this;
+    };
+
+    var _this = {};
+
+    var getRsBlockTable = function(typeNumber, errorCorrectionLevel) {
+
+      switch(errorCorrectionLevel) {
+      case QRErrorCorrectionLevel.L :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+      case QRErrorCorrectionLevel.M :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+      case QRErrorCorrectionLevel.Q :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+      case QRErrorCorrectionLevel.H :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+      default :
+        return undefined;
+      }
+    };
+
+    _this.getRSBlocks = function(typeNumber, errorCorrectionLevel) {
+
+      var rsBlock = getRsBlockTable(typeNumber, errorCorrectionLevel);
+
+      if (typeof rsBlock == 'undefined') {
+        throw 'bad rs block @ typeNumber:' + typeNumber +
+            '/errorCorrectionLevel:' + errorCorrectionLevel;
+      }
+
+      var length = rsBlock.length / 3;
+
+      var list = [];
+
+      for (var i = 0; i < length; i += 1) {
+
+        var count = rsBlock[i * 3 + 0];
+        var totalCount = rsBlock[i * 3 + 1];
+        var dataCount = rsBlock[i * 3 + 2];
+
+        for (var j = 0; j < count; j += 1) {
+          list.push(qrRSBlock(totalCount, dataCount) );
+        }
+      }
+
+      return list;
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // qrBitBuffer
+  //---------------------------------------------------------------------
+
+  var qrBitBuffer = function() {
+
+    var _buffer = [];
+    var _length = 0;
+
+    var _this = {};
+
+    _this.getBuffer = function() {
+      return _buffer;
+    };
+
+    _this.getAt = function(index) {
+      var bufIndex = Math.floor(index / 8);
+      return ( (_buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+    };
+
+    _this.put = function(num, length) {
+      for (var i = 0; i < length; i += 1) {
+        _this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+      }
+    };
+
+    _this.getLengthInBits = function() {
+      return _length;
+    };
+
+    _this.putBit = function(bit) {
+
+      var bufIndex = Math.floor(_length / 8);
+      if (_buffer.length <= bufIndex) {
+        _buffer.push(0);
+      }
+
+      if (bit) {
+        _buffer[bufIndex] |= (0x80 >>> (_length % 8) );
+      }
+
+      _length += 1;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrNumber
+  //---------------------------------------------------------------------
+
+  var qrNumber = function(data) {
+
+    var _mode = QRMode.MODE_NUMBER;
+    var _data = data;
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _data.length;
+    };
+
+    _this.write = function(buffer) {
+
+      var data = _data;
+
+      var i = 0;
+
+      while (i + 2 < data.length) {
+        buffer.put(strToNum(data.substring(i, i + 3) ), 10);
+        i += 3;
+      }
+
+      if (i < data.length) {
+        if (data.length - i == 1) {
+          buffer.put(strToNum(data.substring(i, i + 1) ), 4);
+        } else if (data.length - i == 2) {
+          buffer.put(strToNum(data.substring(i, i + 2) ), 7);
+        }
+      }
+    };
+
+    var strToNum = function(s) {
+      var num = 0;
+      for (var i = 0; i < s.length; i += 1) {
+        num = num * 10 + chatToNum(s.charAt(i) );
+      }
+      return num;
+    };
+
+    var chatToNum = function(c) {
+      if ('0' <= c && c <= '9') {
+        return c.charCodeAt(0) - '0'.charCodeAt(0);
+      }
+      throw 'illegal char :' + c;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrAlphaNum
+  //---------------------------------------------------------------------
+
+  var qrAlphaNum = function(data) {
+
+    var _mode = QRMode.MODE_ALPHA_NUM;
+    var _data = data;
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _data.length;
+    };
+
+    _this.write = function(buffer) {
+
+      var s = _data;
+
+      var i = 0;
+
+      while (i + 1 < s.length) {
+        buffer.put(
+          getCode(s.charAt(i) ) * 45 +
+          getCode(s.charAt(i + 1) ), 11);
+        i += 2;
+      }
+
+      if (i < s.length) {
+        buffer.put(getCode(s.charAt(i) ), 6);
+      }
+    };
+
+    var getCode = function(c) {
+
+      if ('0' <= c && c <= '9') {
+        return c.charCodeAt(0) - '0'.charCodeAt(0);
+      } else if ('A' <= c && c <= 'Z') {
+        return c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
+      } else {
+        switch (c) {
+        case ' ' : return 36;
+        case '$' : return 37;
+        case '%' : return 38;
+        case '*' : return 39;
+        case '+' : return 40;
+        case '-' : return 41;
+        case '.' : return 42;
+        case '/' : return 43;
+        case ':' : return 44;
+        default :
+          throw 'illegal char :' + c;
+        }
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qr8BitByte
+  //---------------------------------------------------------------------
+
+  var qr8BitByte = function(data) {
+
+    var _mode = QRMode.MODE_8BIT_BYTE;
+    var _data = data;
+    var _bytes = qrcode.stringToBytes(data);
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _bytes.length;
+    };
+
+    _this.write = function(buffer) {
+      for (var i = 0; i < _bytes.length; i += 1) {
+        buffer.put(_bytes[i], 8);
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrKanji
+  //---------------------------------------------------------------------
+
+  var qrKanji = function(data) {
+
+    var _mode = QRMode.MODE_KANJI;
+    var _data = data;
+
+    var stringToBytes = qrcode.stringToBytesFuncs['SJIS'];
+    if (!stringToBytes) {
+      throw 'sjis not supported.';
+    }
+    !function(c, code) {
+      // self test for sjis support.
+      var test = stringToBytes(c);
+      if (test.length != 2 || ( (test[0] << 8) | test[1]) != code) {
+        throw 'sjis not supported.';
+      }
+    }('\u53cb', 0x9746);
+
+    var _bytes = stringToBytes(data);
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return ~~(_bytes.length / 2);
+    };
+
+    _this.write = function(buffer) {
+
+      var data = _bytes;
+
+      var i = 0;
+
+      while (i + 1 < data.length) {
+
+        var c = ( (0xff & data[i]) << 8) | (0xff & data[i + 1]);
+
+        if (0x8140 <= c && c <= 0x9FFC) {
+          c -= 0x8140;
+        } else if (0xE040 <= c && c <= 0xEBBF) {
+          c -= 0xC140;
+        } else {
+          throw 'illegal char at ' + (i + 1) + '/' + c;
+        }
+
+        c = ( (c >>> 8) & 0xff) * 0xC0 + (c & 0xff);
+
+        buffer.put(c, 13);
+
+        i += 2;
+      }
+
+      if (i < data.length) {
+        throw 'illegal char at ' + (i + 1);
+      }
+    };
+
+    return _this;
+  };
+
+  //=====================================================================
+  // GIF Support etc.
+  //
+
+  //---------------------------------------------------------------------
+  // byteArrayOutputStream
+  //---------------------------------------------------------------------
+
+  var byteArrayOutputStream = function() {
+
+    var _bytes = [];
+
+    var _this = {};
+
+    _this.writeByte = function(b) {
+      _bytes.push(b & 0xff);
+    };
+
+    _this.writeShort = function(i) {
+      _this.writeByte(i);
+      _this.writeByte(i >>> 8);
+    };
+
+    _this.writeBytes = function(b, off, len) {
+      off = off || 0;
+      len = len || b.length;
+      for (var i = 0; i < len; i += 1) {
+        _this.writeByte(b[i + off]);
+      }
+    };
+
+    _this.writeString = function(s) {
+      for (var i = 0; i < s.length; i += 1) {
+        _this.writeByte(s.charCodeAt(i) );
+      }
+    };
+
+    _this.toByteArray = function() {
+      return _bytes;
+    };
+
+    _this.toString = function() {
+      var s = '';
+      s += '[';
+      for (var i = 0; i < _bytes.length; i += 1) {
+        if (i > 0) {
+          s += ',';
+        }
+        s += _bytes[i];
+      }
+      s += ']';
+      return s;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // base64EncodeOutputStream
+  //---------------------------------------------------------------------
+
+  var base64EncodeOutputStream = function() {
+
+    var _buffer = 0;
+    var _buflen = 0;
+    var _length = 0;
+    var _base64 = '';
+
+    var _this = {};
+
+    var writeEncoded = function(b) {
+      _base64 += String.fromCharCode(encode(b & 0x3f) );
+    };
+
+    var encode = function(n) {
+      if (n < 0) {
+        // error.
+      } else if (n < 26) {
+        return 0x41 + n;
+      } else if (n < 52) {
+        return 0x61 + (n - 26);
+      } else if (n < 62) {
+        return 0x30 + (n - 52);
+      } else if (n == 62) {
+        return 0x2b;
+      } else if (n == 63) {
+        return 0x2f;
+      }
+      throw 'n:' + n;
+    };
+
+    _this.writeByte = function(n) {
+
+      _buffer = (_buffer << 8) | (n & 0xff);
+      _buflen += 8;
+      _length += 1;
+
+      while (_buflen >= 6) {
+        writeEncoded(_buffer >>> (_buflen - 6) );
+        _buflen -= 6;
+      }
+    };
+
+    _this.flush = function() {
+
+      if (_buflen > 0) {
+        writeEncoded(_buffer << (6 - _buflen) );
+        _buffer = 0;
+        _buflen = 0;
+      }
+
+      if (_length % 3 != 0) {
+        // padding
+        var padlen = 3 - _length % 3;
+        for (var i = 0; i < padlen; i += 1) {
+          _base64 += '=';
+        }
+      }
+    };
+
+    _this.toString = function() {
+      return _base64;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // base64DecodeInputStream
+  //---------------------------------------------------------------------
+
+  var base64DecodeInputStream = function(str) {
+
+    var _str = str;
+    var _pos = 0;
+    var _buffer = 0;
+    var _buflen = 0;
+
+    var _this = {};
+
+    _this.read = function() {
+
+      while (_buflen < 8) {
+
+        if (_pos >= _str.length) {
+          if (_buflen == 0) {
+            return -1;
+          }
+          throw 'unexpected end of file./' + _buflen;
+        }
+
+        var c = _str.charAt(_pos);
+        _pos += 1;
+
+        if (c == '=') {
+          _buflen = 0;
+          return -1;
+        } else if (c.match(/^\s$/) ) {
+          // ignore if whitespace.
+          continue;
+        }
+
+        _buffer = (_buffer << 6) | decode(c.charCodeAt(0) );
+        _buflen += 6;
+      }
+
+      var n = (_buffer >>> (_buflen - 8) ) & 0xff;
+      _buflen -= 8;
+      return n;
+    };
+
+    var decode = function(c) {
+      if (0x41 <= c && c <= 0x5a) {
+        return c - 0x41;
+      } else if (0x61 <= c && c <= 0x7a) {
+        return c - 0x61 + 26;
+      } else if (0x30 <= c && c <= 0x39) {
+        return c - 0x30 + 52;
+      } else if (c == 0x2b) {
+        return 62;
+      } else if (c == 0x2f) {
+        return 63;
+      } else {
+        throw 'c:' + c;
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // gifImage (B/W)
+  //---------------------------------------------------------------------
+
+  var gifImage = function(width, height) {
+
+    var _width = width;
+    var _height = height;
+    var _data = new Array(width * height);
+
+    var _this = {};
+
+    _this.setPixel = function(x, y, pixel) {
+      _data[y * _width + x] = pixel;
+    };
+
+    _this.write = function(out) {
+
+      //---------------------------------
+      // GIF Signature
+
+      out.writeString('GIF87a');
+
+      //---------------------------------
+      // Screen Descriptor
+
+      out.writeShort(_width);
+      out.writeShort(_height);
+
+      out.writeByte(0x80); // 2bit
+      out.writeByte(0);
+      out.writeByte(0);
+
+      //---------------------------------
+      // Global Color Map
+
+      // black
+      out.writeByte(0x00);
+      out.writeByte(0x00);
+      out.writeByte(0x00);
+
+      // white
+      out.writeByte(0xff);
+      out.writeByte(0xff);
+      out.writeByte(0xff);
+
+      //---------------------------------
+      // Image Descriptor
+
+      out.writeString(',');
+      out.writeShort(0);
+      out.writeShort(0);
+      out.writeShort(_width);
+      out.writeShort(_height);
+      out.writeByte(0);
+
+      //---------------------------------
+      // Local Color Map
+
+      //---------------------------------
+      // Raster Data
+
+      var lzwMinCodeSize = 2;
+      var raster = getLZWRaster(lzwMinCodeSize);
+
+      out.writeByte(lzwMinCodeSize);
+
+      var offset = 0;
+
+      while (raster.length - offset > 255) {
+        out.writeByte(255);
+        out.writeBytes(raster, offset, 255);
+        offset += 255;
+      }
+
+      out.writeByte(raster.length - offset);
+      out.writeBytes(raster, offset, raster.length - offset);
+      out.writeByte(0x00);
+
+      //---------------------------------
+      // GIF Terminator
+      out.writeString(';');
+    };
+
+    var bitOutputStream = function(out) {
+
+      var _out = out;
+      var _bitLength = 0;
+      var _bitBuffer = 0;
+
+      var _this = {};
+
+      _this.write = function(data, length) {
+
+        if ( (data >>> length) != 0) {
+          throw 'length over';
+        }
+
+        while (_bitLength + length >= 8) {
+          _out.writeByte(0xff & ( (data << _bitLength) | _bitBuffer) );
+          length -= (8 - _bitLength);
+          data >>>= (8 - _bitLength);
+          _bitBuffer = 0;
+          _bitLength = 0;
+        }
+
+        _bitBuffer = (data << _bitLength) | _bitBuffer;
+        _bitLength = _bitLength + length;
+      };
+
+      _this.flush = function() {
+        if (_bitLength > 0) {
+          _out.writeByte(_bitBuffer);
+        }
+      };
+
+      return _this;
+    };
+
+    var getLZWRaster = function(lzwMinCodeSize) {
+
+      var clearCode = 1 << lzwMinCodeSize;
+      var endCode = (1 << lzwMinCodeSize) + 1;
+      var bitLength = lzwMinCodeSize + 1;
+
+      // Setup LZWTable
+      var table = lzwTable();
+
+      for (var i = 0; i < clearCode; i += 1) {
+        table.add(String.fromCharCode(i) );
+      }
+      table.add(String.fromCharCode(clearCode) );
+      table.add(String.fromCharCode(endCode) );
+
+      var byteOut = byteArrayOutputStream();
+      var bitOut = bitOutputStream(byteOut);
+
+      // clear code
+      bitOut.write(clearCode, bitLength);
+
+      var dataIndex = 0;
+
+      var s = String.fromCharCode(_data[dataIndex]);
+      dataIndex += 1;
+
+      while (dataIndex < _data.length) {
+
+        var c = String.fromCharCode(_data[dataIndex]);
+        dataIndex += 1;
+
+        if (table.contains(s + c) ) {
+
+          s = s + c;
+
+        } else {
+
+          bitOut.write(table.indexOf(s), bitLength);
+
+          if (table.size() < 0xfff) {
+
+            if (table.size() == (1 << bitLength) ) {
+              bitLength += 1;
+            }
+
+            table.add(s + c);
+          }
+
+          s = c;
+        }
+      }
+
+      bitOut.write(table.indexOf(s), bitLength);
+
+      // end code
+      bitOut.write(endCode, bitLength);
+
+      bitOut.flush();
+
+      return byteOut.toByteArray();
+    };
+
+    var lzwTable = function() {
+
+      var _map = {};
+      var _size = 0;
+
+      var _this = {};
+
+      _this.add = function(key) {
+        if (_this.contains(key) ) {
+          throw 'dup key:' + key;
+        }
+        _map[key] = _size;
+        _size += 1;
+      };
+
+      _this.size = function() {
+        return _size;
+      };
+
+      _this.indexOf = function(key) {
+        return _map[key];
+      };
+
+      _this.contains = function(key) {
+        return typeof _map[key] != 'undefined';
+      };
+
+      return _this;
+    };
+
+    return _this;
+  };
+
+  var createDataURL = function(width, height, getPixel) {
+    var gif = gifImage(width, height);
+    for (var y = 0; y < height; y += 1) {
+      for (var x = 0; x < width; x += 1) {
+        gif.setPixel(x, y, getPixel(x, y) );
+      }
+    }
+
+    var b = byteArrayOutputStream();
+    gif.write(b);
+
+    var base64 = base64EncodeOutputStream();
+    var bytes = b.toByteArray();
+    for (var i = 0; i < bytes.length; i += 1) {
+      base64.writeByte(bytes[i]);
+    }
+    base64.flush();
+
+    return 'data:image/gif;base64,' + base64;
+  };
+
+  //---------------------------------------------------------------------
+  // returns qrcode function.
+
+  return qrcode;
+}();
+
+// multibyte support
+!function() {
+
+  qrcode.stringToBytesFuncs['UTF-8'] = function(s) {
+    // http://stackoverflow.com/questions/18729405/how-to-convert-utf8-string-to-byte-array
+    function toUTF8Array(str) {
+      var utf8 = [];
+      for (var i=0; i < str.length; i++) {
+        var charcode = str.charCodeAt(i);
+        if (charcode < 0x80) utf8.push(charcode);
+        else if (charcode < 0x800) {
+          utf8.push(0xc0 | (charcode >> 6),
+              0x80 | (charcode & 0x3f));
+        }
+        else if (charcode < 0xd800 || charcode >= 0xe000) {
+          utf8.push(0xe0 | (charcode >> 12),
+              0x80 | ((charcode>>6) & 0x3f),
+              0x80 | (charcode & 0x3f));
+        }
+        // surrogate pair
+        else {
+          i++;
+          // UTF-16 encodes 0x10000-0x10FFFF by
+          // subtracting 0x10000 and splitting the
+          // 20 bits of 0x0-0xFFFFF into two halves
+          charcode = 0x10000 + (((charcode & 0x3ff)<<10)
+            | (str.charCodeAt(i) & 0x3ff));
+          utf8.push(0xf0 | (charcode >>18),
+              0x80 | ((charcode>>12) & 0x3f),
+              0x80 | ((charcode>>6) & 0x3f),
+              0x80 | (charcode & 0x3f));
+        }
+      }
+      return utf8;
+    }
+    return toUTF8Array(s);
+  };
+
+}();
+
+(function (factory) {
+  if (typeof define === 'function' && define.amd) {
+      define([], factory);
+  } else if (typeof exports === 'object') {
+      module.exports = factory();
+  }
+}(function () {
+    return qrcode;
+}));
+</script>
+<script>window.CLOUD_CONFIG = {"endpoint": "https://hometown-culture-qr.app.workbuddy.host", "oauthRelayBaseUrl": "https://www.workbuddy.cn/v2/as/genie-baas/oauth", "publishableKey": "wbpk_k8ux927W1axQfGAEVkSIyc_ZRjP42pwvNQPbbgb3jOMTQRHOBWl6jBh"};</script>
+<script>/* ===== @tencent-ai/workbuddy-cloud-sdk (inlined) ===== */
+var WorkBuddyCloud=(()=>{var ne=Object.defineProperty;var Et=Object.getOwnPropertyDescriptor;var xt=Object.getOwnPropertyNames;var kt=Object.prototype.hasOwnProperty;var a=(r,e)=>ne(r,"name",{value:e,configurable:!0});var vt=(r,e)=>{for(var t in e)ne(r,t,{get:e[t],enumerable:!0})},Pt=(r,e,t,s)=>{if(e&&typeof e=="object"||typeof e=="function")for(let n of xt(e))!kt.call(r,n)&&n!==t&&ne(r,n,{get:()=>e[n],enumerable:!(s=Et(e,n))||s.enumerable});return r};var _t=r=>Pt(ne({},"__esModule",{value:!0}),r);var Qt={};vt(Qt,{AuthModule:()=>D,CLOUD_MODULE_PATHS:()=>A,CLOUD_PATH_PREFIX:()=>I,CloudOpenAIError:()=>x,CloudStoragePathError:()=>b,DEFAULT_SIGNED_URL_TTL_SECONDS:()=>pe,LlmModule:()=>F,MAX_SIGNED_URL_TTL_SECONDS:()=>me,PUBLISHABLE_KEY_HEADER:()=>ge,RUNTIME_STORAGE_BUCKET:()=>q,WorkBuddyCloudClient:()=>re,WorkBuddyCloudConfigError:()=>_,WorkBuddyDatabaseModule:()=>G,WorkBuddyStorageBucket:()=>H,WorkBuddyStorageDownload:()=>ee,WorkBuddyStorageModule:()=>te,anonymousTokenProvider:()=>ie,createMemoryStorage:()=>we,createWorkBuddyCloud:()=>wt,getModelCapability:()=>Pe,getModelDisplayName:()=>ve,shouldClearCredentials:()=>St});var _=class extends Error{static{a(this,"WorkBuddyCloudConfigError")}constructor(e){super(e),this.name="WorkBuddyCloudConfigError"}};var Tt=/^wbpk_/;function Ue(r,e){if(typeof r!="string"||r.trim()==="")throw new _(`${e} is required and must be a non-empty string.`);let t=r.trim(),s;try{s=new URL(t)}catch{throw new _(`${e} must be an absolute URL, received: ${t}`)}if(s.protocol!=="https:"&&s.protocol!=="http:")throw new _(`${e} must use http(s), received protocol: ${s.protocol}`);return t.replace(/\/+$/,"")}a(Ue,"normalizeHttpUrl");function Ot(r){if(r!=null&&r!=="")return Ue(r,"endpoint");let e=globalThis.location?.origin;if(typeof e!="string"||e==="")throw new _("endpoint is required outside browsers (no location.origin to fall back to).");return e.replace(/\/+$/,"")}a(Ot,"resolveEndpoint");function At(r){if(typeof r!="string"||r.trim()==="")throw new _("publishableKey is required and must be a non-empty string.");let e=r.trim();if(!Tt.test(e))throw new _('publishableKey must start with "wbpk_".');return e}a(At,"normalizePublishableKey");function Rt(r){if(r)return r;if(typeof globalThis.fetch!="function")throw new _("Global fetch is unavailable in this runtime; pass options.fetch explicitly.");return globalThis.fetch.bind(globalThis)}a(Rt,"resolveFetch");function Le(r){if(!r||typeof r!="object")throw new _("createWorkBuddyCloud requires publishableKey.");return Object.freeze({endpoint:Ot(r.endpoint),oauthRelayBaseUrl:r.oauthRelayBaseUrl?Ue(r.oauthRelayBaseUrl,"oauthRelayBaseUrl"):"",publishableKey:At(r.publishableKey),fetch:Rt(r.fetch)})}a(Le,"resolveRuntimeConfig");var ge="x-wb-webapp-access-key";function ye(r,e){return async(t,s)=>{let n=new Headers(s?.headers);if(n.set(ge,r.publishableKey),!n.has("Authorization")){let i=await e();i&&n.set("Authorization",`Bearer ${i}`)}return r.fetch(t,{...s,headers:n})}}a(ye,"createCloudFetch");var ie=a(()=>Promise.resolve(void 0),"anonymousTokenProvider");var I="/.cloud",A=Object.freeze({auth:`${I}/auth`,database:`${I}/database/rest`,storage:`${I}/storage`,llm:`${I}/llm`});var $t="workbuddy-cloud.pkce.workbuddy.",Ut="workbuddy-cloud.pkce-done.workbuddy.";function Ce(r){let e="";for(let t of r)e+=String.fromCharCode(t);return btoa(e).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")}a(Ce,"base64UrlEncode");function Ie(){let r=globalThis.crypto;return typeof r?.getRandomValues=="function"&&typeof r?.subtle?.digest=="function"&&typeof globalThis.btoa=="function"}a(Ie,"hasWebCrypto");function je(){let r=new Uint8Array(32);return globalThis.crypto.getRandomValues(r),Ce(r)}a(je,"createCodeVerifier");async function De(r){let e=new TextEncoder().encode(r),t=await globalThis.crypto.subtle.digest("SHA-256",e);return Ce(new Uint8Array(t))}a(De,"computeS256Challenge");var oe=class{static{a(this,"WorkBuddyPkceStore")}verifierKey;consumedKey;constructor(e){this.verifierKey=$t+e,this.consumedKey=Ut+e}usable(){let e=this.storage();if(!e)return!1;try{let t=`${this.verifierKey}.probe`;return e.setItem(t,"1"),e.removeItem(t),!0}catch{return!1}}saveVerifier(e){try{let t=this.storage();return t?(t.setItem(this.verifierKey,e),t.removeItem(this.consumedKey),!0):!1}catch{return!1}}readVerifier(){try{return this.storage()?.getItem(this.verifierKey)??null}catch{return null}}clearVerifier(){try{this.storage()?.removeItem(this.verifierKey)}catch{}}markConsumed(e){try{this.storage()?.setItem(this.consumedKey,e)}catch{}}isConsumed(e){try{return!!e&&this.storage()?.getItem(this.consumedKey)===e}catch{return!1}}storage(){try{return globalThis.sessionStorage??null}catch{return null}}};var w={signUp:"/v1/signup",signIn:"/v1/signin",signInWithProvider:"/v1/signin/with/provider",token:"/v1/token",loginWechat:"/v1/login-wechat",loginWechatWeb:"/v1/login-wechat-web",loginWorkBuddy:"/v1/login-workbuddy",signOut:"/v1/user/signout",userMe:"/v1/user/me",verification:"/v1/verification",verificationVerify:"/v1/verification/verify",resetPassword:"/v1/reset",sudo:"/v1/user/sudo",userPassword:"/v1/user/password"};function be(r,e){let t=r??{},s=typeof t.access_token=="string"?t.access_token:"";if(!s)throw It("response has no access_token");let n=typeof t.refresh_token=="string"?t.refresh_token:"",i=typeof t.expires_in=="number"?t.expires_in:0;return{accessToken:s,refreshToken:n,expiresAt:e+i*1e3,user:Lt(t)}}a(be,"parseSession");function Lt(r){let e=r.is_anonymous===!0;return{id:typeof r.sub=="string"?r.sub:"",name:T(r.name),avatarUrl:T(r.avatar_url),isAnonymous:e,raw:r}}a(Lt,"userFromSessionPayload");function Ne(r){let e=r??{},t=typeof e.sub=="string"?e.sub:typeof e.uid=="string"?e.uid:"",s=e.user_metadata??{};return{id:t,email:T(e.email)??T(s.email),phone:T(e.phone_number)??T(e.phone),name:T(e.name),avatarUrl:T(e.avatar_url),isAnonymous:e.is_anonymous===!0||e.scope==="anonymous",raw:e}}a(Ne,"parseUser");function T(r){return typeof r=="string"&&r!==""?r:void 0}a(T,"pickString");function Fe(r,e){let t=e??{},s=typeof t.error=="string"?t.error:void 0,n=T(t.error_description)??T(t.message)??T(t.msg)??`HTTP ${r}`;return{kind:Ct(r,s),message:n,status:r,code:s,cause:e}}a(Fe,"normalizeHttpError");function Ct(r,e){if(e==="invalid_grant")return"unauthenticated";switch(r){case 400:return"invalid-request";case 401:return"unauthenticated";case 403:return"permission-denied";case 404:return"not-found";case 429:return"rate-limited";case 501:return"unimplemented";case 503:return"backend-unavailable";default:return r>=500?"backend-unavailable":"unknown"}}a(Ct,"errorKind");function W(r){return{kind:"network",message:`request failed before a response was received: ${r instanceof Error?r.message:String(r)}`,status:0,cause:r}}a(W,"normalizeNetworkError");function It(r){let e=new Error(`workbuddy-cloud auth: ${r}`);return e.kind="unknown",e.status=0,e}a(It,"sessionShapeError");var ae=class{static{a(this,"SessionManager")}store;refresh;emit;isCredentialsRejected;now;inflight=null;signOutEpoch=0;lastFailure=null;constructor(e){this.store=e.store,this.refresh=e.refresh,this.emit=e.emit,this.isCredentialsRejected=e.isCredentialsRejected,this.now=e.now??Date.now}peek(){return this.store.read()}async ensure(){let e=this.store.read();return e?this.isExpiring(e)?e.refreshToken?this.refreshOnce(e):this.abandon():e:null}async forceRefresh(){let e=this.store.read();return e?.refreshToken?this.refreshOnce(e,{ignoreCooldown:!0}):null}commitSignIn(e){return this.lastFailure=null,this.store.write(e),this.emit("SIGNED_IN",e),e}commitUserUpdate(e){return this.store.write(e),this.emit("USER_UPDATED",e),e}clear(){this.signOutEpoch+=1,this.lastFailure=null,this.inflight=null,this.store.clear(),this.emit("SIGNED_OUT",null)}isExpiring(e){return typeof e.expiresAt!="number"?!0:e.expiresAt-this.now()<9e4}refreshOnce(e,t={}){if(this.inflight)return this.inflight;if(!t.ignoreCooldown&&this.inCooldown(e.refreshToken))return Promise.resolve(null);let s=this.doRefresh(e).finally(()=>{this.inflight=null});return this.inflight=s,s}inCooldown(e){let t=this.lastFailure;return t!==null&&t.token===e&&this.now()-t.at<6e4}async doRefresh(e){let t=this.signOutEpoch,s=e.refreshToken,n;try{n=await this.refresh(s)}catch(o){return this.onRefreshFailed(s,o)}if(this.signOutEpoch!==t)return this.store.clear(),null;let i=this.store.read();return i&&i.refreshToken!==s?i:(this.lastFailure=null,this.store.write(n),this.emit("TOKEN_REFRESHED",n),n)}onRefreshFailed(e,t){return this.isCredentialsRejected(t)?this.abandon():(this.lastFailure={token:e,at:this.now()},null)}abandon(){return this.store.clear(),this.lastFailure=null,this.emit("SIGNED_OUT",null),null}};var jt="workbuddy-cloud.session.";function we(){let r=new Map;return{getItem:a(e=>r.get(e)??null,"getItem"),setItem:a((e,t)=>{r.set(e,t)},"setItem"),removeItem:a(e=>{r.delete(e)},"removeItem")}}a(we,"createMemoryStorage");function Be(r){if(r)return r;try{let e="__workbuddy_probe__";return globalThis.localStorage.setItem(e,"1"),globalThis.localStorage.removeItem(e),globalThis.localStorage}catch{return we()}}a(Be,"resolveStorage");var ce=class{static{a(this,"SessionStore")}storage;key;constructor(e,t){this.storage=e,this.key=jt+t}read(){let e;try{e=this.storage.getItem(this.key)}catch{return null}if(!e)return null;try{let t=JSON.parse(e);return Dt(t)?t:this.discard()}catch{return this.discard()}}write(e){try{this.storage.setItem(this.key,JSON.stringify(e))}catch{}}clear(){try{this.storage.removeItem(this.key)}catch{}}discard(){return this.clear(),null}};function Dt(r){if(!r||typeof r!="object")return!1;let e=r;return typeof e.accessToken=="string"&&e.accessToken!==""&&typeof e.refreshToken=="string"&&typeof e.expiresAt=="number"&&!!e.user&&typeof e.user=="object"}a(Dt,"isStoredSession");function j(r,e){let t=r.email??"",s=r.phone??"";return!!t==!!s?{data:null,error:{kind:"invalid-request",message:`${e} requires exactly one of email or phone`,status:0}}:{data:t?{kind:"email",value:t,username:t}:{kind:"phone",value:s,username:Nt(s)},error:null}}a(j,"resolveAuthIdentifier");function Nt(r){let t=r.replace(/\D/g,"");return t.startsWith("0086")?t=t.slice(4):t.startsWith("86")&&t.length===13&&(t=t.slice(2)),/^1\d{10}$/.test(t)?`+86 ${t}`:r}a(Nt,"normalizePhone");var He=200;function We(r,e){let t=Array.from(r);return t.length<=e?r:`${t.slice(0,e).join("")}\u2026`}a(We,"truncateMessage");function Se(r){let e=r.get("error");if(!e)return null;let t=r.get("error_description"),s=t?`oauth provider rejected the request: ${e}: ${t}`:`oauth provider rejected the request: ${e}`;return We(s,He)}a(Se,"oauthProviderRejectMessage");var D=class{static{a(this,"AuthModule")}fetch;baseUrl;sessions;storage;oauthRelayBaseUrl;workBuddyPkce;workBuddyExchanges=new Map;listeners=new Map;nextListenerId=1;constructor(e,t,s={}){this.fetch=t,this.baseUrl=`${e.endpoint}${A.auth}`,this.oauthRelayBaseUrl=e.oauthRelayBaseUrl,this.storage=Be(s.storage),this.workBuddyPkce=new oe(e.publishableKey),this.sessions=new ae({store:new ce(this.storage,e.publishableKey),refresh:a(n=>this.exchangeRefreshHandle(n),"refresh"),emit:a((n,i)=>this.notify(n,i),"emit"),isCredentialsRejected:a(n=>ue(n)&&Me(n),"isCredentialsRejected")})}async getAccessToken(){return(await this.sessions.ensure())?.accessToken}async signInWithPassword(e){if(!e.password)return h(p("signInWithPassword requires a password"));let t=j(e,"signInWithPassword");return t.error?h(t.error):this.postForSession(w.signIn,{username:t.data.username,password:e.password})}async signInWithWechat(e,t){return e?t?this.postForSession(w.loginWechat,{code:e,appid:t}):h(p("signInWithWechat requires appid")):h(p("signInWithWechat requires code"))}async signUp(e){let t=j(e,"signUp");if(t.error)return h(t.error);if(!e.verificationToken)return h(p("signUp requires a verificationToken; run sendOtp + verifyOtp first (the provider rejects username+password-only signup)"));let s={verification_token:e.verificationToken};return t.data.kind==="phone"?s.phone_number=t.data.username:s.email=t.data.username,e.password&&(s.password=e.password),this.postForSession(w.signUp,s)}async sendOtp(e){let t=j(e,"sendOtp");if(t.error)return h(t.error);let s={};t.data.kind==="phone"?(s.phone_number=t.data.username,s.target="ANY"):(s.email=t.data.username,s.usage="email",e.emailRedirectTo&&(s.email_redirect_to=e.emailRedirectTo));let n=await this.request(w.verification,{method:"POST",body:s});if(n.error)return h(n.error);let i=n.data??{},o=typeof i.verification_id=="string"?i.verification_id:"";return o?S({verificationId:o,isExistingUser:i.is_user===!0}):h(p("provider returned no verification_id"))}async signInWithOtp(e){let t=j(e,"signInWithOtp");if(t.error)return h(t.error);let s=await this.sendOtp(e);if(s.error)return h(s.error);let{verificationId:n,isExistingUser:i}=s.data,o=t.data.kind==="phone"?{phone:t.data.username}:{email:t.data.username};return S({verificationId:n,isExistingUser:i,isUser:i,verify:a(({token:c,password:u})=>this.verifyOtp({verificationId:n,token:c,...o,isExistingUser:i,password:u}),"verify")})}async verifyOtp(e){let t=j(e,"verifyOtp");if(t.error)return h(t.error);if(!e.verificationId||!e.token)return h(p("verifyOtp requires verificationId and token"));let s=await this.request(w.verificationVerify,{method:"POST",body:{verification_id:e.verificationId,verification_code:e.token}});if(s.error)return h(s.error);let n=s.data??{},i=typeof n.verification_token=="string"?n.verification_token:"";if(!i)return h(p("provider returned no verification_token"));if(e.isExistingUser)return this.postForSession(w.signIn,{username:t.data.username,verification_token:i});let o=t.data.kind==="phone"?{phone:t.data.value,password:e.password}:{email:t.data.value,password:e.password};return this.signUp({...o,verificationToken:i})}async signInWithOAuth(e){if(!this.oauthRelayBaseUrl)return h(p("signInWithOAuth requires oauthRelayBaseUrl"));if(e.provider!=="google"&&e.provider!=="wechat"&&e.provider!=="workbuddy")return h(p("\u5F53\u524D SDK \u4E0D\u652F\u6301\u8BE5\u767B\u5F55\u65B9\u5F0F\uFF0C\u8BF7\u68C0\u67E5 SDK \u7248\u672C\u4E0E\u767B\u5F55\u914D\u7F6E\u3002"));let t=e.redirectTo??Mt();return t?this.startRelayOAuth(e,t):h(p("signInWithOAuth requires redirectTo outside a browser environment"))}parseCallbackQuery(e){try{let t=/^https?:\/\//i.test(e)?new URL(e).search:e;return S(new URLSearchParams(t))}catch{return h(p("oauth callback URL is invalid"))}}async handleOAuthCallback(e){let t=this.parseCallbackQuery(e??Ee());if(t.error||!t.data)return h(t.error??p("oauth callback URL is invalid"));let s=t.data,n=Se(s);if(n)return h({kind:"unauthenticated",message:n,status:0});let i=s.get("code");if(!i)return S(null);let o=s.get("state")??"";if(!o)return h(p("oauth callback requires state"));let c=s.get("provider_id");if(c!=="custom-oauth")return h(p("oauth callback requires provider_id=custom-oauth"));let u={provider_id:c,provider_code:i,state:o,provider_params:{state:o}};return this.postForSession(w.signInWithProvider,u)}async handleWechatWebCallback(e){let t=this.parseCallbackQuery(e??Ee());if(t.error||!t.data)return h(t.error??p("oauth callback URL is invalid"));let s=t.data,n=Se(s);if(n)return h({kind:"unauthenticated",message:n,status:0});let i=s.get("code");if(!i)return S(null);let o=s.get("state")??"";if(!o)return h(p("oauth callback requires state"));let c=s.get("provider");return c&&c!=="wechat"?h(p("wechat callback requires provider=wechat")):s.get("provider_id")==="custom-oauth"?h(p("wechat callback must not use provider_id=custom-oauth")):this.postForSession(w.loginWechatWeb,{code:i,state:o})}async handleWorkBuddyCallback(e){let t=this.parseCallbackQuery(e??Ee());if(t.error||!t.data)return h(t.error??p("oauth callback URL is invalid"));let s=t.data,n=s.get("provider");if(n&&n!=="workbuddy")return S(null);let i=Se(s);if(i)return this.workBuddyPkce.clearVerifier(),h({kind:"unauthenticated",message:i,status:0});let o=s.get("code");if(!o)return S(null);let c=s.get("state")??"";if(!c)return h(p("workbuddy callback requires state"));if(s.get("provider_id")==="custom-oauth")return h(p("workbuddy callback must not use provider_id=custom-oauth"));if(this.workBuddyPkce.isConsumed(c))return S(null);let u=this.workBuddyExchanges.get(c);if(u)return u;let d=this.workBuddyPkce.readVerifier();if(!d)return h(p("workbuddy callback has no local PKCE verifier; sign in again in this tab"));this.workBuddyPkce.clearVerifier();let l=this.exchangeWorkBuddyCode(o,c,d);this.workBuddyExchanges.set(c,l);try{return await l}finally{this.workBuddyExchanges.delete(c)}}async exchangeWorkBuddyCode(e,t,s){let n=await this.postForSession(w.loginWorkBuddy,{code:e,state:t,code_verifier:s});return n.data&&this.workBuddyPkce.markConsumed(t),n}async resetPasswordForEmail(e){if(!e)return h(p("resetPasswordForEmail requires email"));let t=await this.request(w.verification,{method:"POST",body:{email:e,usage:"PASSWORD_RESET",target:"USER"}});if(t.error)return h(t.error);let s=t.data??{},n=typeof s.verification_id=="string"?s.verification_id:"";return n?S({updateUser:a(async({nonce:i,password:o})=>{let c=await this.request(w.verificationVerify,{method:"POST",body:{verification_id:n,verification_code:i}});if(c.error)return h(c.error);let u=c.data??{},d=typeof u.verification_token=="string"?u.verification_token:"";if(!d)return h(p("provider returned no verification_token"));let l=await this.request(w.resetPassword,{method:"POST",body:{email:e,new_password:o,verification_token:d}});if(l.error)return h(l.error);let f=await this.signInWithPassword({email:e,password:o});return f.error||this.notify("PASSWORD_RECOVERY",f.data),f},"updateUser")}):h(p("provider returned no verification_id"))}async resetPasswordForOld(e){let t=await this.getAccessToken();if(!t)return h({kind:"unauthenticated",message:"no active session",status:0});let s=await this.request(w.sudo,{method:"POST",token:t,body:{password:e.oldPassword}});if(s.error)return h(s.error);let n=s.data??{},i=typeof n.sudo_token=="string"?n.sudo_token:"";if(!i)return h(p("provider returned no sudo_token"));let o=await this.request(w.userPassword,{method:"PATCH",token:t,body:{sudo_token:i,new_password:e.newPassword}});if(o.error)return h(o.error);let c=await this.getSession();return c.data?(this.notify("USER_UPDATED",c.data),S(c.data)):h(c.error??{kind:"unauthenticated",message:"no active session",status:0})}async getSession(){try{return S(await this.sessions.ensure())}catch(e){return h(ue(e)?e:W(e))}}async refreshSession(){try{return S(await this.sessions.forceRefresh())}catch(e){return h(ue(e)?e:W(e))}}async getUser(){let e=await this.getAccessToken();if(!e)return h({kind:"unauthenticated",message:"no active session",status:0});let t=await this.request(w.userMe,{method:"GET",token:e});return t.error?(Me(t.error)&&this.sessions.clear(),h(t.error)):S(Ne(t.data))}async signOut(){let e=this.sessions.peek();return e?.accessToken&&await this.request(w.signOut,{method:"POST",body:{},token:e.accessToken}),this.sessions.clear(),S(null)}onAuthStateChange(e){let t=this.nextListenerId++;return this.listeners.set(t,e),qe(e,"INITIAL_SESSION",this.sessions.peek()),()=>{this.listeners.delete(t)}}async startRelayOAuth(e,t){let s;try{s=new URL(t)}catch{return h(p("signInWithOAuth requires an absolute redirectTo URL"))}let n=new URL(`${this.oauthRelayBaseUrl}/authorize`);if(n.searchParams.set("provider",e.provider),n.searchParams.set("callback_url",s.toString()),e.provider==="workbuddy"){let i=await this.createWorkBuddyProof();if(i.error||!i.data)return h(i.error??p("signInWithOAuth could not create PKCE"));n.searchParams.set("code_challenge",i.data),n.searchParams.set("code_challenge_method","S256")}return S({url:n.toString()})}async createWorkBuddyProof(){if(!Ie())return h(p("workbuddy sign-in requires WebCrypto; it is unavailable in this runtime (an insecure http:// origin disables it \u2014 serve the app over https)"));if(!this.workBuddyPkce.usable())return h(p("workbuddy sign-in requires sessionStorage to keep the PKCE verifier across the redirect; it is unavailable in this runtime"));let e,t;try{e=je(),t=await De(e)}catch(s){return h(p(`workbuddy sign-in could not create a PKCE proof: ${Ft(s)}`))}return this.workBuddyPkce.saveVerifier(e)?S(t):h(p("workbuddy sign-in could not persist the PKCE verifier"))}async exchangeRefreshHandle(e){let t=await this.request(w.token,{method:"POST",body:{grant_type:"refresh_token",refresh_token:e}});if(t.error)throw t.error;return be(t.data,Date.now())}async postForSession(e,t,s={}){let n=await this.request(e,{method:"POST",body:t,headers:s.headers});if(n.error)return h(n.error);try{return S(this.sessions.commitSignIn(be(n.data,Date.now())))}catch(i){return h(ue(i)?i:W(i))}}async request(e,t){let s={...t.headers};t.body!==void 0&&(s["Content-Type"]="application/json"),t.token&&(s.Authorization=`Bearer ${t.token}`);let n;try{n=await this.fetch(this.baseUrl+e,{method:t.method,headers:s,body:t.body===void 0?void 0:JSON.stringify(t.body)})}catch(o){return h(W(o))}let i=await Bt(n);return n.ok?S(i):h(Fe(n.status,i))}notify(e,t){for(let s of this.listeners.values())qe(s,e,t)}};function S(r){return{data:r,error:null}}a(S,"ok");function h(r){return{data:null,error:r}}a(h,"fail");function p(r){return{kind:"invalid-request",message:r,status:0}}a(p,"badRequest");function Ft(r){return We(r instanceof Error?r.message:String(r),He)}a(Ft,"describeError");function ue(r){return!!r&&typeof r=="object"&&typeof r.kind=="string"}a(ue,"isCloudError");function Me(r){return r.kind==="unauthenticated"||r.code==="invalid_grant"}a(Me,"rejectedCredentials");async function Bt(r){let e=await r.text();if(!e)return null;try{return JSON.parse(e)}catch{return{message:e}}}a(Bt,"readBody");function qe(r,e,t){try{r(e,t)}catch{}}a(qe,"safeInvoke");function Mt(){let r=globalThis.location;return r?r.origin+r.pathname:""}a(Mt,"currentPageUrl");function Ee(){return globalThis.location?.search??""}a(Ee,"currentPageSearch");var xe=a(r=>Math.min(1e3*2**r,3e4),"getRetryDelay"),Ke=[520,503],ke=["GET","HEAD","OPTIONS"];var U=class extends Error{static{a(this,"PostgrestError")}details;hint;code;constructor(e){super(e.message),this.name="PostgrestError",this.details=e.details,this.hint=e.hint,this.code=e.code}toJSON(){return{name:this.name,message:this.message,details:this.details,hint:this.hint,code:this.code}}};function ze(r,e){return new Promise(t=>{if(e?.aborted){t();return}let s=setTimeout(()=>{e?.removeEventListener("abort",n),t()},r);function n(){clearTimeout(s),t()}a(n,"onAbort"),e?.addEventListener("abort",n)})}a(ze,"sleep");function qt(r,e,t,s){return!(!s||t>=3||!ke.includes(r)||!Ke.includes(e))}a(qt,"shouldRetry");var K=class{static{a(this,"PostgrestBuilder")}method;url;headers;schema;body;shouldThrowOnError=!1;signal;fetch;isMaybeSingle;shouldStripNulls;urlLengthLimit;retryEnabled=!0;constructor(e){this.method=e.method,this.url=e.url,this.headers=new Headers(e.headers),this.schema=e.schema,this.body=e.body,this.shouldThrowOnError=e.shouldThrowOnError??!1,this.signal=e.signal,this.isMaybeSingle=e.isMaybeSingle??!1,this.shouldStripNulls=e.shouldStripNulls??!1,this.urlLengthLimit=e.urlLengthLimit??8e3,this.retryEnabled=e.retry??!0,e.fetch?this.fetch=e.fetch:this.fetch=fetch}throwOnError(){return this.shouldThrowOnError=!0,this}stripNulls(){if(this.headers.get("Accept")==="text/csv")throw new Error("stripNulls() cannot be used with csv()");return this.shouldStripNulls=!0,this}setHeader(e,t){return this.headers=new Headers(this.headers),this.headers.set(e,t),this}retry(e){return this.retryEnabled=e,this}then(e,t){if(this.schema===void 0||(["GET","HEAD"].includes(this.method)?this.headers.set("Accept-Profile",this.schema):this.headers.set("Content-Profile",this.schema)),this.method!=="GET"&&this.method!=="HEAD"&&this.headers.set("Content-Type","application/json"),this.shouldStripNulls){let o=this.headers.get("Accept");o==="application/vnd.pgrst.object+json"?this.headers.set("Accept","application/vnd.pgrst.object+json;nulls=stripped"):(!o||o==="application/json")&&this.headers.set("Accept","application/vnd.pgrst.array+json;nulls=stripped")}let s=this.fetch,i=a(async()=>{let o=0;for(;;){let c={};this.headers.forEach((d,l)=>{c[l]=d}),o>0&&(c["X-Retry-Count"]=String(o));let u;try{u=await s(this.url.toString(),{method:this.method,headers:c,body:JSON.stringify(this.body,(d,l)=>typeof l=="bigint"?l.toString():l),signal:this.signal})}catch(d){if(d?.name==="AbortError"||d?.code==="ABORT_ERR"||!ke.includes(this.method))throw d;if(this.retryEnabled&&o<3){let l=xe(o);o++,await ze(l,this.signal);continue}throw d}if(qt(this.method,u.status,o,this.retryEnabled)){let d=u.headers?.get("Retry-After")??null,l=d!==null?Math.max(0,parseInt(d,10)||0)*1e3:xe(o);await u.text(),o++,await ze(l,this.signal);continue}return await this.processResponse(u)}},"executeWithRetry")();return this.shouldThrowOnError||(i=i.catch(o=>{let c="",u="",d="",l=o?.cause;if(l){let g=l?.message??"",y=l?.code??"";c=`${o?.name??"FetchError"}: ${o?.message}`,c+=`
+
+Caused by: ${l?.name??"Error"}: ${g}`,y&&(c+=` (${y})`),l?.stack&&(c+=`
+${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name==="AbortError"||o?.code==="ABORT_ERR"?(d="",u="Request was aborted (timeout or manual cancellation)",f>this.urlLengthLimit&&(u+=`. Note: Your request URL is ${f} characters, which may exceed server limits. If selecting many fields, consider using views. If filtering with large arrays (e.g., .in('id', [many IDs])), consider using an RPC function to pass values server-side.`)):(l?.name==="HeadersOverflowError"||l?.code==="UND_ERR_HEADERS_OVERFLOW")&&(d="",u="HTTP headers exceeded server limits (typically 16KB)",f>this.urlLengthLimit&&(u+=`. Your request URL is ${f} characters. If selecting many fields, consider using views. If filtering with large arrays (e.g., .in('id', [200+ IDs])), consider using an RPC function instead.`)),{success:!1,error:{message:`${o?.name??"FetchError"}: ${o?.message}`,details:c,hint:u,code:d},data:null,count:null,status:0,statusText:""}})),i.then(e,t)}async processResponse(e){let t=null,s=null,n=null,i=e.status,o=e.statusText;if(e.ok){if(this.method!=="HEAD"){let d=await e.text();if(d!=="")if(this.headers.get("Accept")==="text/csv")s=d;else if(this.headers.get("Accept")&&this.headers.get("Accept")?.includes("application/vnd.pgrst.plan+text"))s=d;else try{s=JSON.parse(d)}catch{if(t={message:d},s=null,this.shouldThrowOnError)throw new U({message:d,details:"",hint:"",code:""})}}let c=this.headers.get("Prefer")?.match(/count=(exact|planned|estimated)/),u=e.headers.get("content-range")?.split("/");if(c&&u&&u.length>1&&(n=parseInt(u[1])),this.isMaybeSingle&&Array.isArray(s))if(s.length>1){if(t={code:"PGRST116",details:`Results contain ${s.length} rows, application/vnd.pgrst.object+json requires 1 row`,hint:null,message:"JSON object requested, multiple (or no) rows returned"},s=null,n=null,i=406,o="Not Acceptable",this.shouldThrowOnError)throw new U({...t,hint:t.hint??""})}else s.length===1?s=s[0]:s=null}else{let c=await e.text();try{t=JSON.parse(c),Array.isArray(t)&&e.status===404&&(s=[],t=null,i=200,o="OK")}catch{e.status===404&&c===""?(i=204,o="No Content"):t={message:c}}if(t&&this.shouldThrowOnError)throw new U(t)}return{success:t===null,error:t,data:s,count:n,status:i,statusText:o}}returns(){return this}overrideTypes(){return this}};var z=class extends K{static{a(this,"PostgrestTransformBuilder")}throwOnError(){return super.throwOnError()}select(e){let t=!1,s=(e??"*").split("").map(n=>/\s/.test(n)&&!t?"":(n==='"'&&(t=!t),n)).join("");return this.url.searchParams.set("select",s),this.headers.append("Prefer","return=representation"),this}order(e,{ascending:t=!0,nullsFirst:s,foreignTable:n,referencedTable:i=n}={}){let o=i?`${i}.order`:"order",c=this.url.searchParams.get(o);return this.url.searchParams.set(o,`${c?`${c},`:""}${e}.${t?"asc":"desc"}${s===void 0?"":s?".nullsfirst":".nullslast"}`),this}limit(e,{foreignTable:t,referencedTable:s=t}={}){let n=typeof s>"u"?"limit":`${s}.limit`;return this.url.searchParams.set(n,`${e}`),this}range(e,t,{foreignTable:s,referencedTable:n=s}={}){let i=typeof n>"u"?"offset":`${n}.offset`,o=typeof n>"u"?"limit":`${n}.limit`;return this.url.searchParams.set(i,`${e}`),this.url.searchParams.set(o,`${t-e+1}`),this}abortSignal(e){return this.signal=e,this}single(){return this.headers.set("Accept","application/vnd.pgrst.object+json"),this}maybeSingle(){return this.isMaybeSingle=!0,this}csv(){return this.headers.set("Accept","text/csv"),this}geojson(){return this.headers.set("Accept","application/geo+json"),this}explain({analyze:e=!1,verbose:t=!1,settings:s=!1,buffers:n=!1,wal:i=!1,format:o="text"}={}){let c=[e?"analyze":null,t?"verbose":null,s?"settings":null,n?"buffers":null,i?"wal":null].filter(Boolean).join("|"),u=this.headers.get("Accept")??"application/json";return this.headers.set("Accept",`application/vnd.pgrst.plan+${o}; for="${u}"; options=${c};`),o==="json"?this:this}rollback(){return this.headers.append("Prefer","tx=rollback"),this}returns(){return this}maxAffected(e){return this.headers.append("Prefer","handling=strict"),this.headers.append("Prefer",`max-affected=${e}`),this}};var Ge=new RegExp("[,()]"),O=class extends z{static{a(this,"PostgrestFilterBuilder")}throwOnError(){return super.throwOnError()}eq(e,t){return this.url.searchParams.append(e,`eq.${t}`),this}neq(e,t){return this.url.searchParams.append(e,`neq.${t}`),this}gt(e,t){return this.url.searchParams.append(e,`gt.${t}`),this}gte(e,t){return this.url.searchParams.append(e,`gte.${t}`),this}lt(e,t){return this.url.searchParams.append(e,`lt.${t}`),this}lte(e,t){return this.url.searchParams.append(e,`lte.${t}`),this}like(e,t){return this.url.searchParams.append(e,`like.${t}`),this}likeAllOf(e,t){return this.url.searchParams.append(e,`like(all).{${t.join(",")}}`),this}likeAnyOf(e,t){return this.url.searchParams.append(e,`like(any).{${t.join(",")}}`),this}ilike(e,t){return this.url.searchParams.append(e,`ilike.${t}`),this}ilikeAllOf(e,t){return this.url.searchParams.append(e,`ilike(all).{${t.join(",")}}`),this}ilikeAnyOf(e,t){return this.url.searchParams.append(e,`ilike(any).{${t.join(",")}}`),this}regexMatch(e,t){return this.url.searchParams.append(e,`match.${t}`),this}regexIMatch(e,t){return this.url.searchParams.append(e,`imatch.${t}`),this}is(e,t){return this.url.searchParams.append(e,`is.${t}`),this}isDistinct(e,t){return this.url.searchParams.append(e,`isdistinct.${t}`),this}in(e,t){let s=Array.from(new Set(t)).map(n=>typeof n=="string"&&Ge.test(n)?`"${n}"`:`${n}`).join(",");return this.url.searchParams.append(e,`in.(${s})`),this}notIn(e,t){let s=Array.from(new Set(t)).map(n=>typeof n=="string"&&Ge.test(n)?`"${n}"`:`${n}`).join(",");return this.url.searchParams.append(e,`not.in.(${s})`),this}contains(e,t){return typeof t=="string"?this.url.searchParams.append(e,`cs.${t}`):Array.isArray(t)?this.url.searchParams.append(e,`cs.{${t.join(",")}}`):this.url.searchParams.append(e,`cs.${JSON.stringify(t)}`),this}containedBy(e,t){return typeof t=="string"?this.url.searchParams.append(e,`cd.${t}`):Array.isArray(t)?this.url.searchParams.append(e,`cd.{${t.join(",")}}`):this.url.searchParams.append(e,`cd.${JSON.stringify(t)}`),this}rangeGt(e,t){return this.url.searchParams.append(e,`sr.${t}`),this}rangeGte(e,t){return this.url.searchParams.append(e,`nxl.${t}`),this}rangeLt(e,t){return this.url.searchParams.append(e,`sl.${t}`),this}rangeLte(e,t){return this.url.searchParams.append(e,`nxr.${t}`),this}rangeAdjacent(e,t){return this.url.searchParams.append(e,`adj.${t}`),this}overlaps(e,t){return typeof t=="string"?this.url.searchParams.append(e,`ov.${t}`):this.url.searchParams.append(e,`ov.{${t.join(",")}}`),this}textSearch(e,t,{config:s,type:n}={}){let i="";n==="plain"?i="pl":n==="phrase"?i="ph":n==="websearch"&&(i="w");let o=s===void 0?"":`(${s})`;return this.url.searchParams.append(e,`${i}fts${o}.${t}`),this}match(e){return Object.entries(e).filter(([t,s])=>s!==void 0).forEach(([t,s])=>{this.url.searchParams.append(t,`eq.${s}`)}),this}not(e,t,s){return this.url.searchParams.append(e,`not.${t}.${s}`),this}or(e,{foreignTable:t,referencedTable:s=t}={}){let n=s?`${s}.or`:"or";return this.url.searchParams.append(n,`(${e})`),this}filter(e,t,s){return this.url.searchParams.append(e,`${t}.${s}`),this}};var V=class{static{a(this,"PostgrestQueryBuilder")}url;headers;schema;signal;fetch;urlLengthLimit;retry;constructor(e,{headers:t={},schema:s,fetch:n,urlLengthLimit:i=8e3,retry:o}){this.url=e,this.headers=new Headers(t),this.schema=s,this.fetch=n,this.urlLengthLimit=i,this.retry=o}cloneRequestState(){return{url:new URL(this.url.toString()),headers:new Headers(this.headers)}}select(e,t){let{head:s=!1,count:n}=t??{},i=s?"HEAD":"GET",o=!1,c=(e??"*").split("").map(l=>/\s/.test(l)&&!o?"":(l==='"'&&(o=!o),l)).join(""),{url:u,headers:d}=this.cloneRequestState();return u.searchParams.set("select",c),n&&d.append("Prefer",`count=${n}`),new O({method:i,url:u,headers:d,schema:this.schema,fetch:this.fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}insert(e,{count:t,defaultToNull:s=!0}={}){let n="POST",{url:i,headers:o}=this.cloneRequestState();if(t&&o.append("Prefer",`count=${t}`),s||o.append("Prefer","missing=default"),Array.isArray(e)){let c=e.reduce((u,d)=>u.concat(Object.keys(d)),[]);if(c.length>0){let u=[...new Set(c)].map(d=>`"${d}"`);i.searchParams.set("columns",u.join(","))}}return new O({method:n,url:i,headers:o,schema:this.schema,body:e,fetch:this.fetch??fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}upsert(e,{onConflict:t,ignoreDuplicates:s=!1,count:n,defaultToNull:i=!0}={}){let o="POST",{url:c,headers:u}=this.cloneRequestState();if(u.append("Prefer",`resolution=${s?"ignore":"merge"}-duplicates`),t!==void 0&&c.searchParams.set("on_conflict",t),n&&u.append("Prefer",`count=${n}`),i||u.append("Prefer","missing=default"),Array.isArray(e)){let d=e.reduce((l,f)=>l.concat(Object.keys(f)),[]);if(d.length>0){let l=[...new Set(d)].map(f=>`"${f}"`);c.searchParams.set("columns",l.join(","))}}return new O({method:o,url:c,headers:u,schema:this.schema,body:e,fetch:this.fetch??fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}update(e,{count:t}={}){let s="PATCH",{url:n,headers:i}=this.cloneRequestState();return t&&i.append("Prefer",`count=${t}`),new O({method:s,url:n,headers:i,schema:this.schema,body:e,fetch:this.fetch??fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}delete({count:e}={}){let t="DELETE",{url:s,headers:n}=this.cloneRequestState();return e&&n.append("Prefer",`count=${e}`),new O({method:t,url:s,headers:n,schema:this.schema,fetch:this.fetch??fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}};var N=class r{static{a(this,"PostgrestClient")}url;headers;schemaName;fetch;urlLengthLimit;retry;constructor(e,{headers:t={},schema:s,fetch:n,timeout:i,urlLengthLimit:o=8e3,retry:c}={}){this.url=e,this.headers=new Headers(t),this.schemaName=s,this.urlLengthLimit=o;let u=n??globalThis.fetch;i!==void 0&&i>0?this.fetch=(d,l)=>{let f=new AbortController,g=setTimeout(()=>f.abort(),i),y=l?.signal;if(y){if(y.aborted)return clearTimeout(g),u(d,l);let se=a(()=>{clearTimeout(g),f.abort()},"abortHandler");return y.addEventListener("abort",se,{once:!0}),u(d,{...l,signal:f.signal}).finally(()=>{clearTimeout(g),y.removeEventListener("abort",se)})}return u(d,{...l,signal:f.signal}).finally(()=>clearTimeout(g))}:this.fetch=u,this.retry=c}from(e){if(!e||typeof e!="string"||e.trim()==="")throw new Error("Invalid relation name: relation must be a non-empty string.");let t=new URL(`${this.url}/${e}`);return new V(t,{headers:new Headers(this.headers),schema:this.schemaName,fetch:this.fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}schema(e){return new r(this.url,{headers:this.headers,schema:e,fetch:this.fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}rpc(e,t={},{head:s=!1,get:n=!1,count:i}={}){let o,c=new URL(`${this.url}/rpc/${e}`),u,d=a(g=>g!==null&&typeof g=="object"&&(!Array.isArray(g)||g.some(d)),"_isObject"),l=s&&Object.values(t).some(d);l?(o="POST",u=t):s||n?(o=s?"HEAD":"GET",Object.entries(t).filter(([g,y])=>y!==void 0).map(([g,y])=>[g,Array.isArray(y)?`{${y.join(",")}}`:`${y}`]).forEach(([g,y])=>{c.searchParams.append(g,y)})):(o="POST",u=t);let f=new Headers(this.headers);return l?f.set("Prefer",i?`count=${i},return=minimal`:"return=minimal"):i&&f.set("Prefer",`count=${i}`),new O({method:o,url:c,headers:f,schema:this.schemaName,body:u,fetch:this.fetch??fetch,urlLengthLimit:this.urlLengthLimit,retry:this.retry})}};var G=class{static{a(this,"WorkBuddyDatabaseModule")}client;constructor(e,t){this.client=new N(`${e.endpoint}${A.database}`,{fetch:t}),this.from=this.client.from.bind(this.client),this.rpc=this.client.rpc.bind(this.client)}from;rpc;get url(){return this.client.url}};function Je(r,e){return new G(r,e)}a(Je,"createDatabaseModule");var x=class extends Error{static{a(this,"CloudOpenAIError")}error;status;requestId;retryAfterMs;constructor(e,t={}){let s=typeof e=="string"?{message:e,type:"server_error",param:null,code:null}:e;super(s.message),this.name="CloudOpenAIError",this.error=s,this.status=t.status,this.requestId=t.requestId,this.retryAfterMs=t.retryAfterMs,t.cause!==void 0&&("cause"in this||Object.defineProperty(this,"cause",{value:t.cause,writable:!1,enumerable:!1,configurable:!1}))}};function Ye(r){if(!r)return;let e=r.trim(),t=Number(e);if(!isNaN(t)&&t>=0&&Number.isInteger(t))return t*1e3;let s=Date.parse(e);if(!isNaN(s)){let n=s-Date.now();return n>0?n:0}}a(Ye,"parseRetryAfter");function m(...r){return r.find(e=>typeof e=="string"&&e.length>0)}a(m,"stringField");function E(...r){return r.find(e=>typeof e=="number"&&Number.isFinite(e))}a(E,"numberField");function k(...r){return r.find(e=>typeof e=="boolean")}a(k,"booleanField");function Xe(...r){for(let e of r){if(typeof e=="number"&&Number.isFinite(e))return e;if(e!==null&&typeof e=="object"&&!Array.isArray(e))return Ht(e)}}a(Xe,"contextWindowField");function Ht(r){let e={};for(let[t,s]of Object.entries(r)){if(t==="supportedLengths"){Array.isArray(s)&&(e.supportedLengths=s.filter(n=>typeof n=="number"&&Number.isFinite(n)));continue}if(t==="defaultLength"){typeof s=="number"&&Number.isFinite(s)&&(e.defaultLength=s);continue}Object.defineProperty(e,t,{value:s,writable:!0,enumerable:!0,configurable:!0})}return e}a(Ht,"normalizeContextWindowObject");function Qe(r){if(!r||typeof r!="object")return;let e=r,t=Array.isArray(e.input)?e.input.filter(n=>typeof n=="string"):void 0,s=Array.isArray(e.output)?e.output.filter(n=>typeof n=="string"):void 0;return t?.length||s?.length?{...t?.length?{input:t}:{},...s?.length?{output:s}:{}}:void 0}a(Qe,"modalitiesField");function Ze(r){if(!r||typeof r!="object")return;let t=Object.entries(r).filter(([,s])=>typeof s=="boolean");return t.length?Object.fromEntries(t):void 0}a(Ze,"capabilitiesField");function et(r){if(!r||typeof r!="object")return;let e=r,t={...m(e.currency)?{currency:e.currency}:{},...E(e.inputPerMillionTokens)!==void 0?{inputPerMillionTokens:e.inputPerMillionTokens}:{},...E(e.outputPerMillionTokens)!==void 0?{outputPerMillionTokens:e.outputPerMillionTokens}:{},...m(e.displayText)?{displayText:e.displayText}:{}};return Object.keys(t).length?t:void 0}a(et,"pricingField");function tt(r){if(!r||typeof r!="object")return;let e=r,t={},s=m(e.effort);s!==void 0&&(t.effort=s);let n=m(e.defaultEffort);n!==void 0&&(t.defaultEffort=n),Array.isArray(e.supportedEfforts)&&(t.supportedEfforts=e.supportedEfforts.filter(c=>typeof c=="string"));let i=m(e.summary);i!==void 0&&(i==="auto"||i==="concise"||i==="detailed")&&(t.summary=i);let o=k(e.canDisableThinking);return o!==void 0&&(t.canDisableThinking=o),Object.keys(t).length>0?t:void 0}a(tt,"reasoningField");function Wt(r){let e=m(r.id,r.ID);if(!e)return null;let t=k(r.enabled,r.Enabled),s=k(r.disabled,r.Disabled),n,i;return t!==void 0?(n=t,s!==void 0&&(i=s)):s!==void 0?(i=s,n=!s):n=!0,{id:e,name:m(r.name,r.Name)??e,...m(r.provider,r.Provider)?{provider:m(r.provider,r.Provider)}:{},...m(r.vendor,r.Vendor)?{vendor:m(r.vendor,r.Vendor)}:{},...m(r.family,r.Family)?{family:m(r.family,r.Family)}:{},...m(r.version,r.Version)?{version:m(r.version,r.Version)}:{},...m(r.description,r.Description)?{description:m(r.description,r.Description)}:{},...m(r.descriptionZh,r.DescriptionZh)?{descriptionZh:m(r.descriptionZh,r.DescriptionZh)}:{},...m(r.descriptionEn,r.DescriptionEn)?{descriptionEn:m(r.descriptionEn,r.DescriptionEn)}:{},...m(r.iconUrl,r.IconURL)?{iconUrl:m(r.iconUrl,r.IconURL)}:{},...Xe(r.contextWindow,r.ContextWindow)!==void 0?{contextWindow:Xe(r.contextWindow,r.ContextWindow)}:{},...E(r.maxInputTokens,r.MaxInputTokens)!==void 0?{maxInputTokens:E(r.maxInputTokens,r.MaxInputTokens)}:{},...E(r.maxOutputTokens,r.MaxOutputTokens)!==void 0?{maxOutputTokens:E(r.maxOutputTokens,r.MaxOutputTokens)}:{},...Qe(r.modalities??r.Modalities)?{modalities:Qe(r.modalities??r.Modalities)}:{},...Ze(r.capabilities??r.Capabilities)?{capabilities:Ze(r.capabilities??r.Capabilities)}:{},enabled:n,...i!==void 0?{disabled:i}:{},...k(r.isDefault,r.IsDefault)!==void 0?{isDefault:k(r.isDefault,r.IsDefault)}:{},...E(r.sortOrder,r.SortOrder)!==void 0?{sortOrder:E(r.sortOrder,r.SortOrder)}:{},...et(r.pricing??r.Pricing)?{pricing:et(r.pricing??r.Pricing)}:{},...m(r.credits,r.Credits)?{credits:m(r.credits,r.Credits)}:{},...E(r.maxAllowedSize,r.MaxAllowedSize)!==void 0?{maxAllowedSize:E(r.maxAllowedSize,r.MaxAllowedSize)}:{},...k(r.disabledMultimodal,r.DisabledMultimodal)!==void 0?{disabledMultimodal:k(r.disabledMultimodal,r.DisabledMultimodal)}:{},...k(r.supportsImages,r.SupportsImages)!==void 0?{supportsImages:k(r.supportsImages,r.SupportsImages)}:{},...k(r.supportsToolCall,r.SupportsToolCall)!==void 0?{supportsToolCall:k(r.supportsToolCall,r.SupportsToolCall)}:{},...k(r.supportsReasoning,r.SupportsReasoning)!==void 0?{supportsReasoning:k(r.supportsReasoning,r.SupportsReasoning)}:{},...k(r.onlyReasoning,r.OnlyReasoning)!==void 0?{onlyReasoning:k(r.onlyReasoning,r.OnlyReasoning)}:{},...tt(r.reasoning??r.Reasoning)?{reasoning:tt(r.reasoning??r.Reasoning)}:{},...E(r.temperature,r.Temperature)!==void 0?{temperature:E(r.temperature,r.Temperature)}:{},...E(r.top_k,r.Top_K)!==void 0?{top_k:E(r.top_k,r.Top_K)}:{},...E(r.top_p,r.Top_P)!==void 0?{top_p:E(r.top_p,r.Top_P)}:{},...E(r.repetition_penalty,r.Repetition_Penalty)!==void 0?{repetition_penalty:E(r.repetition_penalty,r.Repetition_Penalty)}:{}}}a(Wt,"normalizeModel");function ve(r){return r.name||r.id}a(ve,"getModelDisplayName");function Pe(r,e){return r.capabilities?.[e]}a(Pe,"getModelCapability");var de=class{static{a(this,"ModelsAPI")}baseUrl;fetch;constructor(e,t){this.baseUrl=e,this.fetch=t}async list(e){let t;try{t=await this.fetch(`${this.baseUrl}/models`,{method:"GET",headers:{Accept:"application/json"},signal:e})}catch(c){throw c instanceof Error&&c.name==="AbortError"?c:new x({message:`Network error: ${c?.message??"unknown"}`,type:"server_error",param:null,code:"gateway_network_error"},{cause:c})}if(!t.ok)throw await _e(t);let s=await t.text(),n;try{n=JSON.parse(s)}catch{throw new x({message:"Failed to parse models response: invalid JSON",type:"server_error",param:null,code:"gateway_invalid_response"})}let i=Array.isArray(n)?n:Array.isArray(n?.data)?n.data:[],o=[];for(let c of i){let u=Wt(c);u&&o.push(u)}return o}};async function _e(r){let e=await r.text().catch(()=>""),t;try{let i=JSON.parse(e);if(i&&typeof i=="object"&&i.error){let o=i.error;t={message:typeof o.message=="string"?o.message:`HTTP ${r.status}`,type:typeof o.type=="string"?o.type:"server_error",param:o.param===void 0?null:o.param,code:o.code===void 0?null:o.code}}else t={message:typeof i=="string"?i:`HTTP ${r.status}`,type:"server_error",param:null,code:null}}catch{t={message:e||`HTTP ${r.status}`,type:"server_error",param:null,code:null}}let s=r.headers.get("x-request-id")??void 0,n=Ye(r.headers.get("retry-after"));return new x(t,{status:r.status,requestId:s,retryAfterMs:n})}a(_e,"httpError");var le=class{static{a(this,"Utf8Decoder")}codePoint=0;bytesNeeded=0;bytesSeen=0;lowerBoundary=128;upperBoundary=191;bomSeen=!1;streaming=!1;resetSequence(){this.codePoint=0,this.bytesNeeded=0,this.bytesSeen=0,this.lowerBoundary=128,this.upperBoundary=191}decode(e=new Uint8Array,t={}){this.streaming||(this.resetSequence(),this.bomSeen=!1),this.streaming=t.stream===!0;let s="",n=a(i=>{!this.bomSeen&&(this.bomSeen=!0,i===65279)||(s+=String.fromCodePoint(i))},"emit");for(let i=0;i<e.length;i++){let o=e[i];if(this.bytesNeeded===0){o<=127?n(o):o>=194&&o<=223?(this.bytesNeeded=1,this.codePoint=o&31):o>=224&&o<=239?(this.bytesNeeded=2,this.codePoint=o&15,o===224&&(this.lowerBoundary=160),o===237&&(this.upperBoundary=159)):o>=240&&o<=244?(this.bytesNeeded=3,this.codePoint=o&7,o===240&&(this.lowerBoundary=144),o===244&&(this.upperBoundary=143)):n(65533);continue}if(o<this.lowerBoundary||o>this.upperBoundary){this.resetSequence(),n(65533),i--;continue}this.lowerBoundary=128,this.upperBoundary=191,this.codePoint=this.codePoint<<6|o&63,this.bytesSeen++,this.bytesSeen===this.bytesNeeded&&(n(this.codePoint),this.resetSequence())}return!this.streaming&&this.bytesNeeded>0&&(n(65533),this.resetSequence()),s}};var Kt=class{static{a(this,"SSEDecoder")}event=null;dataParts=[];decode(e){let t=e;if(t.endsWith("\r")&&(t=t.slice(0,-1)),t===""){if(this.event===null&&this.dataParts.length===0)return null;let o={event:this.event,data:this.dataParts.join(`
+`)};return this.event=null,this.dataParts=[],o}if(t.startsWith(":"))return null;let s=t.indexOf(":"),n,i;if(s===-1)n=t,i="";else{n=t.slice(0,s);let o=t.slice(s+1);o.startsWith(" ")&&(o=o.slice(1)),i=o}return n==="event"?this.event=i:n==="data"&&this.dataParts.push(i),null}flush(){if(this.event===null&&this.dataParts.length===0)return null;let e={event:this.event,data:this.dataParts.join(`
+`)};return this.event=null,this.dataParts=[],e}},zt=class{static{a(this,"LineDecoder")}buffer=new Uint8Array;decoder;constructor(){this.decoder=typeof TextDecoder>"u"?new le:new TextDecoder("utf-8")}decode(e){let t=new Uint8Array(this.buffer.length+e.length);t.set(this.buffer),t.set(e,this.buffer.length),this.buffer=t;let s=[],n=0;for(let i=0;i<this.buffer.length;i++)if(this.buffer[i]===10||this.buffer[i]===13){let o=this.buffer.subarray(n,i),c=this.decoder.decode(o,{stream:!0});s.push(c),this.buffer[i]===13&&i+1<this.buffer.length&&this.buffer[i+1]===10&&i++,n=i+1}return n>0&&(this.buffer=this.buffer.slice(n)),s}flush(){if(this.buffer.length===0){let t=this.decoder.decode();return t?[t]:[]}let e=this.decoder.decode(this.buffer,{stream:!1});return this.buffer=new Uint8Array,e?[e]:[]}},rt="[DONE]";async function*st(r,e){let t=new Kt,s=new zt,n=r.getReader(),i=!1,o=a(()=>{i=!0,n.cancel().catch(()=>{})},"onAbort");if(e){if(e.aborted)return;e.addEventListener("abort",o,{once:!0})}try{for(;;){if(i)return;let u;try{u=await n.read()}catch(f){if(i||f instanceof Error&&f.name==="AbortError")return;throw f}let{done:d,value:l}=u;if(d)break;for(let f of s.decode(l)){let g=t.decode(f);g&&(yield g)}}for(let u of s.flush()){let d=t.decode(u);d&&(yield d)}let c=t.flush();c&&(yield c)}finally{e&&e.removeEventListener("abort",o);try{n.releaseLock()}catch{}}}a(st,"iterSSEEvents");function Vt(r,e){let t=e?{requestId:e}:{};try{let s=JSON.parse(r);if(s&&typeof s=="object"){let n=s.error??s;if(n&&typeof n=="object")return new x({message:typeof n.message=="string"?n.message:"Stream error",type:typeof n.type=="string"?n.type:"server_error",param:n.param===void 0?null:n.param,code:n.code===void 0?null:n.code},t)}}catch{}return new x({message:r||"Stream error",type:"server_error",param:null,code:null},t)}a(Vt,"extractSSEError");var he=class{static{a(this,"ChatCompletionsAPI")}baseUrl;fetch;constructor(e,t){this.baseUrl=e,this.fetch=t}create(e){if(e.stream!==!0)throw new x({message:"stream must be true; non-streaming chat completions are not supported",type:"invalid_request_error",param:"stream",code:"request_stream_required"});return this.createStreaming(e)}async*createStreaming(e){let{signal:t,conversationId:s,...n}=e;n.stream=!0;let i;try{i=await this.fetch(`${this.baseUrl}/chat/completions`,{method:"POST",headers:{Accept:"text/event-stream","Content-Type":"application/json",...s!==void 0?{"X-Conversation-ID":s}:{}},body:JSON.stringify(n),signal:t})}catch(d){if(d instanceof Error&&d.name==="AbortError")return;throw new x({message:`Network error: ${d?.message??"unknown"}`,type:"server_error",param:null,code:"gateway_network_error"},{cause:d})}if(!i.ok)throw await _e(i);if(!i.body)throw new x({message:"Response body is empty \u2014 streaming not supported",type:"server_error",param:null,code:"gateway_invalid_response"},{requestId:i.headers.get("x-request-id")??void 0});let o=i.headers.get("x-request-id")??void 0,c=!1,u=!1;try{for await(let d of st(i.body,t)){if(d.event==="error")throw u=!0,Vt(d.data,o);if(d.event===null||d.event===""){if(d.data===rt){c=!0;return}if(!d.data)continue;let l;try{l=JSON.parse(d.data)}catch{throw u=!0,new x({message:`Failed to parse SSE data: ${d.data}`,type:"server_error",param:null,code:"gateway_invalid_response"},{requestId:o})}if(l&&typeof l=="object"&&"error"in l){u=!0;let f=l.error;throw new x({message:typeof f?.message=="string"?f.message:"Stream error",type:typeof f?.type=="string"?f.type:"server_error",param:f?.param===void 0?null:f.param,code:f?.code===void 0?null:f.code},{requestId:o})}yield l}}}catch(d){if(d instanceof Error&&d.name==="AbortError")return;throw u=!0,d}if(!c&&!u&&!t?.aborted)throw new x({message:"\u6D41\u5F0F\u54CD\u5E94\u4E2D\u65AD\u3002",type:"server_error",param:null,code:"gateway_stream_interrupted"},{requestId:o})}};var F=class{static{a(this,"LlmModule")}fetch;baseUrl;models;chat;constructor(e,t){this.fetch=t,this.baseUrl=`${e.endpoint}${A.llm}`,this.models=new de(this.baseUrl,this.fetch),this.chat={completions:new he(this.baseUrl,this.fetch)}}};var B=class extends Error{static{a(this,"StorageError")}__isStorageError=!0;namespace;status;statusCode;constructor(e,t="storage",s,n){super(e),this.namespace=t,this.name=t==="vectors"?"StorageVectorsError":"StorageError",this.status=s,this.statusCode=n}toJSON(){return{name:this.name,message:this.message,status:this.status,statusCode:this.statusCode}}};function $(r){return typeof r=="object"&&r!==null&&"__isStorageError"in r}a($,"isStorageError");var L=class extends B{static{a(this,"StorageApiError")}status;statusCode;code;constructor(e,t,s,n="storage",i){super(e,n,t,s),this.name=n==="vectors"?"StorageVectorsApiError":"StorageApiError",this.status=t,this.statusCode=s,this.code=i}toJSON(){return{...super.toJSON(),code:this.code}}},M=class extends B{static{a(this,"StorageUnknownError")}originalError;constructor(e,t,s="storage"){super(e,s),this.name=s==="vectors"?"StorageVectorsUnknownError":"StorageUnknownError",this.originalError=t}};function C(r,e,t){let s={...r},n=e.toLowerCase();for(let i of Object.keys(s))i.toLowerCase()===n&&delete s[i];return s[n]=t,s}a(C,"setHeader");function nt(r){let e={};for(let[t,s]of Object.entries(r))e[t.toLowerCase()]=s;return e}a(nt,"normalizeHeaders");var it=a(r=>r?(...e)=>r(...e):(...e)=>fetch(...e),"resolveFetch");var ot=a(r=>{if(typeof r!="object"||r===null)return!1;let e=Object.getPrototypeOf(r);return(e===null||e===Object.prototype||Object.getPrototypeOf(e)===null)&&!(Symbol.toStringTag in r)&&!(Symbol.iterator in r)},"isPlainObject"),fe=a(r=>{if(Array.isArray(r))return r.map(t=>fe(t));if(typeof r=="function"||r!==Object(r))return r;let e={};return Object.entries(r).forEach(([t,s])=>{let n=t.replace(/([-_][a-z])/gi,i=>i.toUpperCase().replace(/[-_]/g,""));e[n]=fe(s)}),e},"recursiveToCamel");var at=a(r=>r.split("/").map(encodeURIComponent).join("/"),"encodeStoragePath");var ct=a(r=>{if(typeof r=="object"&&r!==null){let e=r;if(typeof e.msg=="string")return e.msg;if(typeof e.message=="string")return e.message;if(typeof e.error_description=="string")return e.error_description;if(typeof e.error=="string")return e.error;if(typeof e.error=="object"&&e.error!==null){let t=e.error;if(typeof t.message=="string")return t.message}}return JSON.stringify(r)},"_getErrorMessage"),Gt=a(async(r,e,t,s)=>{if(r!==null&&typeof r=="object"&&"json"in r&&typeof r.json=="function"){let i=r,o=parseInt(String(i.status),10);Number.isFinite(o)||(o=500),i.json().then(c=>{let u=c?.statusCode||c?.code||o+"";e(new L(ct(c),o,u,s,c?.code))}).catch(()=>{let c=o+"",u=i.statusText||`HTTP ${o} error`;e(new L(u,o,c,s))})}else e(new M(ct(r),r,s))},"handleError"),Jt=a((r,e,t,s)=>{let n={method:r,headers:e?.headers||{}};if(r==="GET"||r==="HEAD"||!s)return{...n,...t};if(ot(s)){let i=e?.headers||{},o;for(let[c,u]of Object.entries(i))c.toLowerCase()==="content-type"&&(o=u);n.headers=C(i,"Content-Type",o??"application/json"),n.body=JSON.stringify(s)}else n.body=s;return e?.duplex&&(n.duplex=e.duplex),{...n,...t}},"_getRequestParams");async function J(r,e,t,s,n,i,o){return new Promise((c,u)=>{r(t,Jt(e,s,n,i)).then(d=>{if(!d.ok)throw d;if(s?.noResolveJson)return d;if(o==="vectors"){let l=d.headers.get("content-type");if(d.headers.get("content-length")==="0"||d.status===204)return{};if(!l||!l.includes("application/json"))return{}}return d.json()}).then(d=>c(d)).catch(d=>Gt(d,u,s,o))})}a(J,"_handleRequest");function ut(r="storage"){return{get:a(async(e,t,s,n)=>J(e,"GET",t,s,n,void 0,r),"get"),post:a(async(e,t,s,n,i)=>J(e,"POST",t,n,i,s,r),"post"),put:a(async(e,t,s,n,i)=>J(e,"PUT",t,n,i,s,r),"put"),head:a(async(e,t,s,n)=>J(e,"HEAD",t,{...s,noResolveJson:!0},n,void 0,r),"head"),remove:a(async(e,t,s,n,i)=>J(e,"DELETE",t,n,i,s,r),"remove")}}a(ut,"createFetchApi");var Yt=ut("storage"),{get:Te,post:R,put:Oe,head:dt,remove:Ae}=Yt,$s=ut("vectors");var Y=class{static{a(this,"BaseApiClient")}url;headers;fetch;shouldThrowOnError=!1;namespace;constructor(e,t={},s,n="storage"){this.url=e,this.headers=nt(t),this.fetch=it(s),this.namespace=n}throwOnError(){return this.shouldThrowOnError=!0,this}setHeader(e,t){return this.headers=C(this.headers,e,t),this}async handleOperation(e){try{return{data:await e(),error:null}}catch(t){if(this.shouldThrowOnError)throw t;if($(t))return{data:null,error:t};throw t}}};var X=class{static{a(this,"StreamDownloadBuilder")}downloadFn;shouldThrowOnError;[Symbol.toStringTag]="StreamDownloadBuilder";promise=null;constructor(e,t){this.downloadFn=e,this.shouldThrowOnError=t}then(e,t){return this.getPromise().then(e,t)}catch(e){return this.getPromise().catch(e)}finally(e){return this.getPromise().finally(e)}getPromise(){return this.promise||(this.promise=this.execute()),this.promise}async execute(){try{return{data:(await this.downloadFn()).body,error:null}}catch(e){if(this.shouldThrowOnError)throw e;if($(e))return{data:null,error:e};throw e}}};var Q=class{static{a(this,"BlobDownloadBuilder")}downloadFn;shouldThrowOnError;[Symbol.toStringTag]="BlobDownloadBuilder";promise=null;constructor(e,t){this.downloadFn=e,this.shouldThrowOnError=t}asStream(){return new X(this.downloadFn,this.shouldThrowOnError)}then(e,t){return this.getPromise().then(e,t)}catch(e){return this.getPromise().catch(e)}finally(e){return this.getPromise().finally(e)}getPromise(){return this.promise||(this.promise=this.execute()),this.promise}async execute(){try{return{data:await(await this.downloadFn()).blob(),error:null}}catch(e){if(this.shouldThrowOnError)throw e;if($(e))return{data:null,error:e};throw e}}};var Re={limit:100,offset:0,sortBy:{column:"name",order:"asc"}},lt={cacheControl:"3600",contentType:"text/plain;charset=UTF-8",upsert:!1},Z=class extends Y{static{a(this,"StorageFileApi")}bucketId;constructor(e,t={},s,n){super(e,t,n,"storage"),this.bucketId=s}async uploadOrUpdate(e,t,s,n){return this.handleOperation(async()=>{let i,o={...lt,...n},c={...this.headers,...e==="POST"&&{"x-upsert":String(o.upsert)}},u=o.metadata;if(typeof Blob<"u"&&s instanceof Blob?(i=new FormData,i.append("cacheControl",o.cacheControl),u&&i.append("metadata",this.encodeMetadata(u)),i.append("",s)):typeof FormData<"u"&&s instanceof FormData?(i=s,i.has("cacheControl")||i.append("cacheControl",o.cacheControl),u&&!i.has("metadata")&&i.append("metadata",this.encodeMetadata(u))):(i=s,c["cache-control"]=`max-age=${o.cacheControl}`,c["content-type"]=o.contentType,u&&(c["x-metadata"]=this.toBase64(this.encodeMetadata(u))),(typeof ReadableStream<"u"&&i instanceof ReadableStream||i&&typeof i=="object"&&"pipe"in i&&typeof i.pipe=="function")&&!o.duplex&&(o.duplex="half")),n?.headers)for(let[g,y]of Object.entries(n.headers))c=C(c,g,y);let d=this._removeEmptyFolders(t),l=this._getFinalPath(d),f=await(e=="PUT"?Oe:R)(this.fetch,`${this.url}/object/${l}`,i,{headers:c,...o?.duplex?{duplex:o.duplex}:{}});return{path:d,id:f.Id,fullPath:f.Key}})}async upload(e,t,s){return this.uploadOrUpdate("POST",e,t,s)}async uploadToSignedUrl(e,t,s,n){let i=this._removeEmptyFolders(e),o=this._getFinalPath(i),c=new URL(this.url+`/object/upload/sign/${o}`);return c.searchParams.set("token",t),this.handleOperation(async()=>{let u,d={...lt,...n},l={...this.headers,"x-upsert":String(d.upsert)},f=d.metadata;if(typeof Blob<"u"&&s instanceof Blob?(u=new FormData,u.append("cacheControl",d.cacheControl),f&&u.append("metadata",this.encodeMetadata(f)),u.append("",s)):typeof FormData<"u"&&s instanceof FormData?(u=s,u.has("cacheControl")||u.append("cacheControl",d.cacheControl),f&&!u.has("metadata")&&u.append("metadata",this.encodeMetadata(f))):(u=s,l["cache-control"]=`max-age=${d.cacheControl}`,l["content-type"]=d.contentType,f&&(l["x-metadata"]=this.toBase64(this.encodeMetadata(f))),(typeof ReadableStream<"u"&&u instanceof ReadableStream||u&&typeof u=="object"&&"pipe"in u&&typeof u.pipe=="function")&&!d.duplex&&(d.duplex="half")),n?.headers)for(let[y,se]of Object.entries(n.headers))l=C(l,y,se);let g=await Oe(this.fetch,c.toString(),u,{headers:l,...d?.duplex?{duplex:d.duplex}:{}});return{path:i,fullPath:g.Key}})}async createSignedUploadUrl(e,t){return this.handleOperation(async()=>{let s=this._getFinalPath(e),n={...this.headers};t?.upsert&&(n["x-upsert"]="true");let i=await R(this.fetch,`${this.url}/object/upload/sign/${s}`,{},{headers:n}),o=new URL(this.url+i.url),c=o.searchParams.get("token");if(!c)throw new B("No token returned by API");return{signedUrl:o.toString(),path:e,token:c}})}async update(e,t,s){return this.uploadOrUpdate("PUT",e,t,s)}async move(e,t,s){return this.handleOperation(async()=>await R(this.fetch,`${this.url}/object/move`,{bucketId:this.bucketId,sourceKey:e,destinationKey:t,destinationBucket:s?.destinationBucket},{headers:this.headers}))}async copy(e,t,s){return this.handleOperation(async()=>({path:(await R(this.fetch,`${this.url}/object/copy`,{bucketId:this.bucketId,sourceKey:e,destinationKey:t,destinationBucket:s?.destinationBucket},{headers:this.headers})).Key}))}async createSignedUrl(e,t,s){return this.handleOperation(async()=>{let n=this._getFinalPath(e),i=typeof s?.transform=="object"&&s.transform!==null&&Object.keys(s.transform).length>0,o=await R(this.fetch,`${this.url}/object/sign/${n}`,{expiresIn:t,...i?{transform:s.transform}:{}},{headers:this.headers}),c=new URLSearchParams;s?.download&&c.set("download",s.download===!0?"":s.download),s?.cacheNonce!=null&&c.set("cacheNonce",String(s.cacheNonce));let u=c.toString();return{signedUrl:encodeURI(`${this.url}${o.signedURL}${u?`&${u}`:""}`)}})}async createSignedUrls(e,t,s){return this.handleOperation(async()=>{let n=await R(this.fetch,`${this.url}/object/sign/${this.bucketId}`,{expiresIn:t,paths:e},{headers:this.headers}),i=new URLSearchParams;s?.download&&i.set("download",s.download===!0?"":s.download),s?.cacheNonce!=null&&i.set("cacheNonce",String(s.cacheNonce));let o=i.toString();return n.map(c=>({...c,signedUrl:c.signedURL?encodeURI(`${this.url}${c.signedURL}${o?`&${o}`:""}`):null}))})}download(e,t,s){let i=typeof t?.transform=="object"&&t.transform!==null&&Object.keys(t.transform).length>0?"render/image/authenticated":"object",o=new URLSearchParams;t?.transform&&this.applyTransformOptsToQuery(o,t.transform),t?.cacheNonce!=null&&o.set("cacheNonce",String(t.cacheNonce));let c=o.toString(),u=this._getFinalPath(e),d=a(()=>Te(this.fetch,`${this.url}/${i}/${u}${c?`?${c}`:""}`,{headers:this.headers,noResolveJson:!0},s),"downloadFn");return new Q(d,this.shouldThrowOnError)}async info(e){let t=this._getFinalPath(e);return this.handleOperation(async()=>{let s=await Te(this.fetch,`${this.url}/object/info/${t}`,{headers:this.headers});return fe(s)})}async exists(e){let t=this._getFinalPath(e);try{return await dt(this.fetch,`${this.url}/object/${t}`,{headers:this.headers}),{data:!0,error:null}}catch(s){if(this.shouldThrowOnError)throw s;if($(s)){let n=s instanceof L?s.status:s instanceof M?s.originalError?.status:void 0;if(n!==void 0&&[400,404].includes(n))return{data:!1,error:s}}throw s}}getPublicUrl(e,t){let s=this._getFinalPath(e),n=new URLSearchParams;t?.download&&n.set("download",t.download===!0?"":t.download),t?.transform&&this.applyTransformOptsToQuery(n,t.transform),t?.cacheNonce!=null&&n.set("cacheNonce",String(t.cacheNonce));let i=n.toString(),c=typeof t?.transform=="object"&&t.transform!==null&&Object.keys(t.transform).length>0?"render/image":"object";return{data:{publicUrl:encodeURI(`${this.url}/${c}/public/${s}`)+(i?`?${i}`:"")}}}async remove(e){return this.handleOperation(async()=>await Ae(this.fetch,`${this.url}/object/${this.bucketId}`,{prefixes:e},{headers:this.headers}))}async purgeCache(e,t,s){return this.handleOperation(async()=>{let n=at(this._getFinalPath(e)),i=new URLSearchParams;t?.transformations&&i.set("transformations","true");let o=i.toString();return await Ae(this.fetch,`${this.url}/cdn/${n}${o?`?${o}`:""}`,{},{headers:this.headers},s)})}async list(e,t,s){return this.handleOperation(async()=>{let n=t?.sortBy?{...Re.sortBy,...t.sortBy}:Re.sortBy,i={...Re,...t,sortBy:n,prefix:e||""};return await R(this.fetch,`${this.url}/object/list/${this.bucketId}`,i,{headers:this.headers},s)})}async listV2(e,t){return this.handleOperation(async()=>{let s={...e};return await R(this.fetch,`${this.url}/object/list-v2/${this.bucketId}`,s,{headers:this.headers},t)})}encodeMetadata(e){return JSON.stringify(e)}toBase64(e){return typeof Buffer<"u"?Buffer.from(e).toString("base64"):btoa(e)}_getFinalPath(e){return`${this.bucketId}/${e.replace(/^\/+/,"")}`}_removeEmptyFolders(e){return e.replace(/^\/|\/$/g,"").replace(/\/+/g,"/")}applyTransformOptsToQuery(e,t){return t.width&&e.set("width",t.width.toString()),t.height&&e.set("height",t.height.toString()),t.resize&&e.set("resize",t.resize),t.format&&e.set("format",t.format),t.quality&&e.set("quality",t.quality.toString()),e}};var ht="2.112.3";var ft={"X-Client-Info":`storage-js/${ht}`};var q="runtime",pe=600,me=3600,b=class extends Error{static{a(this,"CloudStoragePathError")}constructor(e){super(e),this.name="CloudStoragePathError"}},ee=class{static{a(this,"WorkBuddyStorageDownload")}blob;stream;[Symbol.toStringTag]="WorkBuddyStorageDownload";constructor(e,t){this.blob=e,this.stream=t}asStream(){return this.stream()}then(e,t){return this.blob().then(e,t)}catch(e){return this.blob().catch(e)}finally(e){return this.blob().finally(e)}},H=class{static{a(this,"WorkBuddyStorageBucket")}fileApi;constructor(e){this.fileApi=e}upload(e,t,s){return P(this.fileApi.upload(v(e),t,s))}update(e,t,s){return P(this.fileApi.update(v(e),t,s))}list(e="",t){return P(this.fileApi.list(mt(e),t))}listPage(e){return P(this.fileApi.listV2({...e,prefix:mt(e?.prefix??"")}))}info(e){return P(this.fileApi.info(v(e)))}async exists(e){let t=await this.fileApi.exists(v(e));return t.error?{data:null,error:bt(t.error)}:{data:t.data,error:null}}download(e){let t=this.fileApi.download(v(e));return new ee(()=>P(t),()=>P(t.asStream()))}remove(e){if(e.length===0)throw new b("remove requires at least one object path.");return P(this.fileApi.remove(e.map(v)))}copy(e,t){return P(this.fileApi.copy(v(e),v(t)))}move(e,t){return P(this.fileApi.move(v(e),v(t)))}createSignedUrl(e,t=pe){return P(this.fileApi.createSignedUrl(v(e),gt(t)))}createSignedUrls(e,t=pe){if(e.length===0)throw new b("createSignedUrls requires at least one object path.");return P(this.fileApi.createSignedUrls(e.map(v),gt(t)))}createSignedUploadUrl(e,t){return P(this.fileApi.createSignedUploadUrl(v(e),{upsert:t?.upsert??!1}))}uploadToSignedUrl(e,t,s,n){if(!t)throw new b("signed upload token is required.");return P(this.fileApi.uploadToSignedUrl(v(e),t,s,n))}},te=class extends H{static{a(this,"WorkBuddyStorageModule")}runtime;constructor(e){let s=e.from(q);super(s),this.runtime=new H(s)}from(e=q){if(e!==q)throw new b(`Only the "${q}" storage bucket is available.`);return this.runtime}userPath(e,t){return pt("users",e,t)}sharedPath(e,t){return pt("shared",e,t)}};function yt(r,e){let t={from:a(s=>new Z(`${r.endpoint}${A.storage}`,ft,s,e),"from")};return new te(t)}a(yt,"createStorageModule");function pt(r,e,t){let s=Xt(e,"owner/user id"),n=$e(t,!1);return v(`${r}/${s}/${n}`)}a(pt,"scopedPath");function v(r){let e=$e(r,!1);if(!e.includes("/"))throw new b("Object paths must use users/<uid>/... or shared/<ownerUid>/....");let[t,s,...n]=e.split("/");if(t!=="users"&&t!=="shared"||!s||n.length===0)throw new b("Object paths must use users/<uid>/... or shared/<ownerUid>/....");return e}a(v,"validateObjectPath");function mt(r){if(r==="")return"";let e=$e(r,!0),[t,s]=e.split("/");if(t==="shared"&&!s)return"shared";if(t!=="users"&&t!=="shared"||!s)throw new b("List prefixes must start with users/<uid> or shared/<ownerUid>.");return e}a(mt,"validateObjectPrefix");function $e(r,e){if(typeof r!="string"||r.trim()==="")throw new b("Storage path must be a non-empty relative path.");let t=r.trim();for(let i=0;i<3;i+=1)try{let o=decodeURIComponent(t);if(o===t)break;t=o}catch{throw new b("Storage path contains invalid URL encoding.")}if(t.startsWith("/")||t.includes("\\")||t.includes("\0")||t.includes("//")||!e&&t.endsWith("/"))throw new b("Storage path is not a safe relative object path.");let s=e?t.replace(/\/+$/,""):t;if(s.split("/").some(i=>i===""||i==="."||i===".."))throw new b("Storage path traversal is not allowed.");return s}a($e,"validatePath");function Xt(r,e){if(!r)throw new b(`${e} is not a valid storage path segment.`);let t=r;for(let s=0;s<3;s+=1)try{let n=decodeURIComponent(t);if(n===t)break;t=n}catch{throw new b(`${e} contains invalid URL encoding.`)}if(t.includes("/")||t.includes("\\")||t.includes("\0")||t==="."||t==="..")throw new b(`${e} is not a valid storage path segment.`);return t}a(Xt,"validatePathSegment");function gt(r){if(!Number.isInteger(r)||r<=0||r>me)throw new b(`Signed URL expiry must be an integer between 1 and ${me} seconds.`);return r}a(gt,"validateSignedURLTTL");async function P(r){let e=await r;return e.error?{data:null,error:bt(e.error)}:e.data===null?{data:null,error:{name:"CloudStorageResponseError",message:"Storage API returned neither data nor an error."}}:{data:e.data,error:null}}a(P,"mapStorageResult");function bt(r){if(r instanceof Error){let e=r;return{name:e.name,message:e.message,status:e.status,statusCode:e.statusCode,code:e.code,cause:r}}return{name:"CloudStorageError",message:String(r),cause:r}}a(bt,"normalizeStorageError");var re=class{static{a(this,"WorkBuddyCloudClient")}config;database;auth;storage;llm;constructor(e,t={}){this.config=e,this.auth=new D(e,ye(e,ie),{storage:t.storage});let s=ye(e,()=>this.auth.getAccessToken());this.database=Je(e,s),this.storage=yt(e,s),this.llm=new F(e,s)}get endpoint(){return this.config.endpoint}get oauthRelayBaseUrl(){return this.config.oauthRelayBaseUrl}};function wt(r){return new re(Le(r),{storage:r.storage})}a(wt,"createWorkBuddyCloud");function St(r){return r.kind==="unauthenticated"||r.code==="invalid_grant"}a(St,"shouldClearCredentials");return _t(Qt);})();
+//# sourceMappingURL=index.global.js.map</script>
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   管理员密码（改这里即可）：晨曦2026
+   ============================================================ */
+var ADMIN_PW = 'cx2026';
+
+var $ = function(id){ return document.getElementById(id); };
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+var EMJ = { pepper:'🌶️', shuangjiang:'🥁', dalang:'💃', nuomi:'🍚', dukang:'🏞️', litun:'⛰️',
+  huashan:'🎨', detian:'💦', houzi:'🐒', youyiguan:'🏯', tianqin:'🎵' };
+
+/* ---------- 云服务 ---------- */
+var cloud = null;
+try {
+  if (window.WorkBuddyCloud && window.CLOUD_CONFIG && window.CLOUD_CONFIG.endpoint){
+    cloud = window.WorkBuddyCloud.createWorkBuddyCloud({
+      endpoint: window.CLOUD_CONFIG.endpoint,
+      oauthRelayBaseUrl: window.CLOUD_CONFIG.oauthRelayBaseUrl,
+      publishableKey: window.CLOUD_CONFIG.publishableKey
+    });
+  }
+} catch(e){ cloud = null; }
+
+/* ---------- 问卷题目元数据（与 survey.html 一一对应，用于统计题面） ---------- */
+var META = {
+  pre:{ name:'课前问卷',
+    qs:[
+      { id:'know', t:'了解家乡文化吗', opts:['很了解','知道一些','知道一点点','不太了解'] },
+      { id:'what', t:'说的家乡文化包括哪些', multi:true, opts:['好吃的（指天椒、五色糯米饭）','好玩的节日','好看的风景','老手艺、老故事','别的'] },
+      { id:'ai', t:'以前上过用电脑、用 AI 的课吗', opts:['上过好几次','上过一两次','从来没有'] },
+      { id:'qr', t:'知道二维码是什么吗', opts:['知道，我还会用','听说过，不太清楚','不知道'] },
+      { id:'want', t:'最想做什么', multi:true, opts:['学 AI 帮忙写话','做自己的二维码','让同学扫码看我做的','给同学点赞'] },
+      { id:'hard', t:'觉得打字难不难', opts:['不难','有点难','很难'] }
+    ] },
+  mid:{ name:'课中问卷',
+    qs:[
+      { id:'fun', t:'这节课开心吗', opts:['很开心','还不错','一般般','不太开心'] },
+      { id:'understood', t:'方法听懂了吗', opts:['都听懂了','大部分懂','有一点点懂','还不太懂'] },
+      { id:'aihelp', t:'AI 帮忙有没有用', opts:['帮了很大忙','有一点帮助','没什么用','还没用过'] },
+      { id:'step', t:'做到哪一步了', opts:['还在选主题','在拼句子','在做二维码','已经交到作品墙了'] },
+      { id:'stuck', t:'遇到困难的地方', multi:true, opts:['都挺顺的','选主题有点难','句子不知道怎么选','按钮找不到','还有别的'] },
+      { id:'like', t:'最喜欢哪一步', opts:['选家乡主题','点词拼句子','让 AI 帮写','生成二维码','看别人作品点赞'] }
+    ] },
+  post:{ name:'课后问卷',
+    qs:[
+      { id:'gain', t:'学到了什么', multi:true, opts:['家乡文化的知识','怎么用 AI 帮忙','怎么把话写进二维码','怎么给别人点赞评价'] },
+      { id:'proud', t:'对家乡更自豪了吗', opts:['更加自豪了','有点自豪','和以前差不多','没感觉'] },
+      { id:'willshare', t:'愿意分享给家人吗', opts:['很想分享','愿意','说不好','不太想'] },
+      { id:'better', t:'觉得自己做得怎么样', opts:['我很满意','还不错','还要加油','不太满意'] },
+      { id:'again', t:'还想再上这样的课吗', opts:['很想再上','想','都可以','不想'] },
+      { id:'word', t:'内容难不难', opts:['太简单了','刚刚好','有点难','太难了'] },
+      { id:'free', t:'想对老师说的话', text:true }
+    ] }
+};
+
+/* ---------- 数据 ---------- */
+var WORKS = [], RATINGS = [], SURVEYS = [];
+var tab = 'overview';
+
+function loadAll(){
+  if (!cloud){ $('panels').innerHTML = '<div class="panel"><div class="empty">连不上云服务，检查网络后点「刷新」。</div></div>'; return; }
+  $('panels').innerHTML = '<div class="panel"><div class="empty">正在加载数据…</div></div>';
+  Promise.all([
+    cloud.database.from('works').select('*').order('created_at', { ascending:false }).limit(1000),
+    cloud.database.from('ratings').select('*').limit(10000),
+    cloud.database.from('surveys').select('*').order('created_at', { ascending:false }).limit(3000)
+  ]).then(function(res){
+    if (res[0].error) throw res[0].error;
+    WORKS = res[0].data || [];
+    RATINGS = (res[1] && res[1].data) || [];
+    SURVEYS = (res[2] && res[2].data) || [];
+    renderAll();
+  }).catch(function(e){
+    $('panels').innerHTML = '<div class="panel"><div class="empty">加载失败：'
+      + esc(e && e.message ? e.message : '网络问题') + '</div></div>';
+  });
+}
+
+/* ---------- 汇总工具 ---------- */
+function byAuthor(){
+  var m = {};
+  WORKS.forEach(function(w){
+    var k = (w.author || '未知') + '\u0001' + (w.klass || '');
+    if (!m[k]) m[k] = { author:w.author||'未知', klass:w.klass||'', works:[], stars:0, rates:0 };
+    m[k].works.push(w);
+  });
+  var agg = {};
+  RATINGS.forEach(function(r){
+    var o = agg[r.work_id] || (agg[r.work_id] = { sum:0, n:0 });
+    o.sum += parseInt(r.stars,10)||0; o.n++;
+  });
+  Object.keys(m).forEach(function(k){
+    m[k].works.forEach(function(w){
+      var a = agg[w.id];
+      if (a){ m[k].stars += a.sum; m[k].rates += a.n; }
+    });
+    m[k].avg = m[k].rates ? (m[k].stars / m[k].rates).toFixed(2) : '—';
+    m[k].count = m[k].works.length;
+  });
+  return Object.keys(m).map(function(k){ return m[k]; })
+    .sort(function(a,b){ return b.count - a.count || (b.rates - a.rates); });
+}
+function workAgg(){
+  var agg = {};
+  RATINGS.forEach(function(r){
+    var o = agg[r.work_id] || (agg[r.work_id] = { sum:0, n:0 });
+    o.sum += parseInt(r.stars,10)||0; o.n++;
+  });
+  return agg;
+}
+function fmt(s){
+  if (!s) return '';
+  try {
+    var d = new Date(s);
+    var p = function(n){ return (n<10?'0':'')+n; };
+    return (d.getMonth()+1) + '月' + d.getDate() + '日 ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  } catch(e){ return s; }
+}
+
+/* ---------- KPI ---------- */
+function renderKpis(){
+  var students = {};
+  WORKS.forEach(function(w){ if (w.author) students[w.author] = 1; });
+  var rated = {}, authors = {};
+  RATINGS.forEach(function(r){ rated[r.rater_id] = 1; });
+  var surveyN = SURVEYS.length;
+  var avg = RATINGS.length ? (RATINGS.reduce(function(s,r){ return s+(parseInt(r.stars,10)||0); },0)/RATINGS.length).toFixed(2) : '—';
+  var k = [
+    { v:WORKS.length, l:'作品总数', c:'acc' },
+    { v:Object.keys(students).length, l:'参与学生数', c:'' },
+    { v:RATINGS.length, l:'点赞总数', c:'grn' },
+    { v:avg, l:'平均星级', c:'' },
+    { v:surveyN, l:'问卷提交数', c:'' },
+    { v:SURVEYS.filter(function(s){ return s.kind==='pre'; }).length + '/' +
+       SURVEYS.filter(function(s){ return s.kind==='mid'; }).length + '/' +
+       SURVEYS.filter(function(s){ return s.kind==='post'; }).length, l:'课前/中/后份数', c:'' }
+  ];
+  $('kpis').innerHTML = k.map(function(x){
+    return '<div class="kpi ' + x.c + '"><div class="v">' + esc(x.v) + '</div><div class="l">' + x.l + '</div></div>';
+  }).join('');
+}
+
+/* ---------- 各面板 ---------- */
+function renderTabs(){
+  var t = [
+    { k:'overview', n:'总览' },
+    { k:'works', n:'作品统计' },
+    { k:'rates', n:'评分统计' },
+    { k:'pre', n:'课前问卷' },
+    { k:'mid', n:'课中问卷' },
+    { k:'post', n:'课后问卷' }
+  ];
+  $('tabs').innerHTML = t.map(function(x){
+    return '<button data-t="' + x.k + '"' + (x.k===tab?' class="on"':'') + '>' + x.n + '</button>';
+  }).join('');
+  $('tabs').querySelectorAll('button').forEach(function(b){
+    b.onclick = function(){ tab = b.getAttribute('data-t'); renderTabs(); renderPanel(); };
+  });
+}
+
+function renderPanel(){
+  var html = '';
+  if (tab === 'overview') html = panelOverview();
+  else if (tab === 'works') html = panelWorks();
+  else if (tab === 'rates') html = panelRates();
+  else html = panelSurvey(tab);
+  $('panels').innerHTML = html;
+}
+
+function panelOverview(){
+  var by = byAuthor();
+  if (!by.length) return '<div class="panel"><div class="empty">还没有作品数据。等同学们提交后回来看～</div></div>';
+  var rows = by.map(function(s){
+    var names = s.works.map(function(w){ return (EMJ[w.topic]||'🏵️')+' '+esc(w.topic_name||''); }).join(' ');
+    return '<tr><td class="who">'+esc(s.author)+(s.klass?'<br><span style="font-size:12px;color:#8A96A3;font-weight:400;">'+esc(s.klass)+'</span>':'')+'</td>'
+      + '<td class="num">'+s.count+'</td><td>'+names+'</td><td class="num">'+(s.rates||0)+'</td><td class="num">'+s.avg+'</td></tr>';
+  }).join('');
+  return '<div class="panel"><h2>学生作品总览<span class="n">共 '+by.length+' 人</span></h2>'
+    + '<table><thead><tr><th>学生</th><th style="text-align:center;">作品数</th><th>做了什么主题</th>'
+    + '<th style="text-align:center;">被赞</th><th style="text-align:center;">平均★</th></tr></thead><tbody>'
+    + rows + '</tbody></table></div>';
+}
+
+function panelWorks(){
+  if (!WORKS.length) return '<div class="panel"><div class="empty">还没有作品。</div></div>';
+  var agg = workAgg();
+  var rows = WORKS.map(function(w){
+    var a = agg[w.id] || { sum:0, n:0 };
+    var avg = a.n ? (a.sum/a.n).toFixed(1) : '—';
+    return '<tr><td class="who">'+esc(w.author||'未知')+(w.klass?' · '+esc(w.klass):'')+'</td>'
+      + '<td><span class="tag">'+(EMJ[w.topic]||'🏵️')+' '+esc(w.topic_name||'')+'</span></td>'
+      + '<td>'+esc(w.content||'')+'</td>'
+      + '<td class="num">'+avg+'<br><span style="font-size:12px;color:#8A96A3;font-weight:400;">'+(a.n||0)+'赞</span></td>'
+      + '<td style="white-space:nowrap;color:#8A96A3;font-size:13px;">'+fmt(w.created_at)+'</td></tr>';
+  }).join('');
+  return '<div class="panel"><h2>作品统计<span class="n">共 '+WORKS.length+' 件</span></h2>'
+    + '<table><thead><tr><th>作者</th><th>主题</th><th>内容</th><th style="text-align:center;">★</th><th>提交时间</th></tr></thead><tbody>'
+    + rows + '</tbody></table></div>';
+}
+
+function panelRates(){
+  if (!RATINGS.length) return '<div class="panel"><div class="empty">还没有点赞数据。</div></div>';
+  var agg = workAgg();
+  var wmap = {};
+  WORKS.forEach(function(w){ wmap[w.id] = w; });
+  /* 平均分排行 */
+  var rank = Object.keys(agg).map(function(id){
+    var w = wmap[id], a = agg[id];
+    return { w:w, avg:a.sum/a.n, n:a.n };
+  }).filter(function(x){ return x.w; }).sort(function(a,b){ return b.avg - a.avg || b.n - a.n; });
+  var rrows = rank.map(function(x,i){
+    return '<tr><td class="num">'+(i+1)+'</td><td class="who">'+esc(x.w.author||'')+'</td>'
+      + '<td>'+esc(x.w.content||'')+'</td><td class="num">'+x.avg.toFixed(2)+'</td><td class="num">'+x.n+'</td></tr>';
+  }).join('');
+  /* 评分明细（谁给谁） */
+  var drows = RATINGS.slice().sort(function(a,b){ return (b.id||0)-(a.id||0); }).slice(0,200).map(function(r){
+    var w = wmap[r.work_id];
+    return '<tr><td>'+esc(w ? (w.author||'') : '（作品已删）')+'</td>'
+      + '<td>'+esc(w ? (w.content||'').slice(0,26) : '')+'</td>'
+      + '<td class="num">'+(parseInt(r.stars,10)||0)+'★</td>'
+      + '<td>'+esc(r.comment||'')+'</td>'
+      + '<td style="white-space:nowrap;color:#8A96A3;font-size:13px;">'+fmt(r.created_at)+'</td></tr>';
+  }).join('');
+  return '<div class="panel" style="margin-bottom:16px;"><h2>作品平均分排行<span class="n">共 '+rank.length+' 件被赞</span></h2>'
+    + '<table><thead><tr><th style="text-align:center;">名次</th><th>作者</th><th>内容</th>'
+    + '<th style="text-align:center;">平均★</th><th style="text-align:center;">人数</th></tr></thead><tbody>'+rrows+'</tbody></table></div>'
+    + '<div class="panel"><h2>评分明细<span class="n">最多显示最近 200 条</span></h2>'
+    + '<table><thead><tr><th>被评学生</th><th>内容</th><th style="text-align:center;">给分</th>'
+    + '<th>留言</th><th>时间</th></tr></thead><tbody>'+drows+'</tbody></table></div>';
+}
+
+function panelSurvey(kind){
+  var meta = META[kind];
+  var list = SURVEYS.filter(function(s){ return s.kind === kind; });
+  if (!list.length) return '<div class="panel"><div class="empty">还没有「'+meta.name+'」的数据。</div></div>';
+  var html = '<div class="panel" style="margin-bottom:16px;"><h2>'+meta.name+' · 题目汇总<span class="n">共 '+list.length+' 份</span></h2>';
+  meta.qs.forEach(function(q){
+    if (q.text){
+      var freetxt = list.map(function(s){
+        var v = (s.answers||{})[q.id];
+        return v ? '<div class="freetxt"><b>'+esc(s.author)+'</b>：'+esc(v)+'</div>' : '';
+      }).join('');
+      html += '<div class="qblock"><div class="qt">'+esc(q.t)+'</div>'+(freetxt||'<div style="font-size:13px;color:#9AA6B2;">没人填</div>')+'</div>';
+      return;
+    }
+    var count = {};
+    q.opts.forEach(function(o){ count[o] = 0; });
+    var extraOther = 0;
+    list.forEach(function(s){
+      var v = (s.answers||{})[q.id];
+      if (q.multi){
+        (Array.isArray(v)?v:[]).forEach(function(o){
+          if (count[o] !== undefined) count[o]++; else extraOther++;
+        });
+      } else {
+        if (count[v] !== undefined) count[v]++;
+      }
+    });
+    var total = 0; Object.keys(count).forEach(function(o){ total += count[o]; });
+    var bars = q.opts.map(function(o){
+      var n = count[o];
+      var pct = total ? Math.round(n/total*100) : 0;
+      return '<div class="bar"><div class="bl"><span>'+esc(o)+'</span><b>'+n+' 人 · '+pct+'%</b></div>'
+        + '<div class="track"><div class="fill" style="width:'+pct+'%"></div></div></div>';
+    }).join('');
+    html += '<div class="qblock"><div class="qt">'+esc(q.t)+(q.multi?'（多选）':'')+'</div><div class="bars">'+bars+'</div></div>';
+  });
+  html += '</div>';
+  /* 按人对照 */
+  var rows = list.map(function(s){
+    var cells = meta.qs.filter(function(q){ return !q.text; }).map(function(q){
+      var v = (s.answers||{})[q.id];
+      if (q.multi) return esc((Array.isArray(v)?v:[]).join('、'));
+      return esc(v||'');
+    }).join('</td><td>');
+    return '<tr><td class="who">'+esc(s.author)+(s.klass?'<br><span style="font-size:12px;color:#8A96A3;font-weight:400;">'+esc(s.klass)+'</span>':'')+'</td><td>'+cells+'</td></tr>';
+  }).join('');
+  var head = meta.qs.filter(function(q){ return !q.text; }).map(function(q,i){
+    return '<th>'+(i+1)+'. '+esc(q.t)+'</th>';
+  }).join('');
+  html += '<div class="panel"><h2>按人对照<span class="n">横向看每个学生的作答</span></h2>'
+    + '<div style="overflow-x:auto;"><table><thead><tr><th>学生</th>'+head+'</tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+  return html;
+}
+
+function renderAll(){ renderKpis(); renderTabs(); renderPanel(); }
+
+/* ============================================================
+   一键清除
+   ============================================================ */
+$('clearBtn').onclick = function(){
+  $('ckWorks').checked = $('ckRatings').checked = true;
+  $('ckSurveys').checked = false;
+  $('clearPw').value = ''; $('cmsg').textContent = '';
+  $('clearMask').classList.add('on');
+  setTimeout(function(){ $('clearPw').focus(); }, 60);
+};
+$('clearCancel').onclick = function(){ $('clearMask').classList.remove('on'); };
+
+$('clearOk').onclick = async function(){
+  var pw = $('clearPw').value;
+  if (pw !== ADMIN_PW){ $('cmsg').className = 'msg err'; $('cmsg').textContent = '密码不对，清除取消。'; return; }
+  var doW = $('ckWorks').checked, doR = $('ckRatings').checked, doS = $('ckSurveys').checked;
+  if (!doW && !doR && !doS){ $('cmsg').className = 'msg err'; $('cmsg').textContent = '至少勾选一样要清除的。'; return; }
+  if (!cloud){ $('cmsg').className = 'msg err'; $('cmsg').textContent = '连不上云服务。'; return; }
+
+  var btn = $('clearOk'); btn.disabled = true;
+  $('cmsg').className = 'msg'; $('cmsg').textContent = '正在清除…';
+  try {
+    /* 先删评分，再删作品（顺序无关，但先评后作更干净） */
+    if (doR){ var r1 = await cloud.database.from('ratings').delete().neq('id', -1); if (r1 && r1.error) throw r1.error; }
+    if (doW){ var r2 = await cloud.database.from('works').delete().neq('id', -1); if (r2 && r2.error) throw r2.error; }
+    if (doS){ var r3 = await cloud.database.from('surveys').delete().neq('id', -1); if (r3 && r3.error) throw r3.error; }
+    $('cmsg').className = 'msg err'; $('cmsg').style.color = '#2A9D8F';
+    $('cmsg').textContent = '清除完成 ✓';
+    setTimeout(function(){ $('clearMask').classList.remove('on'); $('cmsg').style.color=''; loadAll(); }, 700);
+  } catch(e){
+    $('cmsg').className = 'msg err';
+    $('cmsg').textContent = '清除失败：' + (e && e.message ? e.message : '网络问题');
+  } finally { btn.disabled = false; }
+};
+
+/* ============================================================
+   导出 Excel（CSV，UTF-8 BOM，Excel 可直接打开）
+   ============================================================ */
+function csvCell(v){
+  var s = String(v == null ? '' : v).replace(/"/g,'""');
+  return '"' + s + '"';
+}
+function downloadCsv(name, rows){
+  var csv = '\ufeff' + rows.map(function(r){ return r.map(csvCell).join(','); }).join('\r\n');
+  var blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name + '-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1500);
+}
+$('exportBtn').onclick = function(){
+  if (!WORKS.length && !RATINGS.length && !SURVEYS.length){ alert('现在还没有数据可以导出。'); return; }
+  var agg = workAgg();
+  /* 1. 作品 */
+  var rows = [['学号','班级','主题','内容','被赞人数','平均星级','提交时间']];
+  WORKS.forEach(function(w){
+    var a = agg[w.id] || { sum:0, n:0 };
+    rows.push([w.author||'', w.klass||'', w.topic_name||'', w.content||'', a.n||0,
+      a.n ? (a.sum/a.n).toFixed(2) : '', w.created_at||'']);
+  });
+  downloadCsv('家乡文化二维码-作品', rows);
+  /* 2. 评分 */
+  if (RATINGS.length){
+    var wmap = {}; WORKS.forEach(function(w){ wmap[w.id] = w; });
+    var rr = [['被评学生','作品内容','给分','留言','时间']];
+    RATINGS.forEach(function(r){
+      var w = wmap[r.work_id];
+      rr.push([w?(w.author||''):'（已删）', w?(w.content||''):'', parseInt(r.stars,10)||0,
+        r.comment||'', r.created_at||'']);
+    });
+    setTimeout(function(){ downloadCsv('家乡文化二维码-评分', rr); }, 400);
+  }
+  /* 3. 问卷 */
+  if (SURVEYS.length){
+    ['pre','mid','post'].forEach(function(kind, ki){
+      var list = SURVEYS.filter(function(s){ return s.kind === kind; });
+      if (!list.length) return;
+      var meta = META[kind];
+      var head = ['学号','班级'].concat(meta.qs.map(function(q){ return q.t; }));
+      var body = [head];
+      list.forEach(function(s){
+        var row = [s.author||'', s.klass||''];
+        meta.qs.forEach(function(q){
+          var v = (s.answers||{})[q.id];
+          row.push(q.multi ? (Array.isArray(v)?v.join('、'):'') : (v||''));
+        });
+        body.push(row);
+      });
+      setTimeout(function(){ downloadCsv('家乡文化二维码-'+meta.name, body); }, 800 + ki*400);
+    });
+  }
+};
+
+/* ---------- 登录 ---------- */
+$('loginBtn').onclick = doLogin;
+$('pw').addEventListener('keydown', function(e){ if (e.key === 'Enter') doLogin(); });
+function doLogin(){
+  if ($('pw').value === ADMIN_PW){
+    try { sessionStorage.setItem('cx_admin', '1'); } catch(e){}
+    $('lock').style.display = 'none';
+    $('dashboard').style.display = '';
+    loadAll();
+  } else {
+    $('lmsg').textContent = '密码不对，请再试一次。';
+    $('pw').value = ''; $('pw').focus();
+  }
+}
+$('refresh').onclick = loadAll;
+
+/* 会话内已登录则跳过 */
+try { if (sessionStorage.getItem('cx_admin') === '1'){ $('lock').style.display='none'; $('dashboard').style.display=''; loadAll(); } } catch(e){}
+})();
+</script>
+</body>
+</html>
