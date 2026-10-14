@@ -72,6 +72,14 @@ main{max-width:860px;margin:0 auto;padding:18px 20px 70px;}
   font-family:inherit;color:#33302C;background:#FFFDFA;margin-top:4px;}
 .q textarea:focus{border-color:#E4572E;}
 .qn{font-size:13px;color:#8A8078;margin:6px 0 0;}
+/* 预制句子点选区（填空题用） */
+.pre-tip{font-size:13px;color:#8A8078;font-weight:700;margin:10px 0 7px;}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:4px;}
+.chip{cursor:pointer;border:2px solid #E8DCCD;background:#FFFDFA;color:#5A4A3A;
+  border-radius:999px;padding:7px 13px;font-size:14px;font-family:inherit;font-weight:600;
+  transition:.12s;line-height:1.2;text-align:left;}
+.chip:hover{border-color:#F2A100;background:#FFF8EC;}
+.chip.on{background:#E4572E;border-color:#E4572E;color:#fff;box-shadow:0 2px 0 #B84322;}
 
 .btn{cursor:pointer;border:none;border-radius:13px;font-family:inherit;font-weight:700;
   font-size:18px;padding:15px 26px;transition:.12s;width:100%;margin-top:6px;}
@@ -214,7 +222,10 @@ var SURVEYS = [
         opts:['很想再上','想','都可以','不想'] },
       { id:'word', type:'single', t:'这节课的内容难不难？',
         opts:['太简单了','刚刚好','有点难','太难了'] },
-      { id:'free', type:'text', t:'想对老师说的话（可以不写）', ph:'写一句鼓励老师的话吧～' }
+      { id:'free', type:'text', t:'想对老师说的话（可以点一句，也可以自己写）', ph:'写一句想对老师说的话吧～',
+        presets:['老师您辛苦啦，谢谢您！','这节课真有趣，我很喜欢！','老师讲得真好，我都听懂了～',
+          '谢谢老师带我们认识家乡！','我还想再上这样的课！','老师，您笑起来真好看 😊',
+          '我学会了做二维码，谢谢老师！','老师，我会把家乡文化讲给家人听！'] }
     ]
   }
 ];
@@ -361,9 +372,37 @@ function renderQs(){
       var ta = document.createElement('textarea');
       ta.maxLength = 80; ta.placeholder = q.ph || '';
       ta.value = st[q.id] || '';
-      ta.oninput = function(){ st[q.id] = ta.value; saveState(); };
+      ta.oninput = function(){
+        st[q.id] = ta.value; saveState();
+        /* 手改了就取消 chip 高亮（除非正好和某句一致） */
+        if (chipsBox) chipsBox.querySelectorAll('.chip').forEach(function(x){
+          x.classList.toggle('on', x.textContent === ta.value);
+        });
+      };
+      /* 点选区：点一下填进文本框，再点取消；也可以自己写 */
+      var chipsBox = null;
+      if (q.presets && q.presets.length){
+        var tip = document.createElement('p'); tip.className = 'pre-tip';
+        tip.textContent = '点一句现成的，也可以自己写：';
+        wrap.appendChild(tip);
+        chipsBox = document.createElement('div'); chipsBox.className = 'chips';
+        q.presets.forEach(function(txt){
+          var c = document.createElement('button');
+          c.type = 'button'; c.className = 'chip' + (ta.value === txt ? ' on' : '');
+          c.textContent = txt;
+          c.onclick = function(){
+            var on = c.classList.contains('on');
+            chipsBox.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('on'); });
+            if (on){ c.classList.remove('on'); ta.value = ''; }
+            else { c.classList.add('on'); ta.value = txt; }
+            st[q.id] = ta.value; saveState();
+          };
+          chipsBox.appendChild(c);
+        });
+        wrap.appendChild(chipsBox);
+      }
       wrap.appendChild(ta);
-      var n = document.createElement('p'); n.className = 'qn'; n.textContent = '最多 80 字';
+      var n = document.createElement('p'); n.className = 'qn'; n.textContent = '最多 80 字（不写也行）';
       wrap.appendChild(n);
     } else {
       var opts = document.createElement('div');
