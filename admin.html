@@ -66,6 +66,33 @@ tr:hover td{background:#FCFDFE;}
   margin:6px 0;line-height:1.6;}
 .freetxt b{color:#2B3A4A;}
 
+/* 课前↔课中 对比 */
+.cmp-sum{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#F4F9F8;
+  border:1px solid #D8EBE7;border-radius:12px;padding:12px 16px;margin-bottom:14px;}
+.cmp-sum .cs{display:flex;align-items:baseline;gap:5px;}
+.cmp-sum .cs .lab{font-size:13px;color:#7C8A96;}
+.cmp-sum .cs b{font-size:22px;font-weight:800;}
+.cmp-sum .cs .u{font-size:13px;color:#7C8A96;}
+.cmp-sum .cs b.pre{color:#8A96A3;}
+.cmp-sum .cs b.mid{color:#2A9D8F;}
+.cmp-sum .arrow{font-size:18px;color:#B7C3CC;}
+.cmp-sum .delta{margin-left:auto;background:#fff;border-radius:10px;padding:6px 14px;border:1px solid #D8EBE7;}
+.cmp-sum .delta b{font-size:22px;}
+.cmp-sum .delta.up b{color:#E4572E;}
+.cmp-sum .delta.down b{color:#5B8CB8;}
+.bar.cmp .bl b i{font-style:normal;font-weight:700;}
+.bar.cmp .bl b i.pre{color:#8A96A3;font-size:13px;}
+.bar.cmp .bl b i.mid{color:#2A9D8F;}
+.bar.cmp .bl b em{font-style:normal;font-size:13px;margin-left:4px;}
+.bar.cmp .bl b em.up{color:#E4572E;font-weight:800;}
+.bar.cmp .bl b em.down{color:#5B8CB8;}
+.bar.cmp .bl b em:not(.up):not(.down){color:#9AA6B2;}
+.cmp-foot{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 16px;}
+.pill{font-size:13px;padding:4px 11px;border-radius:999px;background:#EEF2F6;color:#5B6875;font-weight:700;}
+.pill.up{background:#FDEBE4;color:#D2500F;}
+.pill.down{background:#E7F0F8;color:#3D6E96;}
+.pill.gray{background:#F4F5F7;color:#8A96A3;font-weight:600;}
+
 .empty{text-align:center;color:#9AA6B2;font-size:16px;padding:50px 20px;}
 .msg{font-size:14px;text-align:center;padding:8px;font-weight:700;}
 .msg.err{color:#C0392B;}
@@ -2503,24 +2530,24 @@ var META = {
   pre:{ name:'课前问卷',
     qs:[
       { id:'know', t:'了解家乡文化吗', opts:['很了解','知道一些','知道一点点','不太了解'] },
-      { id:'what', t:'说的家乡文化包括哪些', multi:true, opts:['好吃的（指天椒、五色糯米饭）','好玩的节日','好看的风景','老手艺、老故事','别的'] },
-      { id:'ai', t:'以前上过用电脑、用 AI 的课吗', opts:['上过好几次','上过一两次','从来没有'] },
+      { id:'heritageword', t:'听过「非遗」这个词吗', opts:['听过，还知道是什么意思','听说过，但不太懂','没听过'] },
+      { id:'heritage', t:'知道家乡有哪些非遗', multi:true, opts:['壮族霜降节','壮族打榔舞','壮族天琴艺术','左江花山岩画','五色糯米饭制作','指天椒种植技艺','一个都不知道'] },
       { id:'qr', t:'知道二维码是什么吗', opts:['知道，我还会用','听说过，不太清楚','不知道'] },
-      { id:'want', t:'最想做什么', multi:true, opts:['学 AI 帮忙写话','做自己的二维码','让同学扫码看我做的','给同学点赞'] },
+      { id:'want', t:'最想做什么', multi:true, opts:['认识家乡的非遗','做自己的二维码','让同学扫码看我做的','给同学点赞'] },
       { id:'hard', t:'觉得打字难不难', opts:['不难','有点难','很难'] }
     ] },
   mid:{ name:'课中问卷',
     qs:[
       { id:'fun', t:'这节课开心吗', opts:['很开心','还不错','一般般','不太开心'] },
       { id:'understood', t:'方法听懂了吗', opts:['都听懂了','大部分懂','有一点点懂','还不太懂'] },
-      { id:'aihelp', t:'AI 帮忙有没有用', opts:['帮了很大忙','有一点帮助','没什么用','还没用过'] },
+      { id:'heritage', t:'知道家乡有哪些非遗', multi:true, opts:['壮族霜降节','壮族打榔舞','壮族天琴艺术','左江花山岩画','五色糯米饭制作','指天椒种植技艺','一个都不知道'] },
       { id:'step', t:'做到哪一步了', opts:['还在选主题','在拼句子','在做二维码','已经交到作品墙了'] },
       { id:'stuck', t:'遇到困难的地方', multi:true, opts:['都挺顺的','选主题有点难','句子不知道怎么选','按钮找不到','还有别的'] },
-      { id:'like', t:'最喜欢哪一步', opts:['选家乡主题','点词拼句子','让 AI 帮写','生成二维码','看别人作品点赞'] }
+      { id:'like', t:'最喜欢哪一步', opts:['选家乡主题','点词拼句子','生成二维码','看别人作品点赞'] }
     ] },
   post:{ name:'课后问卷',
     qs:[
-      { id:'gain', t:'学到了什么', multi:true, opts:['家乡文化的知识','怎么用 AI 帮忙','怎么把话写进二维码','怎么给别人点赞评价'] },
+      { id:'gain', t:'学到了什么', multi:true, opts:['家乡文化的知识','家乡的非遗','怎么把话写进二维码','怎么给别人点赞评价'] },
       { id:'proud', t:'对家乡更自豪了吗', opts:['更加自豪了','有点自豪','和以前差不多','没感觉'] },
       { id:'willshare', t:'愿意分享给家人吗', opts:['很想分享','愿意','说不好','不太想'] },
       { id:'better', t:'觉得自己做得怎么样', opts:['我很满意','还不错','还要加油','不太满意'] },
@@ -2529,6 +2556,12 @@ var META = {
       { id:'free', t:'想对老师说的话', text:true }
     ] }
 };
+
+/* 课前 / 课中 共有、可对比的题（id 相同 → 逐人对比） */
+var CMP = [
+  { id:'heritage', t:'知道家乡有哪些「非遗」', multi:true,
+    opts:['壮族霜降节','壮族打榔舞','壮族天琴艺术','左江花山岩画','五色糯米饭制作','指天椒种植技艺','一个都不知道'] }
+];
 
 /* ---------- 数据 ---------- */
 var WORKS = [], RATINGS = [], SURVEYS = [];
@@ -2621,6 +2654,7 @@ function renderKpis(){
 function renderTabs(){
   var t = [
     { k:'overview', n:'总览' },
+    { k:'compare', n:'课前↔课中对比' },
     { k:'works', n:'作品统计' },
     { k:'rates', n:'评分统计' },
     { k:'pre', n:'课前问卷' },
@@ -2638,6 +2672,7 @@ function renderTabs(){
 function renderPanel(){
   var html = '';
   if (tab === 'overview') html = panelOverview();
+  else if (tab === 'compare') html = panelCompare();
   else if (tab === 'works') html = panelWorks();
   else if (tab === 'rates') html = panelRates();
   else html = panelSurvey(tab);
@@ -2704,6 +2739,129 @@ function panelRates(){
     + '<div class="panel"><h2>评分明细<span class="n">最多显示最近 200 条</span></h2>'
     + '<table><thead><tr><th>被评学生</th><th>内容</th><th style="text-align:center;">给分</th>'
     + '<th>留言</th><th>时间</th></tr></thead><tbody>'+drows+'</tbody></table></div>';
+}
+
+/* ============================================================
+   课前 ↔ 课中 对比：共同题的进步情况
+   ============================================================ */
+function panelCompare(){
+  /* 按「学号+班级」把同一个人的课前、课中答卷配对 */
+  function byKey(kind){
+    var m = {};
+    SURVEYS.filter(function(s){ return s.kind === kind; }).forEach(function(s){
+      var k = (s.author || '') + '\u0001' + (s.klass || '');
+      if (!m[k]) m[k] = s;                       /* 同一人重复交，取最新一条（已按时间倒序） */
+    });
+    return m;
+  }
+  var preM = byKey('pre'), midM = byKey('mid');
+  /* 只统计「两卷都交了」的学生 */
+  var both = Object.keys(preM).filter(function(k){ return midM[k]; })
+    .map(function(k){ return { k:k, pre:preM[k], mid:midM[k] }; });
+
+  if (!both.length){
+    return '<div class="panel"><div class="empty">还没有「课前 + 课中」都交齐的学生。'
+      + '<br>两边都填了之后，这里会自动显示出进步情况。</div></div>';
+  }
+
+  var total = both.length;
+  var html = '<div class="panel" style="margin-bottom:16px;"><h2>课前 ↔ 课中 · 进步分析'
+    + '<span class="n">' + total + ' 人两卷都交齐</span></h2>';
+
+  CMP.forEach(function(q){
+    /* 各班整体：每选一项的比例 */
+    var cntPre = {}, cntMid = {};
+    q.opts.forEach(function(o){ cntPre[o] = 0; cntMid[o] = 0; });
+    var nonePre = 0, noneMid = 0, grew = 0, same = 0, shrank = 0;
+    var sumPre = 0, sumMid = 0;
+    both.forEach(function(x){
+      var a = (x.pre.answers||{})[q.id];
+      var b = (x.mid.answers||{})[q.id];
+      a = Array.isArray(a) ? a : (a ? [a] : []);
+      b = Array.isArray(b) ? b : (b ? [b] : []);
+      var aClean = a.filter(function(o){ return o !== '一个都不知道'; });
+      var bClean = b.filter(function(o){ return o !== '一个都不知道'; });
+      aClean.forEach(function(o){ if (cntPre[o] !== undefined) cntPre[o]++; });
+      bClean.forEach(function(o){ if (cntMid[o] !== undefined) cntMid[o]++; });
+      if (!aClean.length) nonePre++;
+      if (!bClean.length) noneMid++;
+      sumPre += aClean.length; sumMid += bClean.length;
+      if (bClean.length > aClean.length) grew++;
+      else if (bClean.length === aClean.length) same++;
+      else shrank++;
+    });
+
+    var avgPre = (sumPre / total).toFixed(1);
+    var avgMid = (sumMid / total).toFixed(1);
+    var delta = (sumMid - sumPre) / total;
+    var deltaTxt = (delta > 0 ? '+' : '') + delta.toFixed(1);
+
+    html += '<div class="qblock"><div class="qt">' + esc(q.t)
+      + '<span style="font-weight:400;color:#8A96A3;font-size:13px;">（共 ' + total + ' 人）</span></div>';
+
+    /* 顶部小结：人均认识数量 课前→课中 */
+    html += '<div class="cmp-sum">'
+      + '<div class="cs"><span class="lab">课前人均说出</span><b class="pre">' + avgPre + '</b><span class="u">项</span></div>'
+      + '<div class="cs arrow">➜</div>'
+      + '<div class="cs"><span class="lab">课中人均说出</span><b class="mid">' + avgMid + '</b><span class="u">项</span></div>'
+      + '<div class="cs delta ' + (delta > 0 ? 'up' : (delta < 0 ? 'down' : '')) + '">'
+        + '<span class="lab">进步</span><b>' + deltaTxt + '</b><span class="u">项/人</span></div>'
+      + '</div>';
+
+    /* 明细：每项 课前% → 课中%，带箭头 */
+    var bars = q.opts.filter(function(o){ return o !== '一个都不知道'; }).map(function(o){
+      var p1 = Math.round(cntPre[o] / total * 100);
+      var p2 = Math.round(cntMid[o] / total * 100);
+      var d = p2 - p1;
+      var dCls = d > 0 ? 'up' : (d < 0 ? 'down' : '');
+      var dTxt = (d > 0 ? '+' : '') + d + '%';
+      return '<div class="bar cmp"><div class="bl"><span>' + esc(o) + '</span>'
+        + '<b><i class="pre">' + p1 + '%</i> ➜ <i class="mid">' + p2 + '%</i>'
+        + ' <em class="' + dCls + '">' + dTxt + '</em></b></div>'
+        + '<div class="track"><div class="fill" style="width:' + p2 + '%"></div></div></div>';
+    }).join('');
+    html += '<div class="bars">' + bars + '</div>';
+
+    /* 每人变化统计 */
+    html += '<div class="cmp-foot">'
+      + '<span class="pill up">👍 变多了 ' + grew + ' 人</span>'
+      + '<span class="pill">＝ 一样 ' + same + ' 人</span>'
+      + '<span class="pill down">变少了 ' + shrank + ' 人</span>'
+      + '<span class="pill gray">课前一个都说不出 ' + nonePre + ' 人 ➜ 课中 ' + noneMid + ' 人</span>'
+      + '</div></div>';
+  });
+  html += '</div>';
+
+  /* ---------- 按学生逐个对比 ---------- */
+  var q = CMP[0];
+  var rows = both.map(function(x){
+    var a = (x.pre.answers||{})[q.id]; a = Array.isArray(a) ? a : (a ? [a] : []);
+    var b = (x.mid.answers||{})[q.id]; b = Array.isArray(b) ? b : (b ? [b] : []);
+    var aClean = a.filter(function(o){ return o !== '一个都不知道'; });
+    var bClean = b.filter(function(o){ return o !== '一个都不知道'; });
+    var d = bClean.length - aClean.length;
+    var badge = d > 0 ? '<span class="pill up">+' + d + ' 项 👍</span>'
+      : (d === 0 ? '<span class="pill">持平</span>' : '<span class="pill down">' + d + ' 项</span>');
+    return { x:x, a:aClean, b:bClean, d:d, badge:badge };
+  }).sort(function(p, r){ return r.d - p.d; });
+
+  var rrows = rows.map(function(r){
+    return '<tr><td class="who">' + esc(r.x.pre.author || '') 
+      + (r.x.pre.klass ? '<br><span style="font-size:12px;color:#8A96A3;font-weight:400;">' + esc(r.x.pre.klass) + '</span>' : '') + '</td>'
+      + '<td class="num">' + r.a.length + '</td>'
+      + '<td>' + (r.a.length ? esc(r.a.join('、')) : '<span style="color:#B7B1A9;">—</span>') + '</td>'
+      + '<td class="num">' + r.b.length + '</td>'
+      + '<td>' + (r.b.length ? esc(r.b.join('、')) : '<span style="color:#B7B1A9;">—</span>') + '</td>'
+      + '<td style="text-align:center;white-space:nowrap;">' + r.badge + '</td></tr>';
+  }).join('');
+
+  html += '<div class="panel"><h2>按学生逐个对比<span class="n">共 ' + both.length + ' 人 · 按进步排序</span></h2>'
+    + '<div style="overflow-x:auto;"><table><thead><tr><th>学生</th>'
+    + '<th style="text-align:center;">课前<br>说出项数</th><th>课前说出的非遗</th>'
+    + '<th style="text-align:center;">课中<br>说出项数</th><th>课中说出的非遗</th>'
+    + '<th style="text-align:center;">进步</th></tr></thead><tbody>' + rrows + '</tbody></table></div></div>';
+
+  return html;
 }
 
 function panelSurvey(kind){
