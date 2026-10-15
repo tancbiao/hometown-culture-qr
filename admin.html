@@ -4423,7 +4423,14 @@ $('logout').onclick = function(){
 $('refresh').onclick = function(){ if (VIEWING) exitView(); else loadAll(); };
 
 /* 打开页面：1 小时内登录过就直接进面板，否则回锁屏 */
-try { sessionStorage.removeItem('cx_admin'); } catch(e){}
+/* 作品墙「🔒 管理员」登录成功会写 sessionStorage.cx_admin=1（同标签页有效）——
+   认这张票并升级成正式会话票据，避免老师从作品墙跳过来还要再输一次密码 */
+try {
+  if (sessionStorage.getItem('cx_admin') === '1'){
+    sessionStorage.removeItem('cx_admin');
+    if (!sessAlive()) sessSave();
+  }
+} catch(e){}
 if (sessAlive()){ showDash(true); loadAll(); }
 else { sessClear(); showDash(false); }   /* 过期或被篡改的票据一律清掉 */
 })();
