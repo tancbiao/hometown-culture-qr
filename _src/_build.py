@@ -53,25 +53,44 @@ SDK  = os.path.join(SRC, 'sdk.global.js')
 lib = open(LIB, encoding='utf-8').read()
 assert 'var qrcode = function' in lib, '二维码库文件异常: ' + LIB
 
-sdk = ''
-if os.path.exists(SDK):
+# ---------------------------------------------------------------
+# 数据通道开关
+#   local（默认）= 自建后端（腾讯云 api.kexvefuxi.cn/qr）—— 学生用这个
+#   cloud        = 原 WorkBuddy 云 SDK          —— 仅作回退兜底
+# 用法：python _build.py            # local
+#       python _build.py cloud      # 回退旧云通道
+#       QR_BACKEND=cloud python _build.py
+# ---------------------------------------------------------------
+SHIM = os.path.join(SRC, 'cloud-shim.js')
+BACKEND = (sys.argv[1] if len(sys.argv) > 1 else os.environ.get('QR_BACKEND', 'local')).strip().lower()
+assert BACKEND in ('local', 'cloud'), 'BACKEND 只能是 local 或 cloud'
+
+if BACKEND == 'cloud':
+    assert os.path.exists(SDK), 'QR_BACKEND=cloud 但找不到 _src/sdk.global.js'
     sdk = open(SDK, encoding='utf-8').read()
     assert 'WorkBuddyCloud' in sdk, '云 SDK 文件异常'
+else:
+    assert os.path.exists(SHIM), '找不到 _src/cloud-shim.js（自建后端适配器）'
+    sdk = open(SHIM, encoding='utf-8').read()
+    assert 'WorkBuddyCloud' in sdk, '适配器文件异常'
 
 cfg = {}
 if os.path.exists(CFG):
     cfg = json.load(open(CFG, encoding='utf-8'))
 
 cloud_js = 'window.CLOUD_CONFIG = ' + json.dumps({
-    'endpoint': cfg.get('endpoint', ''),
+    # local 模式下适配器自会按当前域名拼接口地址，这里给个真值只为过页面的非空判断
+    'endpoint': cfg.get('endpoint', '') if BACKEND == 'cloud' else 'self',
     'oauthRelayBaseUrl': cfg.get('oauthRelayBaseUrl', ''),
     'publishableKey': cfg.get('publishableKey', ''),
+    'adminPassword': cfg.get('adminPassword', 'cx2026'),
 }, ensure_ascii=False) + ';'
 
 deepseek = cfg.get('deepseekKey', '')
 
 LIB_TAG = '/* ===== qrcode-generator v2.0.4 · MIT · Kazuhiko Arase ===== */\n' + lib
-SDK_TAG = '/* ===== @tencent-ai/workbuddy-cloud-sdk (inlined) ===== */\n' + sdk
+SDK_TAG = ('/* ===== hometown-qr backend adapter (self-hosted) ===== */\n' + sdk) if BACKEND == 'local' \
+    else ('/* ===== @tencent-ai/workbuddy-cloud-sdk (inlined) ===== */\n' + sdk)
 
 def build(name):
     tpl_path = os.path.join(SRC, name + '.tpl.html')
@@ -106,6 +125,7 @@ def build(name):
 for n in ('index', 'wall', 'survey', 'admin'):
     build(n)
 
-print('\n云配置:', '已注入' if cfg.get('endpoint') else '⚠ 缺')
-print('云 SDK:', '已内联 %.1f KB' % (len(sdk.encode('utf-8')) / 1024) if sdk else '⚠ 缺失')
-print('DeepSeek key:', '已注入' if deepseek else '⚠ 缺失')
+print('\n数据通道:', '自建后端（api.kexvefuxi.cn/qr）' if BACKEND == 'local' else '⚠ WorkBuddy 云（旧通道）')
+print('云配置:', '已注入' if cloud_js else '⚠ 缺')
+print('适配器/云 SDK:', '已内联 %.1f KB' % (len(sdk.encode('utf-8')) / 1024) if sdk else '⚠ 缺失')
+print('DeepSeek key:', '已注入（本项目已无 AI 调用，仅留位）' if deepseek else '未用')

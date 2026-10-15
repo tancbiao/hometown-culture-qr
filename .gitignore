@@ -1,6 +1,12 @@
 # 云端密钥配置（真值只留在本地，不入库）
 _src/cloud-config.json
 
+# 服务器私钥（AI 部署专用，绝不入库）
+_server/_deploy/id_she
+_server/_deploy/id_she.pub
+_server/_deploy/_api.conf.new
+_server/data/
+
 # 自动备份目录（构建时产生的旧版副本，不入库）
 _src/_bak/
 

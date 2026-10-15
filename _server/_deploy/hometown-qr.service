@@ -1,0 +1,23 @@
+[Unit]
+Description=Chengxi Hometown Culture QR (grade-4 classroom tool, self-hosted backend)
+After=network.target
+
+[Service]
+Type=simple
+User=deploy
+Group=deploy
+WorkingDirectory=/data/hometown-qr
+Environment=PORT=3213
+Environment=NODE_ENV=production
+Environment=QR_ROOT=/data/hometown-qr
+Environment=QR_WWW=/data/hometown-qr/www
+# 管理密码：与 admin.html 页内一致（目前 cx2026）
+Environment=QR_ADMIN_PW=cx2026
+ExecStart=/usr/bin/node /data/hometown-qr/server.js
+Restart=always
+RestartSec=3
+StandardOutput=append:/data/hometown-qr/qr.log
+StandardError=append:/data/hometown-qr/qr.log
+
+[Install]
+WantedBy=multi-user.target
