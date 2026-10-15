@@ -14,6 +14,13 @@
  *   GET  /api/works|ratings|surveys      ?limit=&order=&select=
  *   POST /api/works|ratings|surveys      body=记录对象        -> {data:[记录]}
  *   POST /api/clear                      body={tables:[..],password} -> {data:[]}
+ *
+ * 课次快照（每轮课的数据整包存档，下一轮从干净库重开，历史可回看/导出/恢复）：
+ *   GET    /api/snapshots                -> {data:[快照元信息...]}（按时间倒序）
+ *   GET    /api/snapshots?id=xxx         -> {data:[完整快照(含三表)]}
+ *   POST   /api/snapshots                body={name,note,password,meta,clear} -> {data:[meta]}
+ *   DELETE /api/snapshots?id=xxx         body={password}
+ *   POST   /api/snapshots/restore?id=xxx body={password}   把快照数据写回当前库
  *   其余路径 -> 静态文件（www/ 目录）
  * ==========================================================================*/
 'use strict';
@@ -27,6 +34,7 @@ const ROOT     = process.env.QR_ROOT || path.join(__dirname, 'data');
 const WWW      = process.env.QR_WWW  || path.join(__dirname, 'www');
 const ADMIN_PW = process.env.QR_ADMIN_PW || 'cx2026';
 const DATA_FILE = path.join(ROOT, 'data.json');
+const SNAP_DIR  = path.join(ROOT, 'snapshots');   // 课次快照存放目录
 
 const TABLES   = ['works', 'ratings', 'surveys'];
 const MAX_BODY = 96 * 1024;          // 单条请求体上限
@@ -76,10 +84,65 @@ function flush() {
 process.on('SIGTERM', function () { dirty = true; flush(); process.exit(0); });
 process.on('SIGINT',  function () { dirty = true; flush(); process.exit(0); });
 
+/* ------------------------------------------------------------ 课次快照
+ * 用途：每上完一轮课，把当时的三表数据整包存档（历史留档、可导出、可恢复），
+ *       然后清空当前库开始新一轮。存档时一并保存当时的问卷题面（meta），
+ *       这样以后改了题目，回看旧快照仍是旧题面，统计不会错乱。
+ * 存储：ROOT/snapshots/<id>.json  { id,name,note,created_at,counts,meta,works,ratings,surveys }
+ * ------------------------------------------------------------------------ */
+const SNAP_ID_RE = /^[A-Za-z0-9_-]{4,64}$/;
+
+function newSnapId() {
+  return 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+function snapFile(id) {
+  if (!SNAP_ID_RE.test(String(id || ''))) return null;   // 防目录穿越
+  return path.join(SNAP_DIR, id + '.json');
+}
+function readSnap(id) {
+  const f = snapFile(id);
+  if (!f || !fs.existsSync(f)) return null;
+  try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch (e) { return null; }
+}
+function snapMeta(j, id) {
+  return {
+    id: id, name: j.name || id, note: j.note || '', created_at: j.created_at || '',
+    counts: j.counts || {
+      works: (j.works || []).length, ratings: (j.ratings || []).length, surveys: (j.surveys || []).length
+    }
+  };
+}
+function snapList() {
+  try {
+    if (!fs.existsSync(SNAP_DIR)) return [];
+    return fs.readdirSync(SNAP_DIR)
+      .filter(function (f) { return /\.json$/.test(f); })
+      .map(function (f) {
+        const id = f.replace(/\.json$/, '');
+        const j = readSnap(id);
+        return j ? snapMeta(j, id)
+                 : { id: id, name: id, note: '(文件损坏，无法读取)', created_at: '', counts: null };
+      })
+      .sort(function (a, b) { return String(b.created_at).localeCompare(String(a.created_at)); });
+  } catch (e) { return []; }
+}
+function snapCount() {
+  try { return fs.existsSync(SNAP_DIR) ? fs.readdirSync(SNAP_DIR).filter(function (f) { return /\.json$/.test(f); }).length : 0; }
+  catch (e) { return 0; }
+}
+function writeSnap(obj) {
+  fs.mkdirSync(SNAP_DIR, { recursive: true });
+  const f = snapFile(obj.id);
+  const tmp = f + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify(obj), 'utf8');
+  fs.renameSync(tmp, f);                                  // 原子替换
+  return snapMeta(obj, obj.id);
+}
+
 /* ------------------------------------------------------------ 字段清洗 */
 const LIMITS = {
   works:   { author: 12, klass: 16, topic: 40, topic_name: 40, content: 240 },
-  ratings: { rater_id: 40, comment: 120 },
+  ratings: { rater_id: 40, rater_name: 12, rater_klass: 16, comment: 120 },
   surveys: { kind: 12, author: 12, klass: 16 }
 };
 function clampStr(v, n) {
@@ -170,8 +233,91 @@ async function handleApi(req, res, p, q, ip) {
   if (p === '/api/health') {
     return sendJson(res, 200, {
       ok: true, service: 'hometown-qr', uptime: Math.round(process.uptime()),
-      counts: { works: db.works.length, ratings: db.ratings.length, surveys: db.surveys.length }
+      counts: { works: db.works.length, ratings: db.ratings.length, surveys: db.surveys.length,
+                snapshots: snapCount() }
     });
+  }
+
+  /* ------------------------------------------------ 课次快照 */
+  if (p === '/api/snapshots') {
+    if (req.method === 'GET') {
+      const id = q.get('id');
+      if (id) {
+        const j = readSnap(id);
+        if (!j) return sendJson(res, 404, { error: '快照不存在' });
+        return sendJson(res, 200, { data: [j], error: null });
+      }
+      return sendJson(res, 200, { data: snapList(), error: null });
+    }
+
+    if (req.method === 'POST') {
+      const body = await readBody(req);
+      if (body.__tooBig) return sendJson(res, 413, { error: '内容太大了' });
+      if (body.__badJson) return sendJson(res, 400, { error: '数据格式不对' });
+      if (body.password !== ADMIN_PW) return sendJson(res, 403, { error: '密码不对' });
+
+      const counts = { works: db.works.length, ratings: db.ratings.length, surveys: db.surveys.length };
+      if (!counts.works && !counts.ratings && !counts.surveys)
+        return sendJson(res, 400, { error: '当前还没有数据，不用存档' });
+
+      const d = new Date();
+      const pad = function (n) { return (n < 10 ? '0' : '') + n; };
+      const defName = (d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
+        + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()));
+      const obj = {
+        id: newSnapId(),
+        name: clampStr(body.name, 60) || ('课次 ' + defName),
+        note: clampStr(body.note, 200),
+        created_at: d.toISOString(),
+        counts: counts,
+        meta: (body.meta && typeof body.meta === 'object') ? body.meta : null,
+        works: db.works, ratings: db.ratings, surveys: db.surveys
+      };
+      let meta;
+      try { meta = writeSnap(obj); }
+      catch (e) {
+        console.error('[snap] 写入失败:', e.message);
+        return sendJson(res, 500, { error: '存档失败：' + e.message });
+      }
+      let cleared = false;
+      if (body.clear === true) {
+        TABLES.forEach(function (t) { db[t] = []; db.seq[t] = 0; });
+        dirty = true; flush(); cleared = true;
+      }
+      console.log('[snap] 存档「%s」 %d作品/%d评分/%d问卷%s',
+        meta.name, counts.works, counts.ratings, counts.surveys, cleared ? ' 并已清空' : '');
+      return sendJson(res, 200, { data: [meta], error: null, cleared: cleared });
+    }
+
+    if (req.method === 'DELETE') {
+      const body = await readBody(req);
+      if (body.password !== ADMIN_PW) return sendJson(res, 403, { error: '密码不对' });
+      const id = q.get('id') || body.id;
+      const f = snapFile(id);
+      if (!f || !fs.existsSync(f)) return sendJson(res, 404, { error: '快照不存在' });
+      fs.unlinkSync(f);
+      console.log('[snap] 删除快照', id);
+      return sendJson(res, 200, { data: [], error: null });
+    }
+    return sendJson(res, 405, { error: 'method not allowed' });
+  }
+
+  if (p === '/api/snapshots/restore') {
+    if (req.method !== 'POST') return sendJson(res, 405, { error: 'method' });
+    const body = await readBody(req);
+    if (body.password !== ADMIN_PW) return sendJson(res, 403, { error: '密码不对' });
+    const j = readSnap(q.get('id') || body.id);
+    if (!j) return sendJson(res, 404, { error: '快照不存在' });
+    TABLES.forEach(function (t) {
+      db[t] = Array.isArray(j[t]) ? j[t] : [];
+      const maxId = db[t].reduce(function (m, x) { return Math.max(m, Number(x.id) || 0); }, 0);
+      db.seq[t] = maxId;
+    });
+    dirty = true; flush();
+    console.log('[snap] 恢复快照「%s」 -> %d作品/%d评分/%d问卷', j.name || j.id,
+      db.works.length, db.ratings.length, db.surveys.length);
+    return sendJson(res, 200, { data: [{ id: j.id, name: j.name || j.id,
+      counts: { works: db.works.length, ratings: db.ratings.length, surveys: db.surveys.length } }], error: null });
   }
 
   if (p === '/api/clear') {

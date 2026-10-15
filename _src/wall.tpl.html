@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>家乡文化作品墙 · 天等县</title>
+<title>家乡文化作品墙</title>
 <style>
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
@@ -47,12 +47,32 @@ main{max-width:1320px;margin:0 auto;padding:16px 20px 60px;}
   border-radius:14px;padding:3px 12px;margin-bottom:8px;}
 .card .meta{display:flex;align-items:center;gap:8px;font-size:13px;color:#8A8078;margin-top:10px;}
 .card .meta .who{font-weight:700;color:#5A4A3A;}
-.card .act{margin-top:10px;display:flex;align-items:center;gap:10px;}
-.card .stars{font-size:15px;color:#F2A100;font-weight:700;flex:1;}
+.card .act{margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.card .stars{font-size:14.5px;color:#F2A100;font-weight:700;flex:1 1 100%;white-space:nowrap;}
 .card .rate{cursor:pointer;border:none;border-radius:11px;background:#2A9D8F;color:#fff;
-  font-family:inherit;font-weight:700;font-size:14px;padding:9px 14px;box-shadow:0 3px 0 #1F7D72;}
+  font-family:inherit;font-weight:700;font-size:14px;padding:9px 14px;box-shadow:0 3px 0 #1F7D72;
+  flex:1;text-align:center;}
 .card .rate:active{transform:translateY(2px);box-shadow:0 1px 0 #1F7D72;}
 .card .rate.done{background:#B7CFCB;box-shadow:0 3px 0 #9BB8B4;}
+.card .dtbtn{cursor:pointer;border:2.5px solid #E8DCCD;border-radius:11px;background:#fff;color:#5A4A3A;
+  font-family:inherit;font-weight:700;font-size:13px;padding:8px 12px;flex:1;text-align:center;}
+.card .dtbtn:hover{border-color:#FFC59B;background:#FFFDF8;}
+.sturow{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 12px;}
+.ssel{flex:1;min-width:84px;padding:10px;font-size:15px;border:2.5px solid #E8DCCD;border-radius:11px;
+  outline:none;font-family:inherit;color:#33302C;background:#fff;}
+.ssel:focus{border-color:#E4572E;}
+.stuShow{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;color:#2C6B62;
+  background:#EAF7F4;border:2px solid #BFE4DE;border-radius:12px;padding:8px 12px;margin:2px 0 12px;}
+.stuShow b{color:#E4572E;}
+.stuShow .stuedit{margin-left:auto;cursor:pointer;border:2px solid #BFE4DE;background:#fff;color:#2C6B62;
+  border-radius:14px;font-family:inherit;font-size:12px;font-weight:700;padding:5px 12px;}
+.dtlist{max-height:46vh;overflow:auto;text-align:left;margin:2px 0 14px;border-top:1px solid #F2EADD;}
+.dtrow{display:flex;gap:8px;align-items:baseline;padding:10px 2px;border-bottom:1px solid #F2EADD;}
+.dtrow .dtwho{font-weight:700;color:#5A4A3A;font-size:14px;white-space:nowrap;}
+.dtrow .dtst{color:#F2A100;font-weight:700;white-space:nowrap;letter-spacing:1px;}
+.dtrow .dtcmt{flex:1;color:#3A332C;font-size:15px;line-height:1.5;word-break:break-word;}
+.dtrow .dttime{color:#B4A99C;font-size:12px;white-space:nowrap;}
+.dtempty{color:#9AA6B2;font-size:14px;padding:14px 2px;text-align:center;}
 
 .empty{text-align:center;color:#B4A99C;font-size:17px;padding:70px 20px;line-height:2;}
 .empty .em{font-size:52px;display:block;margin-bottom:10px;}
@@ -74,15 +94,6 @@ textarea{width:100%;min-height:74px;padding:11px 12px;font-size:16px;line-height
   border:2.5px solid #E8DCCD;border-radius:12px;outline:none;resize:vertical;
   font-family:inherit;color:#33302C;background:#FFFDFA;}
 textarea:focus{border-color:#E4572E;}
-/* 可点选的鼓励语（可选，不写就用默认） */
-.cmtwrap{margin-top:12px;}
-.cmtwrap .ct{font-size:13px;color:#8A8078;margin:0 0 7px;font-weight:700;}
-.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;}
-.chip{cursor:pointer;border:2px solid #E8DCCD;background:#FFFDFA;color:#5A4A3A;
-  border-radius:999px;padding:7px 13px;font-size:14px;font-family:inherit;font-weight:600;
-  transition:.12s;line-height:1.2;}
-.chip:hover{border-color:#F2A100;background:#FFF8EC;}
-.chip.on{background:#E4572E;border-color:#E4572E;color:#fff;box-shadow:0 2px 0 #B84322;}
 .mrow{display:flex;gap:10px;margin-top:14px;}
 .btn{cursor:pointer;border:none;border-radius:12px;font-family:inherit;font-weight:700;
   font-size:16px;padding:12px 18px;flex:1;transition:.12s;}
@@ -106,10 +117,27 @@ textarea:focus{border-color:#E4572E;}
 .warnbox input[type=checkbox]{width:18px;height:18px;flex:none;accent-color:#A93226;}
 
 /* 看大图 */
-.viewer .big{width:min(340px,80vw);height:min(340px,80vw);margin:6px auto 8px;}
+.viewer .modal{max-width:470px;}
+.viewer .big{width:min(296px,66vw);height:min(296px,66vw);margin:2px auto 8px;}
 .viewer .big canvas{width:100%;height:100%;image-rendering:pixelated;}
 .viewer .cap{font-size:16px;line-height:1.7;color:#4A423A;font-weight:700;text-align:center;}
 .viewer .who{font-size:14px;color:#8A8078;text-align:center;margin-top:8px;}
+
+/* 看大图里的「大家的评价」 */
+.vsec{margin-top:14px;border-top:2px dashed #F2EADD;padding-top:12px;}
+.vsec .vsec-t{font-size:15px;font-weight:800;color:#E4572E;margin-bottom:8px;
+  display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.vsec .vsum{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;
+  font-size:13px;color:#8A8078;margin-bottom:8px;}
+.vsec .vsum .vavg{font-size:20px;font-weight:800;color:#F2A100;line-height:1;}
+.vsec .dtlist{max-height:32vh;}
+
+/* 卡片上的最新评语预览：还没点进去就能看到别人说了什么 */
+.card .cmt{margin-top:9px;padding:8px 11px;background:#FFF8F0;border-left:3px solid #FFD9B8;
+  border-radius:0 10px 10px 0;font-size:13.5px;line-height:1.55;color:#5A4A3A;
+  cursor:pointer;word-break:break-word;transition:.12s;}
+.card .cmt:hover{background:#FFF3E6;}
+.card .cmt .by{display:block;font-size:12px;color:#A89A8C;margin-top:5px;text-align:right;font-weight:700;}
 footer{text-align:center;font-size:13px;color:#B4A99C;padding:10px 20px 40px;}
 </style>
 </head>
@@ -117,7 +145,7 @@ footer{text-align:center;font-size:13px;color:#B4A99C;padding:10px 20px 40px;}
 
 <header>
   <h1>🏛️ 家乡文化作品墙</h1>
-  <div class="sub">天等县 · 扫码看看，给同学点个赞</div>
+  <div class="sub">扫码看看，给同学点个赞</div>
   <div class="spacer"></div>
   <button class="adminbtn" id="adminBtn">🔒 管理员</button>
   <a href="index.html">✏️ 我也要做一个</a>
@@ -128,6 +156,7 @@ footer{text-align:center;font-size:13px;color:#B4A99C;padding:10px 20px 40px;}
   <div class="seg">
     <button data-sort="new" class="on">最新发布</button>
     <button data-sort="hot">最受欢迎</button>
+    <button data-sort="cmt">评论最多</button>
   </div>
   <button class="refresh" id="refresh">🔄 刷新</button>
 </div>
@@ -140,12 +169,13 @@ footer{text-align:center;font-size:13px;color:#B4A99C;padding:10px 20px 40px;}
   </div>
 </main>
 
-<footer>用 AI 帮忙，让家乡文化被更多人看见 💛</footer>
+<footer>点一点，让家乡文化被更多人看见 💛</footer>
 
 <!-- 评分弹窗 -->
 <div class="mask" id="rateMask">
   <div class="modal">
     <h3>给他的家乡文化点赞</h3>
+    <div id="rateStu"></div>
     <div class="q" id="rateQ"></div>
     <div class="pick" id="pick">
       <span class="st" data-v="1">★</span><span class="st" data-v="2">★</span>
@@ -153,11 +183,7 @@ footer{text-align:center;font-size:13px;color:#B4A99C;padding:10px 20px 40px;}
       <span class="st" data-v="5">★</span>
     </div>
     <p class="plabel" id="plabel">点星星打分（1—5 星）</p>
-    <div class="cmtwrap">
-      <p class="ct">想夸他一句？点一个吧（也可以自己写，或者不写）</p>
-      <div class="chips" id="cmtChips"></div>
-      <textarea id="cmt" maxlength="60" placeholder="也可以在这里自己写一句鼓励的话（不写也行）"></textarea>
-    </div>
+    <textarea id="cmt" maxlength="60" placeholder="写一句鼓励的话吧（可以不写）"></textarea>
     <div class="mrow">
       <button class="btn btn-ghost" id="rcancel">再想想</button>
       <button class="btn btn-main" id="rok">提交点赞</button>
@@ -166,13 +192,29 @@ footer{text-align:center;font-size:13px;color:#B4A99C;padding:10px 20px 40px;}
   </div>
 </div>
 
-<!-- 看大图 -->
+<!-- 看大图（含这件作品的打分与评语） -->
 <div class="mask viewer" id="viewMask">
   <div class="modal">
     <div class="big" id="big"></div>
     <div class="cap" id="bigCap"></div>
     <div class="who" id="bigWho"></div>
+    <div class="vsec">
+      <div class="vsec-t">💬 大家的评价<span id="bigTall"></span></div>
+      <div class="vsum" id="bigRate"></div>
+      <div class="dtlist" id="bigList"></div>
+    </div>
     <div class="mrow"><button class="btn btn-ghost" id="vclose">关闭</button></div>
+  </div>
+</div>
+
+<!-- 作品评价详情 -->
+<div class="mask" id="detailMask">
+  <div class="modal">
+    <h3>💬 大家的评价</h3>
+    <div class="q" id="dtCap"></div>
+    <div id="dtWho" style="font-size:14px;color:#8A8078;margin-bottom:4px;"></div>
+    <div class="dtlist" id="dtList"></div>
+    <div class="mrow"><button class="btn btn-ghost" id="dtClose">关闭</button></div>
   </div>
 </div>
 
@@ -230,24 +272,9 @@ footer{text-align:center;font-size:13px;color:#B4A99C;padding:10px 20px 40px;}
 (function(){
 'use strict';
 
-var EMJ = { pepper:'🌶️', shuangjiang:'🥁', dalang:'💃', nuomi:'🍚', dukang:'🏞️', litun:'⛰️',
-  huashan:'🎨', detian:'💦', houzi:'🐒', youyiguan:'🏯', tianqin:'🎵' };
-
-/* ---------- 可选鼓励语（学生点一下就好，不用打字；不选也能提交） ---------- */
-var PRAISE = [
-  '介绍得真好，我学到啦！👍',
-  '哇，原来家乡这么美！',
-  '写得真好，为你点赞！',
-  '谢谢你让我认识天等 💛',
-  '真棒，你的家乡真厉害！',
-  '这句话我很喜欢，加油！',
-  '太有才了，继续加油！',
-  '看完好想去看一看呀～',
-  '真有家乡味，好棒！',
-  '你的介绍很用心，赞一个！',
-  '说得真好，我要向你学习！',
-  '家乡因为你更精彩！'
-];
+var EMJ = { xieta:'🗼', shijinglin:'⛰️', taiping:'🏰', huapao:'🎆', qilin:'🦁', laoya:'🦆',
+  caoxi:'🌾', minge:'🎵', houzi:'🐒', huashan:'🎨', detian:'💦', youyiguan:'🏯',
+  jiulong:'🐉', zhuangshi:'🥁', longzhou:'🛶', shagao:'🍰', suancai:'🥬', wuse:'🍚', zhuangjin:'🧵', suanyu:'🐟' };
 
 /* ---------- 二维码 ---------- */
 if (qrcode.stringToBytesFuncs && qrcode.stringToBytesFuncs['UTF-8']){
@@ -284,12 +311,50 @@ try {
   }
 } catch(e){ cloud = null; }
 
+/* ---------- 全站通用身份（年级 / 班级 / 学号，与生成页一致） ---------- */
+var LS_STU = 'cx_student';
+var GRADES = ['三年级','四年级','五年级','六年级'];
+var CLASSES = (function(){ var a=[]; for(var i=1;i<=12;i++) a.push(i+'班'); return a; })();
+var NUMBERS = (function(){ var a=[]; for(var i=1;i<=50;i++) a.push(i+'号'); return a; })();
+function stuGet(){ try { var v = localStorage.getItem(LS_STU); if(!v) return null; var o = JSON.parse(v); return (o && o.grade && o.klass && o.no) ? o : null; } catch(e){ return null; } }
+function stuSet(o){ try { localStorage.setItem(LS_STU, JSON.stringify(o)); } catch(e){} }
+function stuLabel(o){ return o ? (o.grade + o.klass + ' · ' + o.no) : ''; }
+var WSTU = stuGet(), wEditing = !WSTU;
+function fillSel(el, arr, cur, ph){
+  el.innerHTML = '<option value="">' + ph + '</option>' + arr.map(function(v){
+    return '<option value="' + v + '"' + (v === cur ? ' selected' : '') + '>' + v + '</option>';
+  }).join('');
+}
+function renderRateStu(){
+  var box = $('rateStu'); if (!box) return;
+  if (WSTU && !wEditing){
+    box.innerHTML = '<div class="stuShow">👦 <b>' + stuLabel(WSTU) + '</b>'
+      + '<button type="button" class="stuedit" id="wStuEdit">改一改</button></div>';
+    $('wStuEdit').onclick = function(){ wEditing = true; renderRateStu(); };
+  } else {
+    box.innerHTML = '<div class="sturow">'
+      + '<select class="ssel" id="wSelGrade"></select>'
+      + '<select class="ssel" id="wSelClass"></select>'
+      + '<select class="ssel" id="wSelNo"></select></div>';
+    fillSel($('wSelGrade'), GRADES, WSTU ? WSTU.grade : '四年级', '年级');
+    fillSel($('wSelClass'), CLASSES, WSTU ? WSTU.klass : '', '班级');
+    fillSel($('wSelNo'), NUMBERS, WSTU ? WSTU.no : '', '学号');
+    ['wSelGrade','wSelClass','wSelNo'].forEach(function(id){
+      $(id).onchange = function(){
+        var g = $('wSelGrade').value, c = $('wSelClass').value, n = $('wSelNo').value;
+        if (g && c && n){ WSTU = { grade:g, klass:c, no:n }; stuSet(WSTU); wEditing = false; renderRateStu(); }
+      };
+    });
+  }
+}
+
 function esc(s){
   return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
     return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
   });
 }
 function raterId(){
+  if (WSTU) return 'stu-' + WSTU.grade + WSTU.klass + '-' + WSTU.no;
   var k = 'cx_rater_id', v = null;
   try { v = localStorage.getItem(k); } catch(e){}
   if (!v){
@@ -306,9 +371,17 @@ function markRated(id){
   try { localStorage.setItem('cx_rated', JSON.stringify(m)); } catch(e){}
 }
 
-var WORKS = [], RATING_AGG = {};
-var sortMode = 'new';
+var WORKS = [], RATING_AGG = {}, RATING_BY = {};
+var sortMode = 'new';   /* new = 最新发布（默认） / hot = 最受欢迎 / cmt = 评论最多 */
 var $ = function(id){ return document.getElementById(id); };
+
+/* ---------- 排序小工具 ---------- */
+function tOf(w){
+  var t = (w && w.created_at) ? new Date(w.created_at).getTime() : 0;
+  return isNaN(t) ? 0 : t;
+}
+function byTimeDesc(a, b){ return tOf(b) - tOf(a); }          /* 上传时间从新到旧 */
+function rateOf(w){ return RATING_AGG[w.id] || { sum:0, n:0 }; }
 
 /* ---------- 加载 ---------- */
 function load(){
@@ -316,17 +389,19 @@ function load(){
   if (!cloud){ render(); return; }
   Promise.all([
     cloud.database.from('works').select('*').order('created_at', { ascending:false }).limit(300),
-    cloud.database.from('ratings').select('work_id, stars').limit(5000)
+    cloud.database.from('ratings').select('work_id, stars, comment, rater_id, rater_name, rater_klass, created_at')
+      .order('created_at', { ascending:false }).limit(5000)
   ]).then(function(res){
     var w = res[0], r = res[1];
     if (w.error) throw w.error;
     WORKS = w.data || [];
-    var agg = {};
+    var agg = {}, byWork = {};
     (r.data || []).forEach(function(x){
       var o = agg[x.work_id] || (agg[x.work_id] = { sum:0, n:0 });
       o.sum += (parseInt(x.stars, 10) || 0); o.n += 1;
+      (byWork[x.work_id] || (byWork[x.work_id] = [])).push(x);
     });
-    RATING_AGG = agg;
+    RATING_AGG = agg; RATING_BY = byWork;
     render();
   }).catch(function(e){
     $('grid').innerHTML = '<div class="empty" style="grid-column:1/-1;">加载失败：'
@@ -338,13 +413,28 @@ function load(){
 function render(){
   var grid = $('grid');
   var list = WORKS.slice();
+  /* ---- 三种排序：主指标都是"多的在前"，打平时一律回落到上传时间从新到旧 ---- */
   if (sortMode === 'hot'){
+    /* 最受欢迎：按点赞（收到评分的总条数）从多到少 */
     list.sort(function(a, b){
-      var A = RATING_AGG[a.id] || { sum:0, n:0 }, B = RATING_AGG[b.id] || { sum:0, n:0 };
+      var A = rateOf(a), B = rateOf(b);
+      if (B.n !== A.n) return B.n - A.n;
       var av = A.n ? A.sum / A.n : 0, bv = B.n ? B.sum / B.n : 0;
       if (bv !== av) return bv - av;
-      return B.n - A.n;
+      return byTimeDesc(a, b);
     });
+  } else if (sortMode === 'cmt'){
+    /* 评论最多：按写了评语的条数从多到少 */
+    list.sort(function(a, b){
+      var an = cmtsOf(a).length, bn = cmtsOf(b).length;
+      if (bn !== an) return bn - an;
+      var A = rateOf(a), B = rateOf(b);
+      if (B.n !== A.n) return B.n - A.n;
+      return byTimeDesc(a, b);
+    });
+  } else {
+    /* 最新发布（默认）：按学生上传的时间节点从新到旧 */
+    list.sort(byTimeDesc);
   }
   $('cnt').textContent = list.length;
   $('empty').style.display = list.length ? 'none' : '';
@@ -377,33 +467,94 @@ function render(){
 
     var act = document.createElement('div');
     act.className = 'act';
+    var cmts = cmtsOf(w);
     var stEl = document.createElement('span');
     stEl.className = 'stars'; stEl.textContent = '★ ' + avg + (agg.n ? '（' + agg.n + '人赞）' : '（还没人赞）');
+    var db = document.createElement('button');
+    db.className = 'dtbtn';
+    db.textContent = cmts.length ? '💬 ' + cmts.length + ' 条评语' : '💬 评价';
+    db.onclick = function(){ openDetail(w); };
     var rb = document.createElement('button');
     rb.className = 'rate' + (rated[w.id] ? ' done' : '');
     rb.textContent = rated[w.id] ? '已赞过 ✓' : '👍 点赞';
     rb.disabled = !!rated[w.id];
     rb.onclick = function(){ openRate(w); };
 
-    act.appendChild(stEl); act.appendChild(rb);
-    card.appendChild(qbox); card.appendChild(tp); card.appendChild(tx); card.appendChild(meta); card.appendChild(act);
+    /* 最新一条评语：还没点进去就能看到别人说了什么 */
+    var cmtEl = null;
+    if (cmts.length){
+      var c0 = cmts[0];
+      var cw = (((c0.rater_klass || '') + ' ' + (c0.rater_name || '')).trim()) || '同学';
+      cmtEl = document.createElement('div');
+      cmtEl.className = 'cmt';
+      cmtEl.innerHTML = esc(String(c0.comment).trim())
+        + '<span class="by">—— ' + esc(cw) + (cmts.length > 1 ? ' 等 ' + cmts.length + ' 条评语' : '')
+        + ' · 点看全部</span>';
+      cmtEl.onclick = function(){ openDetail(w); };
+    }
+
+    act.appendChild(stEl); act.appendChild(db); act.appendChild(rb);
+    card.appendChild(qbox); card.appendChild(tp); card.appendChild(tx);
+    if (cmtEl) card.appendChild(cmtEl);
+    card.appendChild(meta); card.appendChild(act);
     grid.appendChild(card);
 
     qbox.onclick = function(){ openView(w, avg, agg.n); };
   });
 }
 
-/* ---------- 看大图 ---------- */
+/* ---------- 看大图（顺便把打分与评语摆出来） ---------- */
 function openView(w, avg, n){
   var big = $('big'); big.innerHTML = '';
   var cv = makeQR(w.content || '', 9);
   if (cv) big.appendChild(cv);
   $('bigCap').textContent = w.content || '';
-  $('bigWho').textContent = (w.author || '同学') + (w.klass ? ' · ' + w.klass : '')
-    + ' ｜ ★ ' + avg + (n ? '（' + n + '人赞）' : '');
+  $('bigWho').textContent = (w.author || '同学') + (w.klass ? ' · ' + w.klass : '');
+  var list = RATING_BY[w.id] || [];
+  var nc = list.filter(function(r){ return r.comment && String(r.comment).trim(); }).length;
+  $('bigTall').textContent = list.length
+    ? '共 ' + list.length + ' 条打分' + (nc ? '、' + nc + ' 条评语' : '')
+    : '';
+  $('bigRate').innerHTML = '<span class="vavg">★ ' + avg + '</span>'
+    + '<span>' + (n ? n + ' 位同学打了分' : '还没有人点赞，你可以做第一个') + '</span>';
+  $('bigList').innerHTML = ratesHTML(w);
   $('viewMask').classList.add('on');
 }
 $('vclose').onclick = function(){ $('viewMask').classList.remove('on'); };
+
+/* ---------- 作品评价详情 ---------- */
+function fmtShort(t){
+  if (!t) return '';
+  var d = new Date(t); if (isNaN(d.getTime())) return '';
+  return (d.getMonth() + 1) + '/' + d.getDate();
+}
+/* 一件作品的全部评价（打分 + 评语）：评价详情弹层 与 看大图 共用 */
+function ratesHTML(w){
+  var list = RATING_BY[w.id] || [];
+  if (!list.length) return '<div class="dtempty">还没有人评价这件作品，快去点个赞吧～</div>';
+  return list.map(function(r){
+    var name = (r.rater_klass ? r.rater_klass + ' ' : '') + (r.rater_name || '');
+    if (!name.trim()) name = '匿名同学';
+    var s = parseInt(r.stars, 10) || 0;
+    var stars = ''; for (var i = 0; i < s; i++) stars += '★';
+    var hasC = r.comment && String(r.comment).trim();
+    return '<div class="dtrow"><span class="dtwho">' + esc(name) + '</span>'
+      + '<span class="dtst">' + stars + '</span>'
+      + (hasC ? '<span class="dtcmt">' + esc(String(r.comment).trim()) + '</span>'
+              : '<span class="dtcmt" style="color:#C0B6AB;">（只打了分，没有留言）</span>')
+      + '<span class="dttime">' + fmtShort(r.created_at) + '</span></div>';
+  }).join('');
+}
+function cmtsOf(w){
+  return (RATING_BY[w.id] || []).filter(function(r){ return r.comment && String(r.comment).trim(); });
+}
+function openDetail(w){
+  $('dtCap').textContent = w.content || '';
+  $('dtWho').textContent = (w.author || '同学') + (w.klass ? ' · ' + w.klass : '');
+  $('dtList').innerHTML = ratesHTML(w);
+  $('detailMask').classList.add('on');
+}
+$('dtClose').onclick = function(){ $('detailMask').classList.remove('on'); };
 
 /* ---------- 评分 ---------- */
 var cur = { work:null, stars:0 };
@@ -417,56 +568,38 @@ document.querySelectorAll('#pick .st').forEach(function(el){
       + ['','继续加油','还不错','挺好的','很棒','太棒了'][cur.stars];
   };
 });
-/* ---------- 鼓励语点选区 ---------- */
-var chipsBuilt = false;
-function buildChips(){
-  if (chipsBuilt) return;
-  var box = $('cmtChips');
-  PRAISE.forEach(function(txt){
-    var c = document.createElement('button');
-    c.type = 'button'; c.className = 'chip'; c.textContent = txt;
-    c.onclick = function(){
-      var on = c.classList.contains('on');
-      document.querySelectorAll('#cmtChips .chip').forEach(function(x){ x.classList.remove('on'); });
-      var ta = $('cmt');
-      if (on){ c.classList.remove('on'); ta.value = ''; }   /* 再点一下取消 */
-      else { c.classList.add('on'); ta.value = txt; }
-      ta.focus();
-    };
-    box.appendChild(c);
-  });
-  chipsBuilt = true;
-}
-
 function openRate(w){
   cur.work = w; cur.stars = 0; $('cmt').value = '';
-  buildChips();
-  document.querySelectorAll('#cmtChips .chip').forEach(function(x){ x.classList.remove('on'); });
   $('rateQ').textContent = w.content || '';
   document.querySelectorAll('#pick .st').forEach(function(x){ x.classList.remove('on'); });
   $('plabel').textContent = '点星星打分（1—5 星）';
   $('rmsg').textContent = ''; $('rmsg').className = 'mmsg';
+  renderRateStu();
   $('rateMask').classList.add('on');
 }
 $('rcancel').onclick = function(){ $('rateMask').classList.remove('on'); };
 
 $('rok').onclick = async function(){
   if (!cur.stars){ $('rmsg').className = 'mmsg err'; $('rmsg').textContent = '先点一下星星吧～'; return; }
+  if (!WSTU){ $('rmsg').className = 'mmsg err'; $('rmsg').textContent = '先在上面选一下你是谁哦～'; return; }
   if (!cloud){ $('rmsg').className = 'mmsg err'; $('rmsg').textContent = '连不上服务，稍后再试。'; return; }
   var btn = $('rok'); btn.disabled = true;
   $('rmsg').className = 'mmsg'; $('rmsg').textContent = '正在提交…';
   try {
-    var cmt = ($('cmt').value || '').trim();
-    if (!cmt){ cmt = PRAISE[Math.floor(Math.random() * PRAISE.length)]; }  /* 没写就用一句默认的 */
     var res = await cloud.database.from('ratings').insert({
       work_id: cur.work.id, rater_id: raterId(), stars: cur.stars,
-      comment: cmt.slice(0, 60)
+      rater_name: WSTU.no, rater_klass: WSTU.grade + WSTU.klass,
+      comment: ($('cmt').value || '').slice(0, 60)
     }).select();
     if (res.error) throw res.error;
     if (!res.data || !res.data.length) throw new Error('未写入');
     markRated(cur.work.id);
     var agg = RATING_AGG[cur.work.id] || (RATING_AGG[cur.work.id] = { sum:0, n:0 });
     agg.sum += cur.stars; agg.n += 1;
+    (RATING_BY[cur.work.id] || (RATING_BY[cur.work.id] = [])).unshift({
+      work_id: cur.work.id, stars: cur.stars, comment: ($('cmt').value || '').slice(0, 60),
+      rater_name: WSTU.no, rater_klass: WSTU.grade + WSTU.klass, created_at: new Date().toISOString()
+    });
     $('rmsg').className = 'mmsg ok'; $('rmsg').textContent = '点赞成功，谢谢你！';
     render();
     setTimeout(function(){ $('rateMask').classList.remove('on'); }, 650);

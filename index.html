@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>家乡文化二维码 · 天等县</title>
+<title>家乡文化二维码</title>
 <style>
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
@@ -75,15 +75,23 @@ textarea:focus{border-color:#E4572E;}
 .btn-ghost:hover:enabled{border-color:#FFC59B;}
 .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
 
-/* 底部两栏 */
-.bottom{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start;}
-.bottom .left{flex:1 1 460px;min-width:300px;}
-.bottom .right{flex:0 1 360px;min-width:280px;}
+/* 工作区（左侧写作+生成/提交按钮，右侧二维码预览；两列底部对齐，预览位置钉死不动） */
+.workarea{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end;}
+.workmain{flex:1 1 320px;min-width:280px;}
+.workside{flex:0 0 441px;max-width:100%;}
 .qrbox{background:#fff;border:2px solid #FFE7D3;border-radius:18px;padding:16px;
   display:flex;flex-direction:column;align-items:center;}
-#stage{width:min(300px,74vw);height:min(300px,74vw);border:2.5px dashed #E8DCCD;
+.sizerow{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;justify-content:center;}
+.sizerow .szlab{font-size:14px;font-weight:700;color:#8A8078;}
+.szbtn{cursor:pointer;border:2.5px solid #E8DCCD;background:#fff;color:#5A4A3A;border-radius:20px;
+  font-family:inherit;font-size:15px;font-weight:700;padding:6px 18px;transition:.12s;}
+.szbtn:hover{border-color:#FFC59B;}
+.szbtn.on{border-color:#E4572E;background:#E4572E;color:#fff;}
+/* 预览框尺寸固定（= 最大档 400 + 边框），二维码只在框内缩放，框本身不动 */
+#stage{width:405px;height:405px;border:2.5px dashed #E8DCCD;
   border-radius:14px;display:flex;align-items:center;justify-content:center;background:#fff;
-  color:#C3B8AA;font-size:14px;text-align:center;padding:12px;margin-bottom:12px;}
+  color:#C3B8AA;font-size:14px;text-align:center;margin-bottom:12px;
+  max-width:72vw;max-height:72vw;}
 #stage canvas{display:block;width:100%;height:100%;image-rendering:pixelated;}
 #msg{font-size:14px;line-height:1.6;text-align:center;min-height:20px;margin-top:10px;}
 #msg.err{color:#D62828;font-weight:700;}
@@ -97,14 +105,12 @@ textarea:focus{border-color:#E4572E;}
 .field input{flex:1;min-width:0;padding:11px 12px;font-size:17px;border:2.5px solid #E8DCCD;
   border-radius:11px;outline:none;font-family:inherit;color:#33302C;}
 .field input:focus{border-color:#E4572E;}
-.field select{flex:1;min-width:0;padding:11px 12px;font-size:17px;border:2.5px solid #E8DCCD;
-  border-radius:11px;outline:none;font-family:inherit;color:#33302C;background:#fff;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23E4572E' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 12px center;-webkit-appearance:none;appearance:none;padding-right:34px;cursor:pointer;}
-.field select:focus{border-color:#E4572E;}
-.field-group{gap:8px;}
-.field-group label{flex:0 0 auto;}
-.field-group select{flex:1;}
+.sturow{display:flex;gap:8px;flex-wrap:wrap;}
+.ssel{flex:1;min-width:90px;padding:11px 10px;font-size:16px;border:2.5px solid #E8DCCD;border-radius:11px;outline:none;font-family:inherit;color:#33302C;background:#fff;}
+.ssel:focus{border-color:#E4572E;}
+.stuShow{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:700;color:#2C6B62;}
+.stuShow b{color:#E4572E;}
+.stuedit{margin-left:auto;cursor:pointer;border:2px solid #BFE4DE;background:#fff;color:#2C6B62;border-radius:16px;font-family:inherit;font-size:13px;font-weight:700;padding:6px 14px;}
 
 /* 弹窗 */
 .mask{position:fixed;inset:0;background:rgba(40,32,26,.5);display:none;
@@ -118,9 +124,12 @@ textarea:focus{border-color:#E4572E;}
 .modal .btn{width:100%;}
 footer{text-align:center;font-size:13px;color:#B4A99C;padding:8px 20px 34px;line-height:1.8;}
 @media print{
-  header,.step,.submitbox,.btn,.row,#msg{display:none !important;}
-  .qrbox{border:none;padding:0;}
-  #stage{width:120mm;height:120mm;border:1.4px dashed #999;}
+  header,.step,.submitbox,.btn,.row,#msg,.sizerow,.workmain,footer{display:none !important;}
+  .workarea{display:block;}
+  .workside{display:block !important;}
+  .qrbox{border:none;padding:0;position:static !important;box-shadow:none !important;}
+  #stage{width:120mm !important;height:120mm !important;border:1.4px dashed #999;margin:0 auto;}
+  #stage canvas{width:100% !important;height:100% !important;}
   body{background:#fff;}
   @page{size:A4;margin:18mm;}
 }
@@ -130,7 +139,7 @@ footer{text-align:center;font-size:13px;color:#B4A99C;padding:8px 20px 34px;line
 
 <header>
   <h1>🎨 家乡文化二维码</h1>
-  <div class="sub">天等县 · 点一点，就能把家乡介绍出去</div>
+  <div class="sub">点一点，就能把家乡介绍出去</div>
   <div class="spacer"></div>
   <a class="survbtn" href="survey.html">📋 填问卷</a>
   <a class="wallbtn" href="wall.html">🏛️ 去看作品墙</a>
@@ -147,54 +156,58 @@ footer{text-align:center;font-size:13px;color:#B4A99C;padding:8px 20px 34px;line
   <!-- ② 点词拼句 -->
   <section class="step" id="step2" style="display:none;">
     <h2>② 点一点，拼一句话</h2>
-    <p class="tip">每一行各点一个词，句子会自己长出来。</p>
+    <p class="tip">每一行各选一个词，句子自己就拼好了；想写自己的话，往下到「③ 写进二维码」的框里写。</p>
     <div id="banks"></div>
     <div class="preview" id="preview"></div>
   </section>
 
-  <!-- ③ 生成 -->
-  <section class="step" id="step3" style="display:none;">
-    <h2>③ 写进二维码</h2>
-    <p class="tip">上面拼好的句子已经帮你写好了，可以直接生成二维码；也可以自己改一改再生成。</p>
-    <textarea id="txt" maxlength="120" placeholder="上面拼好的句子会自动出现在这里，也可以自己改一改"></textarea>
-    <p class="counter" id="counter">已输入 <b>0</b> 字 ｜ 建议 40 字以内，二维码更清楚</p>
-  </section>
+  <!-- ③④ 工作区（左侧写作+提交，右侧浮动二维码） -->
+  <div class="workarea" id="workarea" style="display:none;">
+    <div class="workmain">
+      <section class="step" id="step3">
+        <h2>③ 写进二维码</h2>
+        <p class="tip">点「↺ 用我拼的那句」把上面拼好的句子放进来；也可以完全自己写，直接在下面这个框里打。想改哪个字就改哪个字。</p>
+        <div class="row" style="margin-bottom:12px;">
+          <button class="btn btn-ghost" id="backfill">↺ 用我拼的那句</button>
+        </div>
+        <textarea id="txt" maxlength="120" placeholder="点「↺ 用我拼的那句」放进来，或者直接在这里自己写一句话"></textarea>
+        <p class="counter" id="counter">已输入 <b>0</b> 字 ｜ 建议 40 字以内，二维码更清楚</p>
+      </section>
 
-  <div class="bottom" id="bottom" style="display:none;">
-    <div class="left">
-      <!-- 提交 -->
       <section class="submitbox">
         <h3>④ 送到作品墙，让大家扫码看</h3>
-        <div class="field">
-          <label>我的学号</label>
-          <select id="author"></select>
-        </div>
-        <div class="field field-group">
-          <label>我的班级</label>
-          <select id="grade"></select>
-          <select id="klass"></select>
+        <div class="field" style="align-items:flex-start;">
+          <label style="padding-top:10px;">我是</label>
+          <div id="stuBox" style="flex:1;min-width:0;"></div>
         </div>
         <div class="row">
           <button class="btn btn-main" id="go">🎯 生成二维码</button>
-          <button class="btn btn-ghost" id="submit" disabled>📮 提交到作品墙</button>
+          <button class="btn btn-ai" id="submit" disabled>📮 提交到作品墙</button>
         </div>
         <div id="msg"></div>
       </section>
     </div>
-    <div class="right">
+
+    <aside class="workside">
       <div class="qrbox">
+        <div class="sizerow" id="sizerow">
+          <span class="szlab">二维码大小</span>
+          <button type="button" class="szbtn" data-sz="s">小</button>
+          <button type="button" class="szbtn on" data-sz="m">中</button>
+          <button type="button" class="szbtn" data-sz="l">大</button>
+        </div>
         <div id="stage">二维码会出现在这里</div>
         <div class="row" style="width:100%;">
           <button class="btn btn-ghost" id="dl" style="flex:1;" disabled>💾 下载</button>
           <button class="btn btn-ghost" id="pr" style="flex:1;" disabled>🖨️ 打印</button>
         </div>
       </div>
-    </div>
+    </aside>
   </div>
 </main>
 
 <footer>
-  天等县 · 家乡文化社团 ｜ 内容会送给作品墙展示，请写正能量的家乡文化 💛
+  家乡文化社团 ｜ 内容会送给作品墙展示，请写正能量的家乡文化 💛
 </footer>
 
 <!-- 成功弹窗 -->
@@ -2640,87 +2653,150 @@ var qrcode = function() {
    一、家乡文化主题 + 点词积木（全部预设，学生只需点击）
    ============================================================ */
 var TOPICS = [
-  { key:'pepper', emoji:'🌶️', name:'天等指天椒',
-    intro:'天等县的特产，红红的、辣辣的，被叫做“天下第一辣”。',
+  { key:'xieta', emoji:'🗼', name:'左江归龙斜塔',
+    intro:'四百多年前建的宝塔，是世界八大斜塔之一。',
     banks:[
-      { t:'开头', items:['天等指天椒','我们家乡的指天椒','红彤彤的指天椒'] },
-      { t:'中间', items:['又香又辣，特别有名','是家乡响当当的特产','晒满了屋顶，像一串串小红灯'] },
-      { t:'结尾', items:['我为家乡感到骄傲','欢迎你来尝一尝','我要把它介绍给更多人'] }
+      { t:'开头', items:['左江归龙斜塔','我们家乡的归龙斜塔','江边的归龙斜塔','我想介绍左江归龙斜塔','我最喜欢这座归龙斜塔','家乡江边的宝贝斜塔','一座站了几百年的老塔','听我说说家乡的斜塔'] },
+      { t:'中间', items:['它斜斜地站在江边，已经四百多年','它被叫做世界八大斜塔之一','它是古代工匠有意砌歪的','它歪着身子，却一直站得稳稳的','它足足有四百多年历史了','它像个歪着脑袋的老爷爷，站在江边','它一点点歪过来，却怎么也不倒','它身上的每一块砖都很有年头'] },
+      { t:'结尾', items:['我为家乡的宝塔感到骄傲','欢迎你来江边看一看','我要把它的故事讲给你听','你想不想也来数一数它有多少年','我真想带你去摸摸这座老塔','这样神奇的老塔，你一定要来看看','我觉得它是家乡最了不起的建筑','等你有空，我们一起去江边看它'] }
     ] },
-  { key:'shuangjiang', emoji:'🥁', name:'壮族霜降节',
-    intro:'天等的壮族节日，入选了世界非物质文化遗产。',
+  { key:'shijinglin', emoji:'⛰️', name:'左江石景林',
+    intro:'石头像盆景一样立着，被叫做“全国少有，广西第一”。',
     banks:[
-      { t:'开头', items:['壮族霜降节','我们天等的霜降节','秋天里的霜降节'] },
-      { t:'中间', items:['大家敲锣打鼓，庆祝丰收','是入选世界的非遗节日','家家户户热热闹闹'] },
-      { t:'结尾', items:['家乡的节日真自豪','欢迎你和我们一起过节','我要把这份热闹讲给你听'] }
+      { t:'开头', items:['左江石景林','我们家乡的石景林','神奇的石头森林','我想介绍家乡的石景林','我最喜欢这片石头林','家乡的石头大花园','一片会变魔术的石头林','听我说说这片石头'] },
+      { t:'中间', items:['它的石头一座座立着，像天然的盆景','它里面到处是奇形怪状的石头','它的石头有的像猴子，有的像老鹰','它被叫做“全国少有，广西第一”','它像一片石头长成的森林','它的石头千奇百怪，怎么看都看不完','它里面的石头像是大自然雕刻的','它每到一处都是一幅画'] },
+      { t:'结尾', items:['我为家乡的石头森林骄傲','欢迎你来这里走一走','我要把这些石头画下来','你想不想来找一找像什么的石头','我保证你来了就不想走','这样好玩的地方，你一定要来看看','我觉得它比游乐园还好玩','等你来了，我给你当小导游'] }
     ] },
-  { key:'dalang', emoji:'💃', name:'壮族打榔舞',
-    intro:'壮族的传统舞蹈，动作来自做糍粑的样子。',
+  { key:'taiping', emoji:'🏰', name:'太平古城',
+    intro:'是明代太平府的老城，有广西保存最大的古城墙。',
     banks:[
-      { t:'开头', items:['壮族打榔舞','我们家乡的打榔舞','热闹的打榔舞'] },
-      { t:'中间', items:['敲起来咚咚响，很有力量','是祖辈传下来的舞蹈','男女老少都能一起跳'] },
-      { t:'结尾', items:['我为家乡的非遗点赞','欢迎你来看我们跳舞','我要好好把它学下来'] }
+      { t:'开头', items:['太平古城','我们家乡的太平古城','古老的太平古城','我想介绍家乡的太平古城','我最喜欢这座老城','家乡的古老城墙','一座有故事的老城','听我说说家乡的古城'] },
+      { t:'中间', items:['它有六百多年前的城墙和城门','它是明代太平府的老城','它青砖灰瓦，古色古香','它的城墙是广西保存最大的','它的一砖一瓦都藏着老故事','它见证了家乡六百多年的变化','它走进去就像回到了古代','它里面的老街老巷特别有味道'] },
+      { t:'结尾', items:['我为家乡的历史骄傲','欢迎你来古城逛一逛','我要记住它的故事','你想不想来城墙上走一走','我真想带你去看看这些老城墙','这样有故事的老城，你一定要来','我觉得这里的每块砖都会说话','等你来了，我带你走遍每条老巷'] }
     ] },
-  { key:'nuomi', emoji:'🍚', name:'五色糯米饭',
-    intro:'用植物染成五种颜色的糯米饭，是壮族的传统美食。',
+  { key:'huapao', emoji:'🎆', name:'左州金山花炮节',
+    intro:'抢花炮的节日，已经有五百多年历史。',
     banks:[
-      { t:'开头', items:['五色糯米饭','我们家乡的五色糯米饭','香喷喷的五色糯米饭'] },
-      { t:'中间', items:['用花草染出红黄紫黑，好看又好吃','是过节时必做的美食','一粒一粒都是家乡的味道'] },
-      { t:'结尾', items:['我最爱吃家乡的味道','欢迎你来尝一口','我要把做法讲给你听'] }
+      { t:'开头', items:['左州金山花炮节','我们家乡的花炮节','热闹的花炮节','我想介绍家乡的花炮节','我最喜欢这个热闹的节日','家乡最热闹的节日','一个抢花炮的好日子','听我说说家乡的花炮节'] },
+      { t:'中间', items:['它是大家抢花炮的节日','它已经有五百多年的历史了','它过节这天敲锣打鼓，祈求平安','它过节时花炮一响，全村人都跑出来看','它比过年还要热闹','它是家乡人最盼望的日子','它一到这天，到处都是欢笑声','它把全村人都聚在了一起'] },
+      { t:'结尾', items:['家乡的节日真让人开心','欢迎你来和我们一起玩','我要把这份热闹讲给你听','你想不想也来抢一次花炮','我真想带你来感受一下这份热闹','这样热闹的节日，你一定要来体验','我觉得这是家乡最欢乐的一天','等你来了，我们一起去看花炮'] }
     ] },
-  { key:'dukang', emoji:'🏞️', name:'都康田园',
-    intro:'天等的田园风光，山清水秀，像一幅画。',
+  { key:'qilin', emoji:'🦁', name:'壮族麒麟舞',
+    intro:'家乡的传统舞蹈，叔叔阿姨还会到学校里教我们跳。',
     banks:[
-      { t:'开头', items:['都康田园','我们天等的都康田园','清晨的都康田园'] },
-      { t:'中间', items:['青山绿水，像一幅画','稻子金黄，一片丰收的景象','山连着水，水绕着田'] },
-      { t:'结尾', items:['我的家乡真美','欢迎你来走一走','我要用画笔把它画下来'] }
+      { t:'开头', items:['壮族麒麟舞','我们家乡的麒麟舞','欢乐的麒麟舞','我想介绍家乡的麒麟舞','我最喜欢看麒麟舞','家乡的欢乐舞蹈','一段会拜年的舞蹈','听我说说家乡的麒麟舞'] },
+      { t:'中间', items:['它跳起来，像小麒麟一样蹦蹦跳跳','它是祖辈传下来的舞蹈','它在我们学校里也能学得到','它一跳起来，锣鼓就响个不停','它被叔叔阿姨跳得活灵活现','它又好看又喜庆，看了让人想笑','它一上场，年味就浓了起来','它的动作又威风又好看'] },
+      { t:'结尾', items:['我为家乡的舞蹈点赞','欢迎你来看我们跳','我要好好把它学会','你想不想也来学一段','我真想跳给你看一看','这样喜庆的舞蹈，你一定要来瞧一瞧','我觉得它比动画片还好看','等过年的时候，我跳给你看'] }
     ] },
-  { key:'litun', emoji:'⛰️', name:'立屯精神',
-    intro:'立屯的乡亲用 24 年打通一条出山隧道，很有志气。',
+  { key:'laoya', emoji:'🦆', name:'那隆腊鸭',
+    intro:'那隆腊鸭香香的，是过节待客的好菜。',
     banks:[
-      { t:'开头', items:['立屯精神','我们天等的立屯精神','大山里的立屯故事'] },
-      { t:'中间', items:['用二十多年凿出一条出山的路','不怕困难，一代接一代地干','告诉我们遇到困难不能放弃'] },
-      { t:'结尾', items:['我也要做一个不怕难的人','这份坚持让我很感动','我要把这种精神学在心里'] }
+      { t:'开头', items:['那隆腊鸭','我们家乡的那隆腊鸭','香喷喷的腊鸭','我想介绍家乡的腊鸭','我最爱吃那隆腊鸭','家乡过节的招牌菜','一种晒出来的美味','听我说说家乡的腊鸭'] },
+      { t:'中间', items:['它晒得金黄，闻着特别香','它是过节招待客人的好菜','它的做法传了好几代人','它吃起来又香又有嚼劲','它一上桌，大家就抢着吃','它是家乡餐桌上少不了的美味','它越嚼越香，越吃越想吃','它挂在屋檐下，一排排金灿灿的'] },
+      { t:'结尾', items:['我最爱吃家乡的味道','欢迎你来尝一口','我要把它的做法讲给你听','你想不想也来尝一尝','我保证你吃了还想吃','这样香的腊鸭，你一定要来尝尝','我觉得它是家乡最香的味道','等过节的时候，我请你吃一块'] }
+    ] },
+  { key:'caoxi', emoji:'🌾', name:'江州草席',
+    intro:'家乡编的草席，又韧又凉快，已经编了一百七十多年。',
+    banks:[
+      { t:'开头', items:['江州草席','我们家乡的草席','凉快的草席','我想介绍家乡的草席','我最喜欢这张草席','家乡的老手艺草席','一张睡了几代人的席子','听我说说家乡的草席'] },
+      { t:'中间', items:['它是用草一根一根编出来的，又结实又耐用','它夏天铺上，冬暖夏凉','它已经编了一百七十多年了','它摸上去滑滑的，还带着草的清香','它是家乡人一代一代编出来的','它看起来普通，编起来却有好多讲究','它一铺开，满屋子都是草的香味','它编起来要好多道工序呢'] },
+      { t:'结尾', items:['我为家乡的手艺骄傲','欢迎你来摸一摸','我要把编草席的本领学一学','你想不想也来学编一张','我真想带你看看它是怎么编的','这样了不起的老手艺，你一定要来看看','我觉得这门手艺特别厉害','等我学会了，我给你编一张'] }
+    ] },
+  { key:'minge', emoji:'🎵', name:'左江壮族民歌',
+    intro:'家乡的壮族山歌，干活和过节的时候大家都爱唱。',
+    banks:[
+      { t:'开头', items:['左江壮族民歌','我们家乡的壮族山歌','好听的壮族山歌','我想介绍家乡的壮族山歌','我最爱听家乡的山歌','家乡人都会唱的山歌','一首唱不完的家乡歌','听我唱唱家乡的山歌'] },
+      { t:'中间', items:['它干活和过节的时候大家爱唱几句','它是祖辈传下来的歌','它唱起来又亮又好听','它一唱起来，干活都不觉得累了','它唱的是家乡的山水和故事','它越唱越有精神','它你一句我一句，越唱越热闹','它唱起来像山泉水一样清脆'] },
+      { t:'结尾', items:['我为家乡的歌骄傲','欢迎你来听一听','我要学一首唱给大家听','你想不想也来学唱一句','我真想唱一首给你听','这样好听的歌，你一定要来听一听','我觉得它是家乡最好听的声音','等学会了，我唱给你听'] }
+    ] },
+  { key:'houzi', emoji:'🐒', name:'白头叶猴',
+    intro:'国家一级保护动物，只有我们家乡的石头山里才有。',
+    banks:[
+      { t:'开头', items:['白头叶猴','我们家乡的白头叶猴','珍稀的白头叶猴','我想介绍家乡的白头叶猴','我最喜欢白头叶猴','家乡石头山上的小精灵','一只会爬山的小可爱','听我说说白头叶猴'] },
+      { t:'中间', items:['它头顶白毛，在石壁上跳来跳去','它是国家一级保护动物','它全世界只有我们家乡才有','它像个小淘气，在石壁上一跳一跳','它吃树叶，住在石头山里','它非常珍贵，全世界都很少见','它白头黑身，机灵得很','它一家子住在悬崖上，好不快活'] },
+      { t:'结尾', items:['我们要好好保护它','欢迎你来认识它','我要做保护动物的小卫士','你想不想也来看看它','我真想带你去找一找它','这样珍贵的动物，一定要好好保护','我觉得它是家乡的宝贝','等你来了，我们一起去山上找它'] }
     ] },
   { key:'huashan', emoji:'🎨', name:'左江花山岩画',
     intro:'两千多年前画在悬崖上的画，是世界文化遗产。',
     banks:[
-      { t:'开头', items:['左江花山岩画','我们崇左的花山岩画','悬崖上的花山岩画'] },
-      { t:'中间', items:['是两千多年前壮族先民画的','画在江边的悬崖上，很有气势','被叫做石头上的“无字天书”'] },
-      { t:'结尾', items:['我为家乡的宝贝自豪','欢迎你来一起看','我要把它的故事讲给更多人'] }
+      { t:'开头', items:['左江花山岩画','我们家乡的花山岩画','悬崖上的花山岩画','我想介绍家乡的花山岩画','我最喜欢花山岩画','家乡悬崖上的红画','一幅画在石头上的大画','听我说说花山岩画'] },
+      { t:'中间', items:['它是两千多年前壮族先民画的','它画在江边的悬崖上，很有气势','它被叫做石头上的“无字天书”','它上面画着好多小人，排成一排排','它红红的，在悬崖上站了两千多年','它像一个巨大的谜，等我们去猜','它画的是古人跳舞、打鼓的样子','它到现在还那么鲜艳'] },
+      { t:'结尾', items:['我为家乡的宝贝自豪','欢迎你来一起看','我要把它的故事讲给更多人','你想不想来猜一猜画的是什么','我真想带你去看看这些红小人','这样神奇的岩画，你一定要来瞧瞧','我觉得它像一本石头做的大书','等你去看了，一定会说神奇'] }
     ] },
   { key:'detian', emoji:'💦', name:'德天跨国瀑布',
-    intro:'在大新县，是亚洲第一大的跨国瀑布。',
+    intro:'是亚洲第一大的跨国瀑布。',
     banks:[
-      { t:'开头', items:['德天跨国瀑布','我们崇左的德天瀑布','雄伟的德天瀑布'] },
-      { t:'中间', items:['水流从天而降，声音像打雷','是亚洲有名的跨国大瀑布','水雾里还能看见彩虹'] },
-      { t:'结尾', items:['家乡的风景真壮观','欢迎你来感受一下','我要把它拍下来分享'] }
-    ] },
-  { key:'houzi', emoji:'🐒', name:'白头叶猴',
-    intro:'国家一级保护动物，只有崇左的石头山里才有。',
-    banks:[
-      { t:'开头', items:['白头叶猴','我们崇左的白头叶猴','珍稀的白头叶猴'] },
-      { t:'中间', items:['头顶白毛，在石壁上跳来跳去','是国家一级保护动物','全世界只有我们这里才有'] },
-      { t:'结尾', items:['我们要好好保护它','欢迎你来认识它','我要做保护动物的小卫士'] }
+      { t:'开头', items:['德天跨国瀑布','我们家乡的德天瀑布','雄伟的德天瀑布','我想介绍家乡的德天瀑布','我最喜欢德天瀑布','家乡的大瀑布','一道会打雷的水帘','听我说说德天瀑布'] },
+      { t:'中间', items:['它水流从天而降，声音像打雷','它是亚洲有名的跨国大瀑布','它的水雾里还能看见彩虹','它一眼望不到边，特别壮观','它横跨两个国家，特别稀奇','它像一匹巨大的白布挂在山前','它水花四溅，凉气扑面而来','它一到雨季，声音几里地都能听见'] },
+      { t:'结尾', items:['家乡的风景真壮观','欢迎你来感受一下','我要把它拍下来分享','你想不想来看看这道大瀑布','我真想带你去听一听它的声音','这样壮观的大瀑布，你一定要来看看','我觉得它比画还要好看','等你来了，我们一起去看彩虹'] }
     ] },
   { key:'youyiguan', emoji:'🏯', name:'友谊关',
-    intro:'在凭祥，是中国九大名关之一，今天还在通关。',
+    intro:'是中国九大名关之一，今天还在通关。',
     banks:[
-      { t:'开头', items:['友谊关','我们崇左的友谊关','雄伟的友谊关'] },
-      { t:'中间', items:['是中国有名的一座边关','到今天还在忙碌地通关','见证了南疆的许多故事'] },
-      { t:'结尾', items:['我为家乡的边关自豪','欢迎你来这里看看','我要把它的故事记下来'] }
+      { t:'开头', items:['友谊关','我们家乡的友谊关','雄伟的友谊关','我想介绍家乡的友谊关','我最喜欢友谊关','家乡的古老边关','一座守着大门的雄关','听我说说友谊关'] },
+      { t:'中间', items:['它是中国有名的一座边关','它到今天还在忙碌地通关','它见证了南疆的许多故事','它高高的城楼上飘着红旗','它守着家乡的大门，已经很多年了','它又高大又威武，像一位守门的将军','它青砖古楼，气派得很','它每天迎送着来来往往的客人'] },
+      { t:'结尾', items:['我为家乡的边关自豪','欢迎你来这里看看','我要把它的故事记下来','你想不想也来看看这座雄关','我真想带你去城楼上走一走','这样威武的边关，你一定要来看看','我觉得它像家乡的大门神','等你来了，我们一起去城楼上看风景'] }
     ] },
-  { key:'tianqin', emoji:'🎵', name:'壮族天琴',
-    intro:'壮族的传统乐器，能弹出好听的歌声。',
+  { key:'jiulong', emoji:'🐉', name:'那隆九龙摆尾舞',
+    intro:'九条长龙一起舞，是家乡传下来的老舞蹈。',
     banks:[
-      { t:'开头', items:['壮族天琴','我们家乡的壮族天琴','好听的天琴声'] },
-      { t:'中间', items:['琴声清脆，像山间的泉水','是壮族祖辈传下来的乐器','一弹起来，全村人都爱听'] },
-      { t:'结尾', items:['我为家乡的音乐骄傲','欢迎你来听一听','我要把这首曲子弹好'] }
+      { t:'开头', items:['那隆九龙摆尾舞','我们家乡的九龙摆尾舞','热闹的九龙摆尾舞','我想介绍家乡的九龙摆尾舞','我最喜欢看九龙摆尾舞','家乡的九龙舞','一条会跳舞的长龙','听我说说九龙摆尾舞'] },
+      { t:'中间', items:['它舞起来像九条龙在摆尾巴','它是祖辈传下来的舞蹈','它过节的时候大家一起来跳','它一跳起来，锣鼓敲得震天响','它长长的队伍，一摆一摆往前走','它是家乡非物质文化遗产的宝贝','它舞起来又威武又好看','它把节日的气氛一下子点燃了'] },
+      { t:'结尾', items:['我为家乡的舞蹈骄傲','欢迎你来看我们跳','我要把它的故事讲给你听','你想不想也来看一眼这长龙','我真想带你看看它怎么摆尾','这样热闹的舞蹈，你一定要来瞧瞧','我觉得它像真的龙飞起来了','等过节的时候，我带你去看'] }
+    ] },
+  { key:'zhuangshi', emoji:'🥁', name:'江州那贞壮狮',
+    intro:'家乡的狮子舞，跳起来又威风又灵活。',
+    banks:[
+      { t:'开头', items:['江州那贞壮狮','我们家乡的壮狮舞','威风的壮狮舞','我想介绍家乡的壮狮舞','我最喜欢看壮狮舞','家乡的狮子舞','一头会翻跟头的狮子','听我说说家乡的壮狮舞'] },
+      { t:'中间', items:['它舞起来像一头威风的大狮子','它是祖辈传下来的狮子舞','它一跳起来，鼓点就咚咚响','它一会儿眨眼，一会儿翻滚，特别灵活','它的狮子头做得又大又漂亮','它是家乡有名的非物质文化遗产','它走到哪里，哪里就围满了人','它一上场，大家都拍手叫好'] },
+      { t:'结尾', items:['我为家乡的狮舞点赞','欢迎你来看我们舞狮','我要把它的本事学一学','你想不想也来看狮子翻跟头','我真想演一回小狮子','这样威风的狮舞，你一定要来看','我觉得它比杂技还精彩','等过年的时候，我带你去看'] }
+    ] },
+  { key:'longzhou', emoji:'🛶', name:'驮卢端午赛龙舟',
+    intro:'端午的时候，大家在江上赛龙舟。',
+    banks:[
+      { t:'开头', items:['驮卢端午赛龙舟','我们家乡的赛龙舟','热闹的赛龙舟','我想介绍家乡的赛龙舟','我最喜欢看赛龙舟','家乡的龙舟赛','一场水上的比赛','听我说说家乡的赛龙舟'] },
+      { t:'中间', items:['它端午的时候在江上比谁划得快','它是家乡传下来的老习俗','它一开赛，岸上全是加油的人','它的龙舟又长又漂亮，龙头高高昂起','它划起来水花飞溅，特别带劲','它一年比一年热闹','它比的是齐心协力的劲头','它锣鼓一响，龙舟就像离弦的箭'] },
+      { t:'结尾', items:['我为家乡的龙舟赛加油','欢迎你端午来看比赛','我要把这份热闹讲给你听','你想不想也来喊一声加油','我真想带你去看龙舟冲过终点','这样热闹的比赛，你一定要来看看','我觉得它比电视里的还精彩','等到端午，我带你去看'] }
+    ] },
+  { key:'shagao', emoji:'🍰', name:'驮卢沙糕',
+    intro:'软软甜甜的家乡点心，过节的时候少不了。',
+    banks:[
+      { t:'开头', items:['驮卢沙糕','我们家乡的沙糕','甜甜的沙糕','我想介绍家乡的沙糕','我最爱吃驮卢沙糕','家乡的老点心','一块软软甜甜的糕','听我说说家乡的沙糕'] },
+      { t:'中间', items:['它松松软软，一咬就化在嘴里','它是家乡过节要吃的点心','它的做法传了好几代人','它甜而不腻，大人小孩都爱吃','它用糯米做成，还带着香味','它是走亲访友常带的礼物','它切开来一层一层的，好看又好吃','它做起来有好几道工序呢'] },
+      { t:'结尾', items:['我最爱吃家乡的沙糕','欢迎你来尝一块','我要把它的做法记下来','你想不想也来尝一尝','我保证你吃了还想吃','这样好吃的老点心，你一定要来尝尝','我觉得它比蛋糕还香','等过节了，我请你吃一块'] }
+    ] },
+  { key:'suancai', emoji:'🥬', name:'江州酸菜',
+    intro:'酸酸脆脆的腌菜，配着白粥最爽口。',
+    banks:[
+      { t:'开头', items:['江州酸菜','我们家乡的酸菜','酸酸脆脆的酸菜','我想介绍家乡的酸菜','我最爱吃家乡的酸菜','家乡的腌菜','一坛酸脆开胃的好菜','听我说说家乡的酸菜'] },
+      { t:'中间', items:['它酸酸脆脆，特别开胃','它是家乡人腌出来的一道好菜','它的做法传了好多年','它配着白粥吃，最是爽口','它腌好以后，颜色金黄黄的很诱人','它是家乡餐桌上少不了的一道菜','它咬一口，又酸又香','它用家乡的菜腌出来，格外好吃'] },
+      { t:'结尾', items:['我最爱吃家乡的酸菜','欢迎你来尝一口','我要把腌酸菜的本领学一学','你想不想也来尝一尝','我保证你吃了还想吃','这样爽口的家乡菜，你一定要来尝尝','我觉得它是最开胃的一道菜','等腌好了，我请你尝尝'] }
+    ] },
+  { key:'wuse', emoji:'🍚', name:'五色糯米饭',
+    intro:'红黄紫黑白好几种颜色，是过节吃的花米饭。',
+    banks:[
+      { t:'开头', items:['五色糯米饭','我们家乡的五色糯米饭','香喷喷的糯米饭','我想介绍家乡的五色糯米饭','我最爱吃五色糯米饭','家乡节日的花米饭','一碗五颜六色的饭','听我说说家乡的五色糯米饭'] },
+      { t:'中间', items:['它有红黄紫黑白好几种颜色','它是用植物的汁染出来的','它是三月三和过节时吃的','它香香糯糯，好看又好吃','它一上桌，节日的气氛就来了','它是家乡人过节必备的美食','它的颜色都是草木染的，吃着放心','它摆在桌上，像一朵朵小花'] },
+      { t:'结尾', items:['我最爱吃家乡的糯米饭','欢迎你来尝一碗','我要把做它的方法记下来','你想不想也来尝一尝','我保证你吃了还想吃','这样好看的糯米饭，你一定要来尝尝','我觉得它像彩虹落在了碗里','等过节的时候，我请你吃一碗'] }
+    ] },
+  { key:'zhuangjin', emoji:'🧵', name:'壮锦',
+    intro:'用彩线织出来的锦，花纹又漂亮又有讲究。',
+    banks:[
+      { t:'开头', items:['壮锦','我们家乡的壮锦','漂亮的壮锦','我想介绍家乡的壮锦','我最喜欢壮锦','家乡的手工织锦','一块织满花纹的美锦','听我说说家乡的壮锦'] },
+      { t:'中间', items:['它是家乡人用彩线织出来的','它上面的花纹又漂亮又有讲究','它是祖辈传下来的手艺','它颜色鲜艳，摸上去厚实','它织一块要花好多天功夫','它是家乡有名的非物质文化遗产','它上面的图案有花有鸟有太阳','它越看越好看，越看越喜欢'] },
+      { t:'结尾', items:['我为家乡的手艺骄傲','欢迎你来摸一摸','我要把织壮锦的本领学一学','你想不想也来看看它怎么织','我真想带你看看这些花纹','这样漂亮的手艺，你一定要来看看','我觉得它是家乡最漂亮的布','等我长大了，我要学织一块'] }
+    ] },
+  { key:'suanyu', emoji:'🐟', name:'通康酸鱼',
+    intro:'腌得酸香入味的鱼，是家乡餐桌上的老味道。',
+    banks:[
+      { t:'开头', items:['通康酸鱼','我们家乡的酸鱼','香香的酸鱼','我想介绍家乡的酸鱼','我最爱吃家乡的酸鱼','家乡的一道好菜','一坛腌得正好的鱼','听我说说家乡的酸鱼'] },
+      { t:'中间', items:['它腌得酸香入味，特别下饭','它是家乡人传下来的一道好菜','它的做法有好多年的历史','它配着米饭吃，最是香','它一开坛，香味就飘满屋子','它是家乡餐桌上的老味道','它酸中带香，越吃越想吃','它用家乡的鱼腌出来，格外鲜美'] },
+      { t:'结尾', items:['我最爱吃家乡的酸鱼','欢迎你来尝一口','我要把腌酸鱼的方法记下来','你想不想也来尝一尝','我保证你吃了还想吃','这样香的家乡菜，你一定要来尝尝','我觉得它是家乡最下饭的菜','等开坛了，我请你尝一尝'] }
     ] }
 ];
 
 /* ============================================================
-   二、安全底线：负向内容拦截（AI 生成 + 手输都要过这一关）
+   二、安全底线：负向内容拦截（手输、拼接内容都要过这一关）
    ============================================================ */
 var BLOCK = ['死','杀','血','滚','傻','笨','丑','蠢','恶心','讨厌','恨','打人','色情','裸','性','赌博','赌','毒','枪','炸','爆炸','自杀','跳楼','恐怖','暴力','鬼','迷信','骗','偷','抢','钱','政治','政府','抗议','反','亡','病','癌','残','穷','垃圾','屎','尿','屁','fuck','shit','bitch'];
 
@@ -2752,11 +2828,13 @@ function buildQR(text, ec){
   }
   return null;
 }
-function drawQR(text, size){
-  size = size || 8;
+function drawQR(text, target){
   var built = buildQR(text, 'M');
   if (!built) return null;
   var q = built.q, n = q.getModuleCount(), quiet = 4, px = n + quiet * 2;
+  // 按目标显示尺寸反推模块像素，保证原生分辨率不低于显示尺寸（放大、下载、打印都清晰）
+  var size = 8;
+  if (target && target > 0) size = Math.max(4, Math.ceil(target / px));
   var cv = document.createElement('canvas');
   cv.width = cv.height = px * size;
   var ctx = cv.getContext('2d');
@@ -2773,35 +2851,38 @@ function drawQR(text, size){
 var $ = function(id){ return document.getElementById(id); };
 var state = { topic:null, picks:[null, null, null], text:'', qr:null };
 
-/* ---- ④ 学号 / 年级 / 班级 下拉（默认：学号 1 号 · 四年级 · 1 班） ---- */
-(function initPickers(){
-  var GRADES = ['四年级', '五年级', '六年级'];
-  var CLASSES = 8;   /* 班级下拉 1—8 班；如需 1—10 / 1—15 改这里即可 */
-  var sa = $('author'), sg = $('grade'), sk = $('klass');
-  for (var i = 1; i <= 60; i++){
-    var o = document.createElement('option');
-    o.value = String(i); o.textContent = i + ' 号';
-    sa.appendChild(o);
-  }
-  sg.innerHTML = '';
-  GRADES.forEach(function(g){
-    var o = document.createElement('option'); o.value = g; o.textContent = g; sg.appendChild(o);
-  });
-  sg.selectedIndex = 0;               /* 默认四年级 */
-  for (var c = 1; c <= CLASSES; c++){
-    var oc = document.createElement('option');
-    oc.value = String(c) + '班'; oc.textContent = c + ' 班';
-    sk.appendChild(oc);
-  }
-  sk.selectedIndex = 0;               /* 默认 1 班 */
-})();
-/* 拼出完整班级串，如「四（2）班」 */
-function classLabel(){
-  var g = $('grade').value, k = $('klass').value;
-  var num = String(k).replace('班', '');
-  var short = { '四年级':'四', '五年级':'五', '六年级':'六' }[g] || '四';
-  return short + '（' + num + '）班';
+/* ---- 二维码尺寸（大 / 中 / 小）——
+   预览框固定 405×405（页面宽度也因此恒定 441px），
+   切档只改变框内二维码的大小，左右两列的几何位置完全不变 ---- */
+var QRSZ = { s:220, m:300, l:400 };
+var curSz = 'm';
+function applySize(){
+  var cv = $('stage').querySelector('canvas');
+  if (!cv) return;
+  cv.style.width = QRSZ[curSz] + 'px';
+  cv.style.height = QRSZ[curSz] + 'px';
 }
+function redrawQR(){
+  if (!state.qr) return;
+  var cv = drawQR(state.qr, QRSZ[curSz] * 2);
+  if (!cv) return;
+  var st = $('stage'); st.innerHTML = ''; st.appendChild(cv);
+  applySize();
+}
+(function bindSize(){
+  var row = $('sizerow'); if (!row) return;
+  var btns = row.querySelectorAll('.szbtn');
+  Array.prototype.forEach.call(btns, function(b){
+    b.onclick = function(){
+      curSz = b.getAttribute('data-sz');
+      Array.prototype.forEach.call(btns, function(x){ x.classList.toggle('on', x === b); });
+      applySize();
+      redrawQR();
+    };
+  });
+})();
+
+/* ---- 二维码预览：位置固定在"③④"右侧，静态不动 ---- */
 
 /* ---- ① 主题卡片 ---- */
 var topicsBox = $('topics');
@@ -2848,14 +2929,13 @@ function pickTopic(key){
     banks.appendChild(wrap);
   });
   $('step2').style.display = '';
-  $('step3').style.display = '';
-  $('bottom').style.display = 'flex';
+  $('workarea').style.display = 'flex';
   refreshPreview();
   $('txt').value = '';
   updateCounter();
   resetQR();
   $('msg').textContent = '';
-  $('step2').scrollIntoView({ behavior:'smooth', block:'start' });
+  /* 不自动滚动页面：选完主题后停留原位，由使用者自己决定是否往下看 */
 }
 
 /* ---- ② 拼句预览 ---- */
@@ -2872,12 +2952,9 @@ function refreshPreview(){
   else {
     var got = 0;
     for (var i = 0; i < 3; i++) if (state.picks[i]) got++;
-    box.innerHTML = '<span class="ph">' + (got === 0 ? '每行点一个词，句子就会出现在这里 ✨'
-      : '还差 ' + (3 - got) + ' 个词，继续点一点 👆') + '</span>';
+    box.innerHTML = '<span class="ph">' + (got === 0 ? '每一行选一个词，句子就会出现在这里 ✨'
+      : '还差 ' + (3 - got) + ' 个，继续选一选 👆') + '</span>';
   }
-  // ★ 关掉 AI 后：拼好的句子即为最终内容，自动填进文本框（孩子也能自己改一改）
-  var t = composed();
-  if (t){ txt.value = t; state.text = t; updateCounter(); }
 }
 
 /* ---- ③ 文本与计数 ---- */
@@ -2892,6 +2969,12 @@ function updateCounter(){
   c.className = 'counter' + (n > 60 ? ' over' : '');
 }
 txt.addEventListener('input', function(){ state.text = txt.value; updateCounter(); });
+$('backfill').onclick = function(){
+  var s = composed();
+  if (!s){ $('msg').className = 'msg err'; $('msg').textContent = '先在上面每一行各选一个词哦～'; return; }
+  txt.value = s; state.text = s; updateCounter();
+  $('msg').textContent = '';
+};
 
 /* ---- 二维码预览 ---- */
 function resetQR(){
@@ -2914,10 +2997,11 @@ function renderQR(){
     $('msg').textContent = '这句话里有不合适的内容，换一句吧～';
     return;
   }
-  var cv = drawQR(s, 8);
+  var cv = drawQR(s, QRSZ[curSz] * 2);
   if (!cv){ $('msg').className = 'msg err'; $('msg').textContent = '内容太长，二维码装不下，请精简。'; return; }
   var st = $('stage'); st.innerHTML = ''; st.appendChild(cv);
   state.qr = s;
+  applySize();
   $('dl').disabled = $('pr').disabled = false;
   $('submit').disabled = false;
   $('msg').className = 'msg ok';
@@ -2943,12 +3027,8 @@ $('dl').onclick = function(){
 $('pr').onclick = function(){ window.print(); };
 
 /* ============================================================
-   五、AI 帮写已移除（2026-10-13）
-   —— 四年级教学不使用生成式人工智能。写进二维码的内容改为
-      由学生「点词拼句」自动生成（见 refreshPreview 自动填充），
-      文本仍过 scanBad 安全闸。下面仅保留云服务连接（作品墙提交需要）。
+   五、云服务（作品墙 / 问卷的数据读写）
    ============================================================ */
-
 var cloud = null;
 try {
   if (window.WorkBuddyCloud && window.CLOUD_CONFIG && window.CLOUD_CONFIG.endpoint){
@@ -2960,6 +3040,47 @@ try {
   }
 } catch(e){ cloud = null; }
 
+/* ============================================================
+   五之二、全站通用身份（年级 / 班级 / 学号）
+   ============================================================ */
+var LS_STU = 'cx_student';
+var GRADES = ['三年级','四年级','五年级','六年级'];
+var CLASSES = (function(){ var a=[]; for(var i=1;i<=12;i++) a.push(i+'班'); return a; })();
+var NUMBERS = (function(){ var a=[]; for(var i=1;i<=50;i++) a.push(i+'号'); return a; })();
+function stuGet(){ try { var v = localStorage.getItem(LS_STU); if(!v) return null; var o = JSON.parse(v); return (o && o.grade && o.klass && o.no) ? o : null; } catch(e){ return null; } }
+function stuSet(o){ try { localStorage.setItem(LS_STU, JSON.stringify(o)); } catch(e){} }
+function stuLabel(o){ return o ? (o.grade + o.klass + ' · ' + o.no) : ''; }
+
+var STUDENT = stuGet();
+var idEditing = !STUDENT;
+
+function fillSel(el, arr, cur, ph){
+  el.innerHTML = '<option value="">' + ph + '</option>' + arr.map(function(v){
+    return '<option value="' + v + '"' + (v === cur ? ' selected' : '') + '>' + v + '</option>';
+  }).join('');
+}
+function renderStu(){
+  var box = $('stuBox'); if (!box) return;
+  if (STUDENT && !idEditing){
+    box.innerHTML = '<div class="stuShow">👦 <b>' + stuLabel(STUDENT) + '</b>'
+      + '<button type="button" class="stuedit" id="stuEdit">改一改</button></div>';
+    $('stuEdit').onclick = function(){ idEditing = true; renderStu(); };
+  } else {
+    box.innerHTML = '<div class="sturow">'
+      + '<select class="ssel" id="selGrade"></select>'
+      + '<select class="ssel" id="selClass"></select>'
+      + '<select class="ssel" id="selNo"></select></div>';
+    fillSel($('selGrade'), GRADES, STUDENT ? STUDENT.grade : '四年级', '年级');
+    fillSel($('selClass'), CLASSES, STUDENT ? STUDENT.klass : '', '班级');
+    fillSel($('selNo'), NUMBERS, STUDENT ? STUDENT.no : '', '学号');
+    ['selGrade','selClass','selNo'].forEach(function(id){
+      $(id).onchange = function(){
+        var g = $('selGrade').value, c = $('selClass').value, n = $('selNo').value;
+        if (g && c && n){ STUDENT = { grade:g, klass:c, no:n }; stuSet(STUDENT); idEditing = false; renderStu(); }
+      };
+    });
+  }
+}
 
 /* ============================================================
    六、提交到作品墙
@@ -2969,9 +3090,10 @@ function setMsg(cls, t){ $('msg').className = 'msg ' + (cls || ''); $('msg').tex
 $('submit').onclick = async function(){
   var s = clean(state.text);
   if (!state.qr){ setMsg('err', '先生成二维码，再提交哦。'); return; }
-  var author = clean($('author').value) + '号', klass = classLabel();
-  if (!clean($('author').value)){ setMsg('err', '先选一个学号吧～'); $('author').focus(); return; }
-  var bad = scanBad(s) || scanBad(klass);
+  var stu = STUDENT;
+  if (!stu){ setMsg('err', '先在最上面选一下你是谁（年级 / 班级 / 学号）。'); return; }
+  var author = stu.no, klass = stu.grade + stu.klass;
+  var bad = scanBad(s) || scanBad(author) || scanBad(klass);
   if (bad){ setMsg('err', '内容里有不合适的地方，改一改再提交吧～'); return; }
   if (!cloud){
     setMsg('err', '现在连不上作品墙（网络或服务未就绪），可以先下载二维码，稍后再交。');
@@ -3008,7 +3130,9 @@ function escapeHtml(s){
 $('mOk').onclick = function(){ location.href = 'wall.html'; };
 $('mClose').onclick = function(){ $('mask').classList.remove('on'); };
 
+renderStu();
 updateCounter();
+applySize();
 })();
 </script>
 </body>

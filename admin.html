@@ -22,13 +22,26 @@ header .danger:hover{background:#A93226;}
 
 main{max-width:1360px;margin:0 auto;padding:18px 20px 80px;}
 
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:14px;margin-bottom:20px;}
-.kpi{background:#fff;border-radius:14px;padding:16px 18px;border:1px solid #E3E8ED;
-  box-shadow:0 2px 8px rgba(43,58,74,.05);}
-.kpi .v{font-size:30px;font-weight:800;color:#2B3A4A;line-height:1.1;}
-.kpi .l{font-size:13px;color:#7A8794;margin-top:6px;font-weight:700;}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:14px;margin-bottom:20px;}
+.kpi{background:#fff;border-radius:14px;padding:15px 16px 14px;border:1px solid #E3E8ED;
+  box-shadow:0 2px 8px rgba(43,58,74,.05);position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s;}
+.kpi:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(43,58,74,.1);}
+.kpi::after{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#D7DEE5;}
+.kpi.acc::after{background:linear-gradient(180deg,#F0875F,#E4572E);}
+.kpi.grn::after{background:linear-gradient(180deg,#48B3A4,#2A9D8F);}
+.kpi.gold::after{background:linear-gradient(180deg,#F5CE4B,#E8A90D);}
+.kpi.info::after{background:linear-gradient(180deg,#6E9DBE,#457B9D);}
+.kpi .hd{font-size:12px;color:#8A96A3;font-weight:700;display:flex;align-items:center;gap:5px;letter-spacing:.02em;}
+.kpi .v{font-size:31px;font-weight:800;color:#2B3A4A;line-height:1.05;margin-top:5px;letter-spacing:-.01em;}
+.kpi .v small{font-size:14px;font-weight:700;color:#9AA6B2;margin-left:2px;}
+.kpi .l{font-size:12.5px;color:#7A8794;margin-top:4px;font-weight:700;}
+.kpi .st{font-size:11.5px;margin-top:6px;font-weight:700;color:#8A96A3;}
+.kpi .st.up{color:#2A9D8F;}
+.kpi .st.dn{color:#C0392B;}
 .kpi.acc .v{color:#E4572E;}
 .kpi.grn .v{color:#2A9D8F;}
+.kpi.gold .v{color:#C99A00;}
+.kpi.info .v{color:#457B9D;}
 
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
 .tabs button{cursor:pointer;border:2px solid #D7DEE5;background:#fff;border-radius:20px;
@@ -65,33 +78,6 @@ tr:hover td{background:#FCFDFE;}
 .freetxt{font-size:14px;color:#5B6875;background:#F9FBFD;border-radius:10px;padding:9px 12px;
   margin:6px 0;line-height:1.6;}
 .freetxt b{color:#2B3A4A;}
-
-/* 课前↔课中 对比 */
-.cmp-sum{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#F4F9F8;
-  border:1px solid #D8EBE7;border-radius:12px;padding:12px 16px;margin-bottom:14px;}
-.cmp-sum .cs{display:flex;align-items:baseline;gap:5px;}
-.cmp-sum .cs .lab{font-size:13px;color:#7C8A96;}
-.cmp-sum .cs b{font-size:22px;font-weight:800;}
-.cmp-sum .cs .u{font-size:13px;color:#7C8A96;}
-.cmp-sum .cs b.pre{color:#8A96A3;}
-.cmp-sum .cs b.mid{color:#2A9D8F;}
-.cmp-sum .arrow{font-size:18px;color:#B7C3CC;}
-.cmp-sum .delta{margin-left:auto;background:#fff;border-radius:10px;padding:6px 14px;border:1px solid #D8EBE7;}
-.cmp-sum .delta b{font-size:22px;}
-.cmp-sum .delta.up b{color:#E4572E;}
-.cmp-sum .delta.down b{color:#5B8CB8;}
-.bar.cmp .bl b i{font-style:normal;font-weight:700;}
-.bar.cmp .bl b i.pre{color:#8A96A3;font-size:13px;}
-.bar.cmp .bl b i.mid{color:#2A9D8F;}
-.bar.cmp .bl b em{font-style:normal;font-size:13px;margin-left:4px;}
-.bar.cmp .bl b em.up{color:#E4572E;font-weight:800;}
-.bar.cmp .bl b em.down{color:#5B8CB8;}
-.bar.cmp .bl b em:not(.up):not(.down){color:#9AA6B2;}
-.cmp-foot{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 16px;}
-.pill{font-size:13px;padding:4px 11px;border-radius:999px;background:#EEF2F6;color:#5B6875;font-weight:700;}
-.pill.up{background:#FDEBE4;color:#D2500F;}
-.pill.down{background:#E7F0F8;color:#3D6E96;}
-.pill.gray{background:#F4F5F7;color:#8A96A3;font-weight:600;}
 
 .empty{text-align:center;color:#9AA6B2;font-size:16px;padding:50px 20px;}
 .msg{font-size:14px;text-align:center;padding:8px;font-weight:700;}
@@ -132,6 +118,281 @@ footer{text-align:center;font-size:12px;color:#A9B0B8;padding:10px 20px 30px;}
 .lock button{width:100%;margin-top:14px;cursor:pointer;border:none;border-radius:12px;
   background:#2B3A4A;color:#fff;font-family:inherit;font-weight:700;font-size:16px;padding:14px;}
 .lock .msg{min-height:20px;margin-top:10px;}
+.lock .rem{margin:14px 0 0;font-size:13px;color:#9AA6B2;}
+.lock .rem b{color:#2A9D8F;}
+
+/* 顶栏登录状态（已登录时显示，含免密剩余时间） */
+.sess{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:700;color:#CFE6E1;
+  background:rgba(42,157,143,.16);border:1px solid rgba(42,157,143,.5);
+  border-radius:20px;padding:7px 13px;}
+.sess i{font-style:normal;color:#7FD4C6;}
+.sess.exp{color:#F6D3C8;background:rgba(192,57,43,.18);border-color:rgba(192,57,43,.55);}
+.sess.exp i{color:#F0875F;}
+header #logout{background:#3E5468;}
+header #logout:hover{background:#4A6480;}
+
+/* ===== 图表体系（纯 HTML/CSS + 内联 SVG，零外链） ===== */
+.charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:16px;align-items:stretch;}
+.charts.one{grid-template-columns:1fr;}
+.chartcard{background:#fff;border-radius:16px;border:1px solid #E3E8ED;padding:16px 18px 15px;
+  box-shadow:0 2px 10px rgba(43,58,74,.05);position:relative;overflow:hidden;
+  display:flex;flex-direction:column;}
+/* 同一行的图表卡片一律等高：图表区自动撑开，结论条自然沉底，不再参差不齐 */
+.chartcard>.rank,.chartcard>.stars,.chartcard>.hbars{flex:1 1 auto;justify-content:space-evenly;}
+.chartcard>.piewrap,.chartcard>.gauge,.chartcard>.spectrum,.chartcard>.vbars{flex:1 1 auto;}
+.chartcard>.piewrap{align-items:center;}
+.chartcard>.gauge{justify-content:center;}
+.chartcard>.spectrum{display:flex;flex-direction:column;justify-content:center;}
+.chartcard>.lboard{flex:1 1 auto;display:flex;flex-direction:column;justify-content:space-evenly;}
+.chartcard>.lboard .lb{margin-bottom:0;}
+.chartcard::before{content:'';position:absolute;left:0;top:0;width:100%;height:3px;
+  background:linear-gradient(90deg,#E4572E,#F2A100,#2A9D8F);opacity:.9;}
+.chartcard h3{margin:0 0 4px;font-size:17.5px;color:#2B3A4A;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.chartcard h3 .cnt{margin-left:auto;font-size:13px;font-weight:700;color:#8A96A3;}
+.chartcard .cap{font-size:13px;color:#8A96A3;margin:0 0 16px;line-height:1.55;}
+.chartcard.wide{grid-column:1/-1;}
+@media (max-width:760px){ .charts{grid-template-columns:1fr;} }
+
+/* 结论条 */
+.insight{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;line-height:1.65;
+  background:#F5F9FC;border-left:3px solid #457B9D;border-radius:0 9px 9px 0;
+  padding:9px 12px;margin-top:13px;color:#4A545F;}
+.insight .ic{flex:none;font-size:14px;line-height:1.45;}
+.insight b{color:#2B3A4A;font-weight:800;}
+.insight.good{background:#F1FAF7;border-left-color:#2A9D8F;}
+.insight.warn{background:#FFF9EC;border-left-color:#F2A100;}
+.insight.bad{background:#FEF4F2;border-left-color:#C0392B;}
+
+/* A. 排行榜（横向条形，降序 + TOP3 徽章） */
+.rank{display:flex;flex-direction:column;gap:11px;}
+.rank.cols2{display:grid;grid-template-columns:1fr 1fr;grid-auto-flow:column;gap:11px 26px;}
+@media (max-width:900px){ .rank.cols2{display:flex;flex-direction:column;} }
+.rank .row{display:grid;grid-template-columns:28px minmax(0,1fr);gap:11px;align-items:center;}
+.rank .no{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;background:#EEF2F6;color:#8A96A3;flex:none;}
+.rank .no.g1{background:linear-gradient(135deg,#F7D661,#E8A90D);color:#5A4000;box-shadow:0 2px 7px rgba(232,180,13,.5);}
+.rank .no.g2{background:linear-gradient(135deg,#DAE2E9,#A4B2BF);color:#3E4A56;box-shadow:0 2px 7px rgba(154,166,178,.45);}
+.rank .no.g3{background:linear-gradient(135deg,#E6BF95,#C08457);color:#4A2E15;box-shadow:0 2px 7px rgba(192,132,87,.45);}
+.rank .lbl{display:flex;justify-content:space-between;gap:8px;font-size:14.5px;margin-bottom:5px;align-items:baseline;}
+.rank .lbl .nm{font-weight:700;color:#2B3A4A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rank .lbl .vl{white-space:nowrap;font-weight:800;color:#2B3A4A;font-size:14.5px;}
+.rank .lbl .vl i{font-style:normal;font-weight:600;color:#9AA6B2;font-size:12.5px;margin-left:4px;}
+.rank .track{height:18px;background:#F1F4F7;border-radius:9px;overflow:hidden;position:relative;}
+.rank .fill{height:100%;border-radius:9px;min-width:3px;transition:width .6s cubic-bezier(.22,.8,.3,1);
+  background:linear-gradient(90deg,#9FBECF,#457B9D);}
+.rank .row.top1 .fill{background:linear-gradient(90deg,#F5B942,#E4572E);box-shadow:0 0 12px rgba(228,87,46,.35);}
+.rank .row.top2 .fill{background:linear-gradient(90deg,#BCC8D3,#7C8B9A);}
+.rank .row.top3 .fill{background:linear-gradient(90deg,#E2BD94,#C08457);}
+.rank .row.zero .fill{background:#E4E9EE;}
+.rank .row.zero .lbl .nm{color:#B0BAC4;}
+.rank .row.zero .lbl .vl{color:#B0BAC4;}
+.rank .row.hot .lbl .nm{color:#C0392B;}
+
+/* B. 堆叠光谱条（单选态度题） */
+.spectrum{margin-bottom:16px;}
+.spectrum .slbl{display:flex;justify-content:space-between;font-size:14.5px;margin-bottom:8px;}
+.spectrum .slbl .nm{font-weight:700;color:#2B3A4A;}
+.spectrum .slbl .vl{font-weight:800;color:#2B3A4A;}
+.spectrum .track{display:flex;height:34px;border-radius:11px;overflow:hidden;background:#F1F4F7;}
+.spectrum .seg{display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:800;
+  color:#fff;transition:width .6s cubic-bezier(.22,.8,.3,1);min-width:0;overflow:hidden;white-space:nowrap;}
+.spectrum .seg.t1{background:linear-gradient(180deg,#48B3A4,#2A9D8F);}
+.spectrum .seg.t2{background:linear-gradient(180deg,#7FBFA0,#5B9E7A);}
+.spectrum .seg.t3{background:linear-gradient(180deg,#F3C25A,#E0A22B);}
+.spectrum .seg.t4{background:linear-gradient(180deg,#E08A6B,#C9623F);}
+.spectrum .seg.t0{background:#DDE3E9;color:#8A96A3;}
+.spectrum .lgd{display:flex;flex-wrap:wrap;gap:9px 18px;margin-top:9px;font-size:13px;color:#5B6875;}
+.spectrum .lgd .i{display:flex;align-items:center;gap:6px;}
+.spectrum .lgd .d{width:12px;height:12px;border-radius:3px;flex:none;}
+
+/* C. 五星分布 */
+.stars{display:flex;flex-direction:column;gap:11px;}
+.stars .r{display:grid;grid-template-columns:96px minmax(0,1fr) 104px;gap:11px;align-items:center;font-size:14.5px;}
+.stars .sk{color:#E8A90D;font-size:15.5px;letter-spacing:-1px;white-space:nowrap;}
+.stars .sk i{font-style:normal;color:#B0BAC4;font-size:15.5px;}
+.stars .track{height:19px;background:#F1F4F7;border-radius:10px;overflow:hidden;}
+.stars .fill{height:100%;border-radius:10px;transition:width .6s cubic-bezier(.22,.8,.3,1);min-width:2px;}
+.stars .vv{text-align:right;font-weight:700;color:#5B6875;font-size:14px;white-space:nowrap;}
+.stars .vv b{color:#2B3A4A;font-weight:800;}
+
+/* D. 仪表盘（半环） */
+.gauge{display:flex;flex-direction:column;align-items:center;padding:4px 0 0;justify-content:center;flex:1 1 auto;}
+.gauge svg{display:block;width:100%;max-width:400px;height:auto;}
+.gauge .gv{font-size:46px;font-weight:800;fill:#2B3A4A;}
+.gauge .gu{font-size:15px;font-weight:700;fill:#9AA6B2;}
+.gauge .glvl{font-size:15.5px;font-weight:800;fill:#2A9D8F;letter-spacing:.03em;}
+.gauge .gcap{font-size:13.5px;color:#8A96A3;margin-top:8px;text-align:center;}
+
+/* E. 对比双栏（优秀 / 待改进） */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media (max-width:760px){ .duo{grid-template-columns:1fr;} }
+.lboard .lb{display:flex;align-items:flex-start;gap:11px;padding:11px 13px;border-radius:12px;
+  background:#F9FBFD;margin-bottom:9px;border:1px solid #EDF1F5;}
+.lboard .lb:last-child{margin-bottom:0;}
+.lboard .md{flex:none;width:29px;height:29px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:15px;background:#fff;border:1px solid #E3E8ED;}
+.lboard .lb.g1 .md{background:linear-gradient(135deg,#F7D661,#E8A90D);border-color:#E8A90D;}
+.lboard .lb.g2 .md{background:linear-gradient(135deg,#DAE2E9,#A4B2BF);border-color:#A4B2BF;}
+.lboard .lb.g3 .md{background:linear-gradient(135deg,#E6BF95,#C08457);border-color:#C08457;}
+.lboard .ct{min-width:0;flex:1;}
+.lboard .ct .nm{font-size:14.5px;font-weight:800;color:#2B3A4A;}
+.lboard .ct .tx{font-size:13.5px;color:#6B7785;line-height:1.55;margin-top:3px;
+  overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.lboard .ct .mt{font-size:12.5px;color:#8A96A3;margin-top:4px;}
+.lboard .sc{flex:none;font-size:16px;font-weight:800;color:#2A9D8F;white-space:nowrap;}
+.lboard .sc.warn{color:#F2A100;}
+.lboard .sc.bad{color:#C0392B;}
+.lboard .none{font-size:14px;color:#B0BAC4;text-align:center;padding:22px 0;}
+.pill{display:inline-block;font-size:11.5px;font-weight:800;border-radius:9px;padding:1px 8px;margin-left:4px;}
+.pill.ok{background:#EAF7F4;color:#2A7F73;}
+.pill.mid{background:#FFF6E5;color:#B87F00;}
+.pill.low{background:#FDEEEC;color:#B0392B;}
+
+/* ===== 课前↔课中对比（新增） ===== */
+.pill.up{background:#EAF7F4;color:#2A7F73;}
+.pill.down{background:#FDEEEC;color:#B0392B;}
+.pill.gray{background:#F4F5F7;color:#8A96A3;font-weight:600;}
+.qblock{background:#fff;border:2px solid #E3E9EF;border-radius:14px;padding:16px 18px;margin-bottom:14px;}
+.qt{font-size:16px;font-weight:800;color:#2B3A4A;margin-bottom:10px;}
+.cmp-sum{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#F6F9FC;border-radius:12px;padding:10px 14px;margin-bottom:12px;}
+.cmp-sum .cs{display:flex;align-items:baseline;gap:4px;}
+.cmp-sum .cs .lab{font-size:13px;color:#7A8794;}
+.cmp-sum .cs b{font-size:22px;color:#2B3A4A;}
+.cmp-sum .cs b.pre{color:#B87F00;}
+.cmp-sum .cs b.mid{color:#2A7F73;}
+.cmp-sum .cs .u{font-size:12px;color:#9AA6B2;}
+.cmp-sum .cs.arrow{font-size:18px;color:#9AA6B2;}
+.cmp-sum .cs.delta b{color:#2A7F73;}
+.cmp-sum .cs.delta.down b{color:#B0392B;}
+.bar.cmp .bl{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px;font-size:13.5px;color:#3D4A58;}
+.bar.cmp .bl b{font-weight:700;}
+.bar.cmp .bl i{font-style:normal;}
+.bar.cmp .bl i.pre{color:#B87F00;}
+.bar.cmp .bl i.mid{color:#2A7F73;}
+.bar.cmp .bl em{font-style:normal;font-weight:800;margin-left:6px;}
+.bar.cmp .bl em.up{color:#2A7F73;}
+.bar.cmp .bl em.down{color:#B0392B;}
+.cmp-foot{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+
+/* ===== 课次快照（新增） ===== */
+.snapbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+.snapbar input{flex:1;min-width:180px;padding:10px 12px;font-size:14.5px;border:2px solid #D7DEE5;border-radius:10px;outline:none;font-family:inherit;}
+.snapbar input:focus{border-color:#2B3A4A;}
+.snapbar .primary{cursor:pointer;border:none;background:#2B3A4A;color:#fff;border-radius:10px;padding:10px 16px;font-size:14.5px;font-weight:700;}
+.snapbar .newc{cursor:pointer;border:none;background:#B0392B;color:#fff;border-radius:10px;padding:10px 16px;font-size:14.5px;font-weight:700;}
+.snaptip{font-size:13px;color:#8A96A3;line-height:1.7;margin:0 0 14px;}
+.snapname{font-weight:700;color:#2B3A4A;}
+.snapnote{display:block;font-size:12.5px;color:#8A96A3;margin-top:2px;}
+.snapacts{white-space:nowrap;}
+.snapacts button{cursor:pointer;border:1.5px solid #D7DEE5;background:#fff;border-radius:8px;padding:4px 10px;font-size:12.5px;font-weight:700;color:#3D4A58;margin:1px 2px;}
+.snapacts button.warn{border-color:#E0A22B;color:#B87F00;}
+.snapacts button.del{border-color:#F0C9C4;color:#B0392B;}
+.viewbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#FFF6E5;border:2px solid #F0DFAE;color:#6B5A17;border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:14.5px;}
+.viewbar .vt{font-size:12.5px;color:#9A8A45;}
+.viewbar button{cursor:pointer;border:1.5px solid #D7C58A;background:#fff;border-radius:8px;padding:5px 12px;font-size:13px;font-weight:700;color:#6B5A17;}
+
+/* F. 竖柱（少量类别） */
+.vbars{display:flex;align-items:stretch;gap:10px;height:190px;padding:0 4px;border-bottom:2px solid #E9EEF3;}
+.vbar{flex:1;display:flex;flex-direction:column;min-width:0;}
+.vbar .colwrap{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;}
+.vbar .v{font-size:12.5px;font-weight:800;color:#2B3A4A;margin-bottom:3px;}
+.vbar .col{width:74%;max-width:48px;border-radius:7px 7px 0 0;min-height:3px;
+  transition:height .55s cubic-bezier(.22,.8,.3,1);background:linear-gradient(180deg,#F0875F,#E4572E);}
+.vbar .lb{font-size:12.5px;color:#7A8794;margin-top:7px;height:32px;line-height:1.2;text-align:center;font-weight:700;}
+
+/* G. 环形（Top-N + 其他） */
+.piedonut{position:relative;width:264px;height:264px;flex:none;}
+.piedonut .pie{width:100%;height:100%;border-radius:50%;box-shadow:0 4px 16px rgba(43,58,74,.16);}
+.piedonut .hole{position:absolute;inset:60px;background:#fff;border-radius:50%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px #F1F4F7;}
+.piedonut .hole b{font-size:36px;color:#2B3A4A;line-height:1;font-weight:800;}
+.piedonut .hole span{font-size:14px;color:#8A96A3;margin-top:5px;font-weight:700;}
+.piewrap{display:flex;align-items:center;justify-content:center;gap:34px;flex-wrap:wrap;}
+.legend{display:flex;flex-direction:column;gap:13px;font-size:15.5px;flex:1 1 0;min-width:190px;max-width:330px;}
+.legend .li{display:grid;grid-template-columns:15px minmax(0,1fr) auto 64px;gap:10px;align-items:center;color:#4A545F;line-height:1.35;}
+.legend .dot{width:15px;height:15px;border-radius:4px;flex:none;}
+.legend .li .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;}
+.legend .li b{color:#2B3A4A;margin-left:0;font-weight:800;font-size:16px;text-align:right;}
+.legend .pct{color:#8A96A3;font-size:14.5px;min-width:0;text-align:right;}
+.legend .li.dim{opacity:.6;}
+
+/* H. 长条（多选排行，兼容旧样式） */
+.hbars{display:flex;flex-direction:column;gap:13px;}
+.hbar .top{display:flex;justify-content:space-between;font-size:14.5px;margin-bottom:7px;color:#4A545F;gap:10px;}
+.hbar .top b{color:#2B3A4A;white-space:nowrap;font-weight:800;}
+.hbar .track{height:19px;background:#F1F4F7;border-radius:10px;overflow:hidden;}
+.hbar .fill{height:100%;border-radius:10px;transition:width .6s cubic-bezier(.22,.8,.3,1);min-width:2px;}
+
+/* I. 分页（长表格每页 30 行） */
+.pgbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:14px;
+  padding-top:13px;border-top:1px solid #EDF1F5;}
+.pgbar .pgn{font-size:13px;color:#8A96A3;}
+.pgbar .pgn b{color:#2B3A4A;font-size:14.5px;font-weight:800;}
+.pgbar .pgsp{flex:1;}
+.pgnb{cursor:pointer;border:2px solid #D7DEE5;background:#fff;border-radius:9px;font-family:inherit;
+  font-size:13px;font-weight:700;color:#5B6875;padding:6px 11px;transition:.12s;min-width:36px;}
+.pgnb:hover:enabled{border-color:#E4572E;color:#E4572E;}
+.pgnb.on{background:#2B3A4A;border-color:#2B3A4A;color:#fff;}
+.pgnb:disabled{opacity:.38;cursor:not-allowed;}
+/* 每页条数选择 */
+.pgsz{display:inline-flex;align-items:center;gap:3px;margin-left:14px;
+  background:#F1F4F7;border-radius:10px;padding:3px;}
+.pgsz i{font-style:normal;font-size:12px;color:#8A96A3;font-weight:700;padding:0 5px 0 7px;}
+.pgsb{cursor:pointer;border:none;background:transparent;border-radius:8px;font-family:inherit;
+  font-size:12.5px;font-weight:800;color:#7A8794;padding:5px 9px;transition:.12s;
+  font-variant-numeric:tabular-nums;}
+.pgsb:hover{color:#E4572E;}
+.pgsb.on{background:#fff;color:#2B3A4A;box-shadow:0 1px 3px rgba(43,58,74,.16);}
+/* 主题覆盖矩阵（20 格） */
+.covgrid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:9px;margin:12px 0 14px;}
+.cov{position:relative;aspect-ratio:1/1;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  font-size:21px;line-height:1;background:linear-gradient(180deg,#EEF9F6,#E3F4EF);
+  border:1px solid #CBE7DF;transition:.15s;}
+.cov:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(42,157,143,.22);}
+.cov.off{background:#F6F8FA;border:1px dashed #D6DEE5;opacity:.72;}
+.cov.off:hover{opacity:1;box-shadow:0 4px 10px rgba(43,58,74,.12);}
+.cov .n{position:absolute;right:3px;bottom:2px;font-size:10px;font-weight:800;color:#1F7D72;
+  font-variant-numeric:tabular-nums;}
+.cov.off .n{color:#A9B4BF;}
+.covlg{display:flex;align-items:center;gap:16px;font-size:12.5px;color:#7A8794;font-weight:700;}
+.covlg .k{display:flex;align-items:center;gap:6px;}
+.covlg .sw{width:15px;height:15px;border-radius:5px;flex:none;
+  background:linear-gradient(180deg,#EEF9F6,#E3F4EF);border:1px solid #CBE7DF;}
+.covlg .sw.off{background:#F6F8FA;border:1px dashed #D6DEE5;}
+/* 待推介主题卡片 */
+.ztile{display:flex;align-items:center;gap:13px;padding:11px 14px;border-radius:13px;
+  background:linear-gradient(90deg,#FFF9EC,#FFFDF9);border:1px solid #F6E4BE;
+  border-left:3px solid #F2A100;margin-bottom:9px;}
+.ztile:last-child{margin-bottom:0;}
+.ztile .zem{flex:none;width:40px;height:40px;border-radius:12px;background:#fff;
+  border:1px solid #F0DFC0;display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1;}
+.ztile .ztx{min-width:0;flex:1;}
+.ztile .znm{font-size:15px;font-weight:800;color:#2B3A4A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ztile .zhint{font-size:13px;color:#8A6D3B;margin-top:3px;line-height:1.4;}
+.ztile .zgo{flex:none;font-size:12px;font-weight:800;color:#B87F00;background:#FFF0D6;
+  border-radius:9px;padding:4px 10px;white-space:nowrap;}
+.tabs button .tb{font-size:12px;font-weight:800;background:#EEF2F6;color:#7A8794;border-radius:9px;
+  padding:1px 7px;margin-left:6px;}
+.tabs button.on .tb{background:#4A6480;color:#fff;}
+
+/* J. 评语卡片流 */
+.cmcard{background:#F9FBFD;border:1px solid #EDF1F5;border-left:3px solid #457B9D;
+  border-radius:0 12px 12px 0;padding:12px 15px;margin-bottom:11px;}
+.cmcard.good{border-left-color:#2A9D8F;background:#F6FCFA;}
+.cmcard.mid{border-left-color:#E0A22B;background:#FFFCF3;}
+.cmcard.low{border-left-color:#C0392B;background:#FEF7F6;}
+.cmtxt{font-size:15px;line-height:1.65;color:#2B3A4A;font-weight:600;word-break:break-word;}
+.cmfoot{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px;
+  color:#8A96A3;margin-top:8px;}
+.cmfoot .cmstars{font-size:13.5px;letter-spacing:-1px;color:#F2A100;white-space:nowrap;}
+.cmfoot .cmstars i{font-style:normal;color:#DDE3E9;}
+.cmfoot .cmwho{font-weight:700;color:#5B6875;white-space:nowrap;}
+.cmfoot .cmto b{color:#2B3A4A;font-weight:800;}
+.cmfoot .cmtime{margin-left:auto;white-space:nowrap;}
+.cfilter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.cfilter button{cursor:pointer;border:2px solid #D7DEE5;background:#fff;border-radius:18px;
+  font-family:inherit;font-size:13px;font-weight:700;color:#5B6875;padding:6px 14px;transition:.12s;}
+.cfilter button.on{background:#E4572E;border-color:#E4572E;color:#fff;}
 </style>
 </head>
 <body>
@@ -145,6 +406,8 @@ footer{text-align:center;font-size:12px;color:#A9B0B8;padding:10px 20px 30px;}
   <button id="refresh">🔄 刷新</button>
   <button id="exportBtn">⬇️ 导出 Excel</button>
   <button class="danger" id="clearBtn">🧹 一键清除</button>
+  <div class="sess" id="sess" style="display:none;"></div>
+  <button id="logout" style="display:none;">🔒 退出登录</button>
 </header>
 
 <main>
@@ -156,17 +419,19 @@ footer{text-align:center;font-size:12px;color:#A9B0B8;padding:10px 20px 30px;}
     <input type="password" id="pw" placeholder="管理员密码" autocomplete="off">
     <button id="loginBtn">进入数据面板</button>
     <div class="msg err" id="lmsg"></div>
+    <p class="rem">登录一次后，<b>这台电脑 1 小时内</b>打开本页都不用再输密码。</p>
   </div>
 
   <!-- 面板主体 -->
   <div id="dashboard" style="display:none;">
+    <div id="viewbar"></div>
     <div class="kpis" id="kpis"></div>
     <div class="tabs" id="tabs"></div>
     <div id="panels"></div>
   </div>
 </main>
 
-<footer>数据来自云服务 · 仅本页可见 · 密码请老师保密</footer>
+<footer>数据来自学校自建服务器 · 仅本页可见 · 登录一次后本机 1 小时内免重复输入 · 密码请老师保密</footer>
 
 <!-- 一键清除确认 -->
 <div class="mask" id="clearMask">
@@ -185,6 +450,22 @@ footer{text-align:center;font-size:12px;color:#A9B0B8;padding:10px 20px 30px;}
     <div class="mrow">
       <button class="ghost" id="clearCancel">取消</button>
       <button class="dngr" id="clearOk">确认清除</button>
+    </div>
+  </div>
+</div>
+
+<!-- 快照操作确认 -->
+<div class="mask" id="snapMask">
+  <div class="modal">
+    <h3 id="snapMTitle">📸 存档</h3>
+    <p id="snapMText"></p>
+    <div class="warn" id="snapMWarn" style="display:none;"></div>
+    <label>输入管理员密码确认</label>
+    <input type="password" id="snapMPw" placeholder="管理员密码" autocomplete="off">
+    <div class="msg err" id="snapMMsg" style="font-size:13px;"></div>
+    <div class="mrow">
+      <button class="ghost" id="snapMCancel">取消</button>
+      <button class="dngr" id="snapMOk">确认</button>
     </div>
   </div>
 </div>
@@ -2626,8 +2907,263 @@ var $ = function(id){ return document.getElementById(id); };
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
   return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 
-var EMJ = { pepper:'🌶️', shuangjiang:'🥁', dalang:'💃', nuomi:'🍚', dukang:'🏞️', litun:'⛰️',
-  huashan:'🎨', detian:'💦', houzi:'🐒', youyiguan:'🏯', tianqin:'🎵' };
+var EMJ = { xieta:'🗼', shijinglin:'⛰️', taiping:'🏰', huapao:'🎆', qilin:'🦁', laoya:'🦆',
+  caoxi:'🌾', minge:'🎵', houzi:'🐒', huashan:'🎨', detian:'💦', youyiguan:'🏯',
+  jiulong:'🐉', zhuangshi:'🥁', longzhou:'🛶', shagao:'🍰', suancai:'🥬', wuse:'🍚', zhuangjin:'🧵', suanyu:'🐟' };
+
+/* 20 个主题全表（与生成器 index.html 的 TOPICS 一一对应）
+   作用：统计时能算出「哪些主题一个人都没选」，光看有数据的主题是发现不了的 */
+var ALLTOPICS = [
+  { key:'xieta', emoji:'🗼', name:'左江归龙斜塔', hint:'讲一讲"斜塔不倒"的秘密' },
+  { key:'shijinglin', emoji:'⛰️', name:'左江石景林', hint:'放一段石头"长成森林"的画面' },
+  { key:'taiping', emoji:'🏰', name:'太平古城', hint:'比一比老照片和新古城' },
+  { key:'huapao', emoji:'🎆', name:'左州金山花炮节', hint:'看看花炮升空的慢镜头' },
+  { key:'qilin', emoji:'🦁', name:'壮族麒麟舞', hint:'学一个麒麟舞的招牌动作' },
+  { key:'laoya', emoji:'🦆', name:'那隆腊鸭', hint:'说一说腊鸭是怎么晒出来的' },
+  { key:'caoxi', emoji:'🌾', name:'江州草席', hint:'摸一摸草席的编法' },
+  { key:'minge', emoji:'🎵', name:'左江壮族民歌', hint:'听一段家乡的调子' },
+  { key:'houzi', emoji:'🐒', name:'白头叶猴', hint:'看"白头"两个字是怎么来的' },
+  { key:'huashan', emoji:'🎨', name:'左江花山岩画', hint:'猜一猜岩画上的小人是谁' },
+  { key:'detian', emoji:'💦', name:'德天跨国瀑布', hint:'看瀑布"一脚跨两国"' },
+  { key:'youyiguan', emoji:'🏯', name:'友谊关', hint:'讲一讲古关口的故事' },
+  { key:'jiulong', emoji:'🐉', name:'那隆九龙摆尾舞', hint:'数一数一条龙要几个人抬' },
+  { key:'zhuangshi', emoji:'🥁', name:'江州那贞壮狮', hint:'学一学壮狮怎么眨眼睛' },
+  { key:'longzhou', emoji:'🛶', name:'驮卢端午赛龙舟', hint:'听一听龙舟鼓点的节奏' },
+  { key:'shagao', emoji:'🍰', name:'驮卢沙糕', hint:'说说沙糕为什么一层一层的' },
+  { key:'suancai', emoji:'🥬', name:'江州酸菜', hint:'聊一聊家里的酸坛子' },
+  { key:'wuse', emoji:'🍚', name:'五色糯米饭', hint:'猜猜五种颜色是从哪来的' },
+  { key:'zhuangjin', emoji:'🧵', name:'壮锦', hint:'找一找壮锦花纹的寓意' },
+  { key:'suanyu', emoji:'🐟', name:'通康酸鱼', hint:'讲一讲酸鱼怎么腌才香' }
+];
+var TNAME = {};
+ALLTOPICS.forEach(function(t){ TNAME[t.name] = t.emoji; });
+
+/* ===== 图表组件库（纯 HTML/CSS + 内联 SVG，零外链） ===== */
+var PALETTE = ['#E4572E','#2A9D8F','#457B9D','#F2A100','#8E6AA8','#5B8C5A','#C0392B','#3E7CB1','#D98E04','#7A8794','#B4642A','#2F7A45'];
+var GREY = '#C3CCD6';
+var SEGBG = { t0:'#DDE3E9', t1:'#2A9D8F', t2:'#5B9E7A', t3:'#E0A22B', t4:'#C9623F' };
+function pct(a, b){ return b ? Math.round(a / b * 100) : 0; }
+function rep(ch, n){ var s = ''; for (var i = 0; i < n; i++){ s += ch; } return s; }
+var _gid = 0;
+
+/* 结论条：把图表读成一句人话 */
+function insight(html, tone){
+  var ic = tone === 'good' ? '✅' : tone === 'warn' ? '⚠️' : tone === 'bad' ? '❗' : '💡';
+  return '<div class="insight' + (tone ? ' ' + tone : '') + '"><span class="ic">' + ic + '</span><span>' + html + '</span></div>';
+}
+
+/* A. 排行榜：横向条形、按值降序、TOP3 金银铜徽章、第一名高亮
+   opt.cols=2 时按列双栏排布（适合 20 个主题这类长清单） */
+function chartRank(items, opt){
+  opt = opt || {};
+  var list = items.slice().sort(function(a, b){ return b.value - a.value; });
+  if (opt.topN) list = list.slice(0, opt.topN);
+  var max = Math.max.apply(null, list.map(function(x){ return x.value; }).concat([1]));
+  var total = items.reduce(function(s, x){ return s + x.value; }, 0) || 1;
+  var cols = opt.cols || 1;
+  var head = '<div class="rank' + (cols > 1 ? ' cols2' : '') + '"'
+    + (cols > 1
+        ? ' style="grid-template-rows:repeat(' + Math.ceil(list.length / cols) + ',auto);"'
+        : '')
+    + '>';
+  return head + list.map(function(x, i){
+    var cls = x.value === 0 ? ' zero' : (i === 0 ? ' top1' : i === 1 ? ' top2' : i === 2 ? ' top3' : '');
+    var noCls = (i < 3 && x.value > 0) ? ' g' + (i + 1) : '';
+    return '<div class="row' + cls + '">'
+      + '<span class="no' + noCls + '">' + (i + 1) + '</span>'
+      + '<div class="body">'
+      +   '<div class="lbl"><span class="nm">' + esc(x.label) + '</span>'
+      +   '<span class="vl">' + x.value + (opt.unit || '') + '<i>' + pct(x.value, total) + '%</i></span></div>'
+      +   '<div class="track"><div class="fill" style="width:' + Math.round(x.value / max * 100) + '%"></div></div>'
+      + '</div></div>';
+  }).join('') + '</div>';
+}
+
+/* B. 态度光谱条：保持选项语义顺序，一眼看出整体倾向 */
+function chartSpectrum(items){
+  var total = items.reduce(function(s, x){ return s + x.value; }, 0) || 1;
+  var n = items.length, segs = '', lgd = '';
+  items.forEach(function(x, i){
+    var w = x.value / total * 100, tone;
+    if (x.tone) tone = x.tone;
+    else if (n <= 2) tone = i === 0 ? 't1' : 't4';
+    else if (i === 0) tone = 't1';
+    else if (i === n - 1) tone = 't4';
+    else if (i === 1) tone = 't2';
+    else if (i === n - 2) tone = 't3';
+    else tone = 't2';
+    segs += '<div class="seg ' + tone + '" style="width:' + w + '%" title="' + esc(x.label) + '：' + x.value + '">'
+      + (w >= 11 ? Math.round(w) + '%' : '') + '</div>';
+    lgd += '<span class="i"><span class="d" style="background:' + (SEGBG[tone] || GREY) + '"></span>'
+      + esc(x.label) + ' <b>' + x.value + '</b>（' + pct(x.value, total) + '%）</span>';
+  });
+  return '<div class="spectrum"><div class="track">' + segs + '</div><div class="lgd">' + lgd + '</div></div>';
+}
+
+/* C. 五星分布：横向条 + 星形刻度 + 语义色 */
+function chartStars(counts){
+  var total = counts.reduce(function(a, b){ return a + b; }, 0) || 1;
+  var max = Math.max.apply(null, counts.concat([1]));
+  var tone = ['#C0392B', '#D9705A', '#F2A100', '#5B9E7A', '#2A9D8F'];
+  var html = '';
+  for (var s = 5; s >= 1; s--){
+    var n = counts[s - 1];
+    html += '<div class="r"><span class="sk">' + rep('★', s) + '<i>' + rep('★', 5 - s) + '</i></span>'
+      + '<div class="track"><div class="fill" style="width:' + Math.round(n / max * 100) + '%;background:' + tone[s - 1] + '"></div></div>'
+      + '<span class="vv"><b>' + n + '</b> 条 · ' + pct(n, total) + '%</span></div>';
+  }
+  return '<div class="stars">' + html + '</div>';
+}
+
+/* D. 半环仪表盘（内联 SVG）：用于「平均星级 / 满分」这类单值指标 */
+function chartGauge(value, max, opt){
+  opt = opt || {};
+  max = max || 5;
+  var v = parseFloat(value);
+  if (isNaN(v)) v = 0;
+  var ratio = Math.max(0, Math.min(1, v / max));
+  var R = 100, L = Math.PI * R, cx = 130, cy = 126;
+  var off = L * (1 - ratio);
+  var gid = 'gg' + (++_gid);
+  var lvl = opt.level || { t:'', c:'#2A9D8F' };
+  return '<div class="gauge">'
+    + '<svg viewBox="0 0 260 180" role="img" aria-label="平均星级仪表盘">'
+    + '<defs><linearGradient id="' + gid + '" x1="0" y1="0" x2="1" y2="0">'
+    + '<stop offset="0%" stop-color="#C0392B"/><stop offset="42%" stop-color="#F2A100"/>'
+    + '<stop offset="100%" stop-color="#2A9D8F"/></linearGradient></defs>'
+    + '<path d="M' + (cx - R) + ' ' + cy + ' A' + R + ' ' + R + ' 0 0 1 ' + (cx + R) + ' ' + cy
+    + '" fill="none" stroke="#EDF1F5" stroke-width="20" stroke-linecap="round"/>'
+    + '<path d="M' + (cx - R) + ' ' + cy + ' A' + R + ' ' + R + ' 0 0 1 ' + (cx + R) + ' ' + cy
+    + '" fill="none" stroke="url(#' + gid + ')" stroke-width="20" stroke-linecap="round" stroke-dasharray="'
+    + L.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '"/>'
+    + '<text class="gv" x="' + cx + '" y="' + (cy - 14) + '" text-anchor="middle">'
+    + (opt.fmt ? opt.fmt(v) : v) + '</text>'
+    + '<text class="gu" x="' + cx + '" y="' + (cy + 8) + '" text-anchor="middle">满分 ' + max + '</text>'
+    + '<text class="glvl" x="' + cx + '" y="' + (cy + 44) + '" text-anchor="middle" fill="' + lvl.c + '">'
+    + esc(lvl.t) + '</text>'
+    + '</svg>'
+    + (opt.cap ? '<div class="gcap">' + esc(opt.cap) + '</div>' : '')
+    + '</div>';
+}
+
+/* E. 环形图（自动收敛为 Top-N + 其余，避免二十个扇区看不清） */
+function chartDonut(items, opt){
+  opt = opt || {};
+  var arr = items.slice().sort(function(a, b){ return b.value - a.value; });
+  var maxSeg = opt.maxSeg || 6;
+  if (arr.length > maxSeg){
+    var head = arr.slice(0, maxSeg - 1);
+    var rest = arr.slice(maxSeg - 1);
+    var rv = rest.reduce(function(s, x){ return s + x.value; }, 0);
+    head.push({ label:'其余 ' + rest.length + ' 项', value:rv, color:GREY });
+    arr = head;
+  }
+  var total = arr.reduce(function(s, x){ return s + x.value; }, 0) || 1;
+  var acc = 0, segs = [], legend = '';
+  arr.forEach(function(x, i){
+    var c = x.color || PALETTE[i % PALETTE.length];
+    var from = acc / total * 360, to = (acc + x.value) / total * 360;
+    segs.push(c + ' ' + from.toFixed(2) + 'deg ' + to.toFixed(2) + 'deg');
+    acc += x.value;
+    legend += '<div class="li' + (x.color === GREY ? ' dim' : '') + '"><span class="dot" style="background:' + c + '"></span>'
+      + '<span class="nm">' + esc(x.label) + '</span><b>' + x.value + '</b><span class="pct">' + pct(x.value, total) + '%</span></div>';
+  });
+  return '<div class="piewrap"><div class="piedonut"><div class="pie" style="background:conic-gradient(' + segs.join(',') + ')"></div>'
+    + '<div class="hole"><b>' + total + '</b><span>合计</span></div></div>'
+    + '<div class="legend">' + legend + '</div></div>';
+}
+
+/* F. 竖柱（仅用于 3—6 个类别） */
+function chartVBar(labels, values, opt){
+  opt = opt || {};
+  var max = Math.max.apply(null, values.concat([1]));
+  var grad = opt.grad || 'linear-gradient(180deg,#F0875F,#E4572E)';
+  return '<div class="vbars">' + labels.map(function(lb, i){
+    return '<div class="vbar" title="' + esc(lb) + '：' + values[i] + '">'
+      + '<div class="colwrap"><span class="v">' + values[i] + '</span>'
+      + '<div class="col" style="height:' + Math.round(values[i] / max * 100) + '%;background:' + grad + '"></div></div>'
+      + '<span class="lb">' + esc(lb) + '</span></div>';
+  }).join('') + '</div>';
+}
+
+/* G. 长条排行（兼容旧调用） */
+function chartHBars(items, opt){
+  opt = opt || {};
+  var max = Math.max.apply(null, items.map(function(x){ return x.value; }).concat([1]));
+  var total = items.reduce(function(s, x){ return s + x.value; }, 0) || 1;
+  return '<div class="hbars">' + items.map(function(x, i){
+    var c = x.color || PALETTE[i % PALETTE.length];
+    return '<div class="hbar"><div class="top"><span>' + esc(x.label) + '</span><b>' + x.value + (opt.unit || '') + ' · ' + pct(x.value, total) + '%</b></div>'
+      + '<div class="track"><div class="fill" style="width:' + Math.round(x.value / max * 100) + '%;background:' + c + '"></div></div></div>';
+  }).join('') + '</div>';
+}
+
+/* ===== 分页组件：长表格默认每页 10 行，可切 10/20/30/50 ===== */
+var PGSZ = 10;                  /* 默认每页 10 条 */
+var PGSIZES = [10, 20, 30, 50];
+var PG = {};                 /* key -> 当前页（0 起） */
+var cmtFilter = 'all';       /* 评语筛选：all / good / low */
+
+function pgState(key, n){
+  var total = Math.max(1, Math.ceil(n / PGSZ));
+  var p = parseInt(PG[key], 10);
+  if (isNaN(p) || p < 0) p = 0;
+  if (p > total - 1) p = total - 1;
+  PG[key] = p;
+  return { p:p, total:total, n:n, key:key, from:p * PGSZ };
+}
+/* 取当前页数据；序号用 st.from + i + 1 保证跨页连续 */
+function pgRows(key, arr){
+  var st = pgState(key, arr.length);
+  st.rows = arr.slice(st.from, st.from + PGSZ);
+  return st;
+}
+function pgBar(st){
+  var h = '<div class="pgbar" data-pganchor="' + esc(st.key) + '">';
+  h += '<span class="pgn">共 <b>' + st.n + '</b> 条'
+    + (st.total > 1 ? ' · 第 ' + (st.p + 1) + ' / ' + st.total + ' 页' : '')
+    + '</span>';
+  if (st.total > 1){
+    h += '<span class="pgsp"></span>'
+      + '<button class="pgnb" data-pgk="' + esc(st.key) + '" data-pgp="' + (st.p - 1) + '"'
+      + (st.p === 0 ? ' disabled' : '') + '>‹ 上一页</button>';
+    var from = Math.max(0, Math.min(st.p - 2, st.total - 5));
+    var to = Math.min(st.total - 1, from + 4);
+    for (var i = from; i <= to; i++){
+      h += '<button class="pgnb' + (i === st.p ? ' on' : '') + '" data-pgk="' + esc(st.key)
+        + '" data-pgp="' + i + '">' + (i + 1) + '</button>';
+    }
+    h += '<button class="pgnb" data-pgk="' + esc(st.key) + '" data-pgp="' + (st.p + 1) + '"'
+      + (st.p >= st.total - 1 ? ' disabled' : '') + '>下一页 ›</button>';
+  }
+  /* 每页条数：数据量超过最小档才显示，避免小表堆控件 */
+  if (st.n > PGSIZES[0]){
+    if (st.total <= 1) h += '<span class="pgsp"></span>';
+    h += '<span class="pgsz" title="每页显示多少条"><i>每页</i>'
+      + PGSIZES.map(function(s){
+          return '<button class="pgsb' + (s === PGSZ ? ' on' : '') + '" data-pgsz="' + s + '">' + s + '</button>';
+        }).join('')
+      + '</span>';
+  }
+  return h + '</div>';
+}
+function starColor(s){ return s >= 4 ? '#2A9D8F' : s >= 3 ? '#E0A22B' : '#C0392B'; }
+function starTone(s){ return s >= 4 ? 'good' : s >= 3 ? 'mid' : 'low'; }
+/* 评语排序：以时间倒序为主，但不让同一件作品的评语连成一片，方便老师一条条往下读 */
+function spreadByWork(list){
+  var out = [], pool = list.slice();
+  while (pool.length){
+    var lastW = out.length ? out[out.length - 1].r.work_id : null;
+    var idx = 0;
+    if (lastW !== null && pool[0].r.work_id === lastW){
+      for (var i = 1; i < pool.length; i++){
+        if (pool[i].r.work_id !== lastW){ idx = i; break; }
+      }
+    }
+    out.push(pool.splice(idx, 1)[0]);
+  }
+  return out;
+}
 
 /* ---------- 云服务 ---------- */
 var cloud = null;
@@ -2641,47 +3177,63 @@ try {
   }
 } catch(e){ cloud = null; }
 
-/* ---------- 问卷题目元数据（与 survey.html 一一对应，用于统计题面） ---------- */
+/* ---------- 问卷题目元数据（与 survey.html 一一对应，用于统计题面） ----------
+   ord:true  选项有语义顺序（如 很了解→不太了解），统计时保持原序、画成态度光谱条
+   tones     自定义每档颜色，t1 绿 / t2 浅绿 / t3 黄 / t4 橙红 / t0 灰
+--------------------------------------------------------------------------- */
 var META = {
   pre:{ name:'课前问卷',
     qs:[
-      { id:'know', t:'了解家乡文化吗', opts:['很了解','知道一些','知道一点点','不太了解'] },
-      { id:'heritageword', t:'听过「非遗」这个词吗', opts:['听过，还知道是什么意思','听说过，但不太懂','没听过'] },
-      { id:'heritage', t:'知道家乡有哪些非遗', multi:true, opts:['壮族霜降节','壮族打榔舞','壮族天琴艺术','左江花山岩画','五色糯米饭制作','指天椒种植技艺','一个都不知道'] },
-      { id:'qr', t:'知道二维码是什么吗', opts:['知道，我还会用','听说过，不太清楚','不知道'] },
-      { id:'want', t:'最想做什么', multi:true, opts:['认识家乡的非遗','做自己的二维码','让同学扫码看我做的','给同学点赞'] },
-      { id:'hard', t:'觉得打字难不难', opts:['不难','有点难','很难'] }
+      { id:'know', t:'了解家乡文化吗', ord:true, opts:['很了解','知道一些','知道一点点','不太了解'] },
+      { id:'heritageword', t:'听过「非遗」这个词吗', ord:true, opts:['听过，还知道意思','听过，不知道什么意思','没听过'] },
+      { id:'heritage', t:'知道家乡有哪些「非遗」', multi:true, opts:['壮族霜降节（天等）','壮族打榔舞（天等）','壮族天琴艺术（龙州）','左江花山岩画（宁明）','太平古城民俗（江州）','五色糯米饭制作','指天椒种植技艺','一个都不知道'] },
+      { id:'what', t:'说的家乡文化包括哪些', multi:true, opts:['好吃的（那隆腊鸭、驮卢沙糕、五色糯米饭）','好玩的节日（左州金山花炮节、驮卢赛龙舟）','好看的风景（左江归龙斜塔、太平古城）','老手艺、老故事（江州草席、壮锦）','别的'] },
+      { id:'pc', t:'以前用电脑做过小作品吗', ord:true, opts:['做过好几次','做过一两次','从来没有'] },
+      { id:'qr', t:'知道二维码是什么吗', ord:true, opts:['知道，我还会用','听说过，不太清楚','不知道'] },
+      { id:'want', t:'最想做什么', multi:true, opts:['给家乡写一句话','做自己的二维码','让同学扫码看我做的','给同学点赞'] },
+      { id:'hard', t:'觉得打字难不难', ord:true, opts:['不难','有点难','很难'] }
     ] },
   mid:{ name:'课中问卷',
     qs:[
-      { id:'fun', t:'这节课开心吗', opts:['很开心','还不错','一般般','不太开心'] },
-      { id:'understood', t:'方法听懂了吗', opts:['都听懂了','大部分懂','有一点点懂','还不太懂'] },
-      { id:'heritage', t:'知道家乡有哪些非遗', multi:true, opts:['壮族霜降节','壮族打榔舞','壮族天琴艺术','左江花山岩画','五色糯米饭制作','指天椒种植技艺','一个都不知道'] },
-      { id:'step', t:'做到哪一步了', opts:['还在选主题','在拼句子','在做二维码','已经交到作品墙了'] },
+      { id:'fun', t:'这节课开心吗', ord:true, opts:['很开心','还不错','一般般','不太开心'] },
+      { id:'understood', t:'方法听懂了吗', ord:true, opts:['都听懂了','大部分懂','有一点点懂','还不太懂'] },
+      { id:'words', t:'点词拼句子有意思吗', ord:true, opts:['很有意思','比较有意思','一般般','没意思'] },
+      { id:'step', t:'做到哪一步了', ord:true, tones:['t4','t3','t2','t1'], opts:['还在选主题','在拼句子','在做二维码','已经交到作品墙了'] },
       { id:'stuck', t:'遇到困难的地方', multi:true, opts:['都挺顺的','选主题有点难','句子不知道怎么选','按钮找不到','还有别的'] },
-      { id:'like', t:'最喜欢哪一步', opts:['选家乡主题','点词拼句子','生成二维码','看别人作品点赞'] }
+      { id:'like', t:'最喜欢哪一步', opts:['选家乡主题','点词拼句子','自己改一句话','生成二维码','看别人作品点赞'] },
+      { id:'heritage', t:'知道家乡有哪些「非遗」', multi:true, opts:['壮族霜降节（天等）','壮族打榔舞（天等）','壮族天琴艺术（龙州）','左江花山岩画（宁明）','太平古城民俗（江州）','五色糯米饭制作','指天椒种植技艺','一个都不知道'] }
     ] },
   post:{ name:'课后问卷',
     qs:[
-      { id:'gain', t:'学到了什么', multi:true, opts:['家乡文化的知识','家乡的非遗','怎么把话写进二维码','怎么给别人点赞评价'] },
-      { id:'proud', t:'对家乡更自豪了吗', opts:['更加自豪了','有点自豪','和以前差不多','没感觉'] },
-      { id:'willshare', t:'愿意分享给家人吗', opts:['很想分享','愿意','说不好','不太想'] },
-      { id:'better', t:'觉得自己做得怎么样', opts:['我很满意','还不错','还要加油','不太满意'] },
-      { id:'again', t:'还想再上这样的课吗', opts:['很想再上','想','都可以','不想'] },
-      { id:'word', t:'内容难不难', opts:['太简单了','刚刚好','有点难','太难了'] },
+      { id:'gain', t:'学到了什么', multi:true, opts:['家乡文化的知识','怎么把家乡话讲清楚','怎么把话写进二维码','怎么给别人点赞评价'] },
+      { id:'proud', t:'对家乡更自豪了吗', ord:true, opts:['更加自豪了','有点自豪','和以前差不多','没感觉'] },
+      { id:'willshare', t:'愿意分享给家人吗', ord:true, opts:['很想分享','愿意','说不好','不太想'] },
+      { id:'better', t:'觉得自己做得怎么样', ord:true, opts:['我很满意','还不错','还要加油','不太满意'] },
+      { id:'again', t:'还想再上这样的课吗', ord:true, opts:['很想再上','想','都可以','不想'] },
+      { id:'word', t:'内容难不难', ord:true, goodIdx:1, tones:['t3','t1','t3','t4'], opts:['太简单了','刚刚好','有点难','太难了'] },
       { id:'free', t:'想对老师说的话', text:true }
     ] }
 };
 
-/* 课前 / 课中 共有、可对比的题（id 相同 → 逐人对比） */
-var CMP = [
-  { id:'heritage', t:'知道家乡有哪些「非遗」', multi:true,
-    opts:['壮族霜降节','壮族打榔舞','壮族天琴艺术','左江花山岩画','五色糯米饭制作','指天椒种植技艺','一个都不知道'] }
-];
-
 /* ---------- 数据 ---------- */
 var WORKS = [], RATINGS = [], SURVEYS = [];
 var tab = 'overview';
+
+/* ---------- 课前↔课中对比 · 共同题（课前/课中 id 与选项必须一致） ---------- */
+var CMP = [
+  { id:'heritage', t:'你知道家乡（崇左）有哪些「非遗」',
+    opts:['壮族霜降节（天等）','壮族打榔舞（天等）','壮族天琴艺术（龙州）','左江花山岩画（宁明）','太平古城民俗（江州）','五色糯米饭制作','指天椒种植技艺','一个都不知道'] }
+];
+
+/* ---------- 课次快照 状态 ---------- */
+var META_DEFAULT = META;      /* 当前题面；查看历史快照时 META 会切到快照里存的题面 */
+var VIEWING = null;           /* 正在查看的历史快照 { id, name, created_at } */
+var SNAP_ACTION = null;       /* 待确认操作 { kind:'save'|'restore'|'del', id, clear } */
+function apiBase(){
+  var p = location.pathname || '/';
+  var i = p.lastIndexOf('/');
+  return p.slice(0, i + 1) + 'api/';
+}
 
 function loadAll(){
   if (!cloud){ $('panels').innerHTML = '<div class="panel"><div class="empty">连不上云服务，检查网络后点「刷新」。</div></div>'; return; }
@@ -2745,40 +3297,64 @@ function fmt(s){
 
 /* ---------- KPI ---------- */
 function renderKpis(){
-  var students = {};
-  WORKS.forEach(function(w){ if (w.author) students[w.author] = 1; });
-  var rated = {}, authors = {};
-  RATINGS.forEach(function(r){ rated[r.rater_id] = 1; });
-  var surveyN = SURVEYS.length;
-  var avg = RATINGS.length ? (RATINGS.reduce(function(s,r){ return s+(parseInt(r.stars,10)||0); },0)/RATINGS.length).toFixed(2) : '—';
+  var students = {}, klasses = {};
+  WORKS.forEach(function(w){
+    if (w.author) students[(w.klass || '') + '|' + w.author] = 1;
+    if (w.klass) klasses[w.klass] = 1;
+  });
+  var nStu = Object.keys(students).length;
+  var nKlass = Object.keys(klasses).length;
+  var nRate = RATINGS.length;
+  var nW = WORKS.length;
+  var sum = RATINGS.reduce(function(s, r){ return s + (parseInt(r.stars, 10) || 0); }, 0);
+  var avg = nRate ? sum / nRate : 0;
+  var avgS = nRate ? avg.toFixed(2) : '—';
+  var lvl = !nRate ? { t:'还没有人点赞', c:'' }
+    : avg >= 4.5 ? { t:'👏 同学们非常喜欢', c:'up' }
+    : avg >= 4.0 ? { t:'🙂 评价不错', c:'up' }
+    : avg >= 3.5 ? { t:'😐 评价一般', c:'' }
+    : { t:'😟 有待提高', c:'dn' };
+  var preN = 0, midN = 0, postN = 0;
+  SURVEYS.forEach(function(s){
+    if (s.kind === 'pre') preN++; else if (s.kind === 'mid') midN++; else if (s.kind === 'post') postN++;
+  });
   var k = [
-    { v:WORKS.length, l:'作品总数', c:'acc' },
-    { v:Object.keys(students).length, l:'参与学生数', c:'' },
-    { v:RATINGS.length, l:'点赞总数', c:'grn' },
-    { v:avg, l:'平均星级', c:'' },
-    { v:surveyN, l:'问卷提交数', c:'' },
-    { v:SURVEYS.filter(function(s){ return s.kind==='pre'; }).length + '/' +
-       SURVEYS.filter(function(s){ return s.kind==='mid'; }).length + '/' +
-       SURVEYS.filter(function(s){ return s.kind==='post'; }).length, l:'课前/中/后份数', c:'' }
+    { ic:'🧩', v:nW, l:'作品总数', c:'acc',
+      st: nStu ? '人均 ' + (nW / nStu).toFixed(1) + ' 件' : '等同学们提交' },
+    { ic:'👦', v:nStu, l:'参与学生数', c:'info',
+      st: nKlass ? '覆盖 ' + nKlass + ' 个班' : '等同学们提交' },
+    { ic:'👍', v:nRate, l:'点赞总数', c:'grn',
+      st: nW ? '每件平均被赞 ' + (nRate / nW).toFixed(1) + ' 次' : '等同学们互评' },
+    { ic:'⭐', v:avgS, l:'平均星级', c:'gold', st:lvl.t, stc:lvl.c },
+    { ic:'📋', v:SURVEYS.length, l:'问卷提交数', c:'',
+      st: nStu ? '按学生数折算回收率 ' + Math.round(Math.max(preN, midN, postN) / nStu * 100) + '%' : '等同学们填写' },
+    { ic:'📅', v:preN + ' / ' + midN + ' / ' + postN, l:'课前 / 课中 / 课后', c:'info',
+      st:'三段问卷各自份数' }
   ];
   $('kpis').innerHTML = k.map(function(x){
-    return '<div class="kpi ' + x.c + '"><div class="v">' + esc(x.v) + '</div><div class="l">' + x.l + '</div></div>';
+    return '<div class="kpi ' + x.c + '"><div class="hd">' + x.ic + ' ' + x.l + '</div>'
+      + '<div class="v">' + esc(x.v) + '</div>'
+      + '<div class="st ' + (x.stc || '') + '">' + esc(x.st || '') + '</div></div>';
   }).join('');
 }
 
 /* ---------- 各面板 ---------- */
 function renderTabs(){
+  var nCmt = RATINGS.filter(function(r){ return r.comment && String(r.comment).trim(); }).length;
   var t = [
     { k:'overview', n:'总览' },
     { k:'compare', n:'课前↔课中对比' },
-    { k:'works', n:'作品统计' },
-    { k:'rates', n:'评分统计' },
+    { k:'works', n:'作品统计', c:WORKS.length },
+    { k:'rates', n:'评分统计', c:RATINGS.length },
+    { k:'comment', n:'评语详情', c:nCmt },
     { k:'pre', n:'课前问卷' },
     { k:'mid', n:'课中问卷' },
-    { k:'post', n:'课后问卷' }
+    { k:'post', n:'课后问卷' },
+    { k:'snaps', n:'📸 课次快照' }
   ];
   $('tabs').innerHTML = t.map(function(x){
-    return '<button data-t="' + x.k + '"' + (x.k===tab?' class="on"':'') + '>' + x.n + '</button>';
+    return '<button data-t="' + x.k + '"' + (x.k===tab?' class="on"':'') + '>' + x.n
+      + (x.c ? '<span class="tb">' + x.c + '</span>' : '') + '</button>';
   }).join('');
   $('tabs').querySelectorAll('button').forEach(function(b){
     b.onclick = function(){ tab = b.getAttribute('data-t'); renderTabs(); renderPanel(); };
@@ -2786,44 +3362,241 @@ function renderTabs(){
 }
 
 function renderPanel(){
+  if (tab === 'snaps'){ $('panels').innerHTML = panelSnaps(); loadSnaps(); return; }
   var html = '';
   if (tab === 'overview') html = panelOverview();
   else if (tab === 'compare') html = panelCompare();
   else if (tab === 'works') html = panelWorks();
   else if (tab === 'rates') html = panelRates();
+  else if (tab === 'comment') html = panelComments();
   else html = panelSurvey(tab);
   $('panels').innerHTML = html;
+}
+
+/* 分页按钮 + 评语筛选：事件委托，只绑一次 */
+$('panels').addEventListener('click', function(e){
+  var t = e.target;
+  if (t && t.classList && t.classList.contains('pgnb')){
+    if (t.disabled) return;
+    var k = t.getAttribute('data-pgk');
+    var p = parseInt(t.getAttribute('data-pgp'), 10);
+    if (isNaN(p)) return;
+    PG[k] = p;
+    renderPanel();
+    var an = document.querySelector('[data-pganchor="' + k + '"]');
+    if (an && an.scrollIntoView) an.scrollIntoView({ block:'nearest' });
+    return;
+  }
+  if (t && t.classList && t.classList.contains('pgsb')){
+    var s = parseInt(t.getAttribute('data-pgsz'), 10);
+    if (!(s > 0) || s === PGSZ) return;
+    PGSZ = s;
+    PG = {};                        /* 改每页条数后，所有表回到第 1 页 */
+    renderPanel();
+    return;
+  }
+  if (t && t.getAttribute && t.getAttribute('data-cmf')){
+    cmtFilter = t.getAttribute('data-cmf');
+    PG['cmt/list'] = 0;
+    renderPanel();
+  }
+});
+
+/* 榜单条目：优秀榜 / 待关注榜 共用 */
+function lbItem(x, i, tone){
+  var medal = i < 3 ? ['🥇', '🥈', '🥉'][i] : (i + 1);
+  var cls = i < 3 ? ' g' + (i + 1) : '';
+  var sc = x.n === 0 ? '—' : x.avg.toFixed(1);
+  var scCls = x.n === 0 ? ' bad' : (x.avg >= 4.5 ? '' : x.avg >= 3.5 ? ' warn' : ' bad');
+  return '<div class="lb' + cls + '">'
+    + '<span class="md">' + medal + '</span>'
+    + '<div class="ct"><div class="nm">' + esc(x.w.author || '未知')
+    +   '<span class="pill ' + tone + '">' + esc((EMJ[x.w.topic] || '🏵️') + ' ' + (x.w.topic_name || '')) + '</span></div>'
+    +   '<div class="tx">' + esc(x.w.content || '') + '</div>'
+    +   '<div class="mt">' + (x.n ? x.n + ' 人评价 · 平均 ' + x.avg.toFixed(1) + ' 星' : '还没有人评价') + '</div></div>'
+    + '<span class="sc' + scCls + '">' + sc + '</span>'
+    + '</div>';
 }
 
 function panelOverview(){
   var by = byAuthor();
   if (!by.length) return '<div class="panel"><div class="empty">还没有作品数据。等同学们提交后回来看～</div></div>';
-  var rows = by.map(function(s){
-    var names = s.works.map(function(w){ return (EMJ[w.topic]||'🏵️')+' '+esc(w.topic_name||''); }).join(' ');
-    return '<tr><td class="who">'+esc(s.author)+(s.klass?'<br><span style="font-size:12px;color:#8A96A3;font-weight:400;">'+esc(s.klass)+'</span>':'')+'</td>'
-      + '<td class="num">'+s.count+'</td><td>'+names+'</td><td class="num">'+(s.rates||0)+'</td><td class="num">'+s.avg+'</td></tr>';
+  var agg = workAgg();
+
+  /* ========== 1. 主题热度排行 ========== */
+  var tcount = {};
+  WORKS.forEach(function(w){ var k = (w.topic_name || '未分类'); tcount[k] = (tcount[k] || 0) + 1; });
+  var tkeys = Object.keys(tcount).sort(function(a, b){ return tcount[b] - tcount[a]; });
+  var tItems = tkeys.map(function(k){ return { label:(TNAME[k] || '🏵️') + ' ' + k, value:tcount[k] }; });
+  var tPlain = tkeys.map(function(k){ return { label:k, value:tcount[k] }; });
+  var hotName = tkeys[0] || '', hotN = tcount[hotName] || 0, hotPct = pct(hotN, WORKS.length);
+  var zeroList = ALLTOPICS.filter(function(t){ return !tcount[t.name]; });
+  var top3 = tkeys.slice(0, 3).map(function(k){ return k + '（' + tcount[k] + ' 人）'; }).join('、');
+
+  var c1 = '<div class="chartcard"><h3>🔥 主题热度排行'
+    + '<span class="cnt">' + tkeys.length + ' / ' + ALLTOPICS.length + ' 个主题有人选</span></h3>'
+    + '<p class="cap">按选做人数从多到少排列，金、银、铜前三名高亮显示。</p>'
+    + chartRank(tItems, { unit:' 人', cols:2 })
+    + insight('选得最多的是 <b>' + esc(hotName) + '</b>（' + hotN + ' 人，占全部作品 ' + hotPct + '%）；前三名依次是 '
+      + esc(top3) + '。'
+      + (zeroList.length ? '另外还有 <b>' + zeroList.length + '</b> 个主题这一轮没人选做。' : '20 个主题全部有人选做。'),
+      zeroList.length > 8 ? 'warn' : '')
+    + '</div>';
+
+  var c2 = '<div class="chartcard"><h3>🎨 主题占比结构'
+    + '<span class="cnt">前 5 名 + 其余</span></h3>'
+    + '<p class="cap">看结构比例要用环形图，但扇区超过 6 个就分不清，所以自动归并。</p>'
+    + chartDonut(tPlain, { maxSeg:6 })
+    + '</div>';
+
+  var html = '<div class="charts">' + c1 + c2 + '</div>';
+
+  /* ========== 2. 平均星级 + 待推介主题 ========== */
+  var nRate = RATINGS.length;
+  var starSum = RATINGS.reduce(function(s, r){ return s + (parseInt(r.stars, 10) || 0); }, 0);
+  var avgAll = nRate ? starSum / nRate : 0;
+  var lvl = !nRate ? { t:'还没有评价', c:'#9AA6B2' }
+    : avgAll >= 4.5 ? { t:'★ 非常受欢迎', c:'#2A9D8F' }
+    : avgAll >= 4.0 ? { t:'★ 评价不错', c:'#5B9E7A' }
+    : avgAll >= 3.5 ? { t:'★ 评价一般', c:'#E0A22B' }
+    : { t:'★ 有待提高', c:'#C0392B' };
+
+  var c3 = '<div class="chartcard"><h3>⭐ 作品平均星级</h3>'
+    + '<p class="cap">全部同学点赞的平均分，满分 5 星。</p>'
+    + chartGauge(avgAll, 5, {
+        fmt:function(v){ return v.toFixed(2); },
+        level:lvl,
+        cap:'基于 ' + nRate + ' 条同学评价'
+      })
+    + insight(nRate
+        ? '平均 <b>' + avgAll.toFixed(2) + '</b> 星，属于「' + lvl.t.replace('★ ', '') + '」水平；'
+          + (avgAll >= 4.5 ? '说明同学们对彼此的作品很认可，可以放心让作者上台分享。'
+             : '可以在点评环节把"好作品的样子"再讲清楚一点，帮同学们打得更准。')
+        : '还没有同学点赞，等互评环节结束后再来看。',
+        avgAll >= 4 ? 'good' : (nRate ? 'warn' : ''))
+    + '</div>';
+
+  /* 20 格主题覆盖矩阵：绿=有人选做，灰虚线=无人选做 */
+  var covN = ALLTOPICS.length - zeroList.length;
+  var covGrid = '<div class="covgrid">'
+    + ALLTOPICS.map(function(t){
+        var c = tcount[t.name] || 0;
+        return '<span class="cov' + (c ? '' : ' off') + '" title="'
+          + esc(t.name + '（' + (c ? c + ' 件作品' : '暂无人选做') + '）') + '">'
+          + t.emoji + '<i class="n">' + c + '</i></span>';
+      }).join('')
+    + '</div>';
+
+  var c4 = '<div class="chartcard"><h3>🌡️ 需要推介的主题'
+    + '<span class="cnt">' + zeroList.length + ' 个 · 覆盖 '
+    + pct(covN, ALLTOPICS.length) + '%</span></h3>'
+    + '<p class="cap">下面 20 格是全部主题，绿底 = 有人选做，灰格 = 这一轮没人选做。</p>'
+    + covGrid
+    + '<div class="covlg">'
+    +   '<span class="k"><i class="sw"></i>有人选做</span>'
+    +   '<span class="k"><i class="sw off"></i>暂无人选做</span>'
+    +   '<span class="k" style="margin-left:auto;font-weight:600;color:#A9B4BF;">鼠标停在格子上可看主题名</span>'
+    + '</div>'
+    + '<div style="font-size:13.5px;color:#5B6875;display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;">'
+    +   '<span style="font-weight:700;">主题覆盖度</span>'
+    +   '<b style="color:#2B3A4A;font-size:19px;">' + covN
+    +     ' <i style="font-style:normal;font-size:14px;color:#9AA6B2;font-weight:700;">/ ' + ALLTOPICS.length + '</i>'
+    +     '<i style="font-style:normal;font-size:13px;color:#2A9D8F;margin-left:7px;">' + pct(covN, ALLTOPICS.length) + '%</i></b></div>'
+    + '<div style="height:16px;background:#F1F4F7;border-radius:8px;overflow:hidden;margin-top:7px;">'
+    +   '<div style="height:100%;width:' + Math.round(covN / ALLTOPICS.length * 100)
+    +     '%;background:linear-gradient(90deg,#48B3A4,#2A9D8F);border-radius:8px;transition:width .6s;"></div></div>'
+    + (zeroList.length
+        ? '<div style="font-size:13.5px;font-weight:800;color:#B87F00;margin:18px 0 9px;">这 '
+          + zeroList.length + ' 个主题还没人做，可以这样「带货」：</div>'
+          + zeroList.map(function(t){
+              return '<div class="ztile"><span class="zem">' + t.emoji + '</span>'
+                + '<div class="ztx"><div class="znm">' + esc(t.name) + '</div>'
+                + '<div class="zhint">' + esc(t.hint || '') + '</div></div>'
+                + '<span class="zgo">0 人</span></div>';
+            }).join('')
+        : '<div style="font-size:14px;color:#2A9D8F;font-weight:800;padding:18px 0 6px;">'
+          + '20 个主题全部有人选做，覆盖面很完整 👍</div>')
+    + (zeroList.length
+        ? insight('这 <b>' + zeroList.length + '</b> 个主题这一轮没有人选做，下节课可以用一分钟展示它们的图片或故事"带一带货"。', 'warn')
+        : insight('所有主题都被同学们翻过了，说明课前介绍是有效的。', 'good'))
+    + '</div>';
+
+  html += '<div class="charts">' + c3 + c4 + '</div>';
+
+  /* ========== 3. 优秀作品榜 / 需要关注 ========== */
+  var scored = WORKS.map(function(w){
+    var a = agg[w.id] || { sum:0, n:0 };
+    return { w:w, n:a.n, avg: a.n ? a.sum / a.n : 0 };
+  });
+  var goodAll = scored.filter(function(x){ return x.n >= 3 && x.avg >= 4.5; })
+    .sort(function(a, b){ return b.avg - a.avg || b.n - a.n; });
+  var weakAll = scored.filter(function(x){ return x.n === 0 || x.avg < 3.5; })
+    .sort(function(a, b){ return (a.n === 0 ? -1 : a.avg) - (b.n === 0 ? -1 : b.avg); });
+  var good = goodAll.slice(0, 6);
+  var weak = weakAll.slice(0, 6);
+
+  var c5 = '<div class="chartcard"><h3>🏆 优秀作品榜'
+    + '<span class="cnt">被赞 ≥3 且平均 ≥4.5 星</span></h3>'
+    + '<p class="cap">同学们公认做得好的作品，可以当堂投屏展示。</p>'
+    + (good.length
+        ? '<div class="lboard">' + good.map(function(x, i){ return lbItem(x, i, 'ok'); }).join('') + '</div>'
+          + insight('共有 <b>' + goodAll.length + '</b> 件作品达到高分标准'
+            + (goodAll.length > good.length ? '，这里列出前 ' + good.length + ' 件' : '')
+            + '；建议挑 1—2 件投屏，请作者说说自己是怎么想的。', 'good')
+        : '<div class="lboard"><div class="none">暂时还没有作品同时满足「被赞 3 次以上」且「平均 4.5 星」。</div></div>')
+    + '</div>';
+
+  var c6 = '<div class="chartcard"><h3>❗ 需要关注'
+    + '<span class="cnt">无人评价 或 平均 &lt;3.5 星</span></h3>'
+    + '<p class="cap">这些作品可能被同学忽略了，或者需要老师个别指导。</p>'
+    + (weak.length
+        ? '<div class="lboard">' + weak.map(function(x, i){ return lbItem(x, i, 'low'); }).join('') + '</div>'
+          + insight('共有 <b>' + weakAll.length + '</b> 件作品人气偏低'
+            + (weakAll.length > weak.length ? '，这里列出 ' + weak.length + ' 件' : '')
+            + '；可以安排同学补看补评，或问问作者是不是选的主题不太顺手。', 'warn')
+        : '<div class="lboard"><div class="none">每件作品都有人评价，没有落单的作品 👍</div></div>')
+    + '</div>';
+
+  html += '<div class="charts">' + c5 + c6 + '</div>';
+
+  /* ========== 4. 学生作品明细 ========== */
+  var Rstu = pgRows('ov/stu', by);
+  var rows = Rstu.rows.map(function(s, i){
+    var names = s.works.map(function(w){ return (EMJ[w.topic] || '🏵️') + ' ' + esc(w.topic_name || ''); }).join(' ');
+    return '<tr><td class="num">' + (Rstu.from + i + 1) + '</td>'
+      + '<td class="who">' + esc(s.author)
+      + (s.klass ? '<br><span style="font-size:12px;color:#8A96A3;font-weight:400;">' + esc(s.klass) + '</span>' : '') + '</td>'
+      + '<td class="num">' + s.count + '</td><td>' + names + '</td>'
+      + '<td class="num">' + (s.rates || 0) + '</td><td class="num">' + s.avg + '</td></tr>';
   }).join('');
-  return '<div class="panel"><h2>学生作品总览<span class="n">共 '+by.length+' 人</span></h2>'
-    + '<table><thead><tr><th>学生</th><th style="text-align:center;">作品数</th><th>做了什么主题</th>'
+  html += '<div class="panel"><h2>学生作品明细<span class="n">共 ' + by.length + ' 人 · 按作品数排序 · 每页 ' + PGSZ + ' 行</span></h2>'
+    + '<table><thead><tr><th style="text-align:center;width:52px;">名次</th><th>学生</th>'
+    + '<th style="text-align:center;">作品数</th><th>做了什么主题</th>'
     + '<th style="text-align:center;">被赞</th><th style="text-align:center;">平均★</th></tr></thead><tbody>'
-    + rows + '</tbody></table></div>';
+    + rows + '</tbody></table>' + pgBar(Rstu) + '</div>';
+
+  return html;
 }
 
 function panelWorks(){
   if (!WORKS.length) return '<div class="panel"><div class="empty">还没有作品。</div></div>';
   var agg = workAgg();
-  var rows = WORKS.map(function(w){
+  var Rw = pgRows('works/list', WORKS);
+  var rows = Rw.rows.map(function(w, i){
     var a = agg[w.id] || { sum:0, n:0 };
     var avg = a.n ? (a.sum/a.n).toFixed(1) : '—';
-    return '<tr><td class="who">'+esc(w.author||'未知')+(w.klass?' · '+esc(w.klass):'')+'</td>'
+    var col = a.n ? starColor(a.sum / a.n) : '#B0BAC4';
+    return '<tr><td class="num">' + (Rw.from + i + 1) + '</td>'
+      + '<td class="who">'+esc(w.author||'未知')+(w.klass?'<br><span style="font-size:12px;color:#8A96A3;font-weight:400;">'+esc(w.klass)+'</span>':'')+'</td>'
       + '<td><span class="tag">'+(EMJ[w.topic]||'🏵️')+' '+esc(w.topic_name||'')+'</span></td>'
       + '<td>'+esc(w.content||'')+'</td>'
-      + '<td class="num">'+avg+'<br><span style="font-size:12px;color:#8A96A3;font-weight:400;">'+(a.n||0)+'赞</span></td>'
+      + '<td class="num"><b style="color:'+col+';font-size:15px;">'+avg+'</b><br><span style="font-size:12px;color:#8A96A3;font-weight:400;">'+(a.n||0)+' 人赞</span></td>'
       + '<td style="white-space:nowrap;color:#8A96A3;font-size:13px;">'+fmt(w.created_at)+'</td></tr>';
   }).join('');
-  return '<div class="panel"><h2>作品统计<span class="n">共 '+WORKS.length+' 件</span></h2>'
-    + '<table><thead><tr><th>作者</th><th>主题</th><th>内容</th><th style="text-align:center;">★</th><th>提交时间</th></tr></thead><tbody>'
-    + rows + '</tbody></table></div>';
+  return '<div class="panel"><h2>作品统计<span class="n">共 '+WORKS.length+' 件 · 每页 '+PGSZ+' 行</span></h2>'
+    + '<table><thead><tr><th style="text-align:center;width:52px;">序号</th><th>作者</th><th>主题</th><th>内容</th>'
+    + '<th style="text-align:center;">平均★</th><th>提交时间</th></tr></thead><tbody>'
+    + rows + '</tbody></table>' + pgBar(Rw) + '</div>';
 }
 
 function panelRates(){
@@ -2831,30 +3604,293 @@ function panelRates(){
   var agg = workAgg();
   var wmap = {};
   WORKS.forEach(function(w){ wmap[w.id] = w; });
-  /* 平均分排行 */
+
+  /* ========== 1. 星级分布 ========== */
+  var starCount = [0, 0, 0, 0, 0];
+  RATINGS.forEach(function(r){ var s = parseInt(r.stars, 10) || 0; if (s >= 1 && s <= 5) starCount[s - 1]++; });
+  var total = RATINGS.length || 1;
+  var goodPct = Math.round((starCount[3] + starCount[4]) / total * 100);
+  var avgAll = RATINGS.reduce(function(s, r){ return s + (parseInt(r.stars, 10) || 0); }, 0) / total;
+  var c1 = '<div class="chartcard"><h3>⭐ 星级分布<span class="cnt">' + total + ' 条评价</span></h3>'
+    + '<p class="cap">4 星及以上算「好评价」；黄色和红色的部分是老师要留意的。</p>'
+    + chartStars(starCount)
+    + insight(goodPct >= 75
+        ? '有 <b>' + goodPct + '%</b> 的评价在 4 星以上，整体口碑很好，平均 <b>' + avgAll.toFixed(2) + '</b> 星。'
+        : '4 星以上只占 <b>' + goodPct + '%</b>，还有提升空间；可以先带同学们读几条 3 星评价，看看大家在意什么。',
+        goodPct >= 75 ? 'good' : 'warn')
+    + '</div>';
+
+  /* ========== 2. 互评积极度 ========== */
+  var byRater = {};
+  RATINGS.forEach(function(r){
+    var k = ((r.rater_klass || '') + ' ' + (r.rater_name || '')).trim() || '匿名';
+    byRater[k] = (byRater[k] || 0) + 1;
+  });
+  var raterItems = Object.keys(byRater).map(function(k){ return { label:k, value:byRater[k] }; });
+  var raterN = raterItems.length;
+  var raterTop = raterItems.slice().sort(function(a, b){ return b.value - a.value; })[0] || { label:'—', value:0 };
+  var avgPer = raterN ? total / raterN : 0;
+  var c2 = '<div class="chartcard"><h3>👍 谁最会给同学点赞'
+    + '<span class="cnt">' + raterN + ' 位同学参与了评价</span></h3>'
+    + '<p class="cap">按给出评价的条数排序；点名表扬能带动互评气氛。</p>'
+    + chartRank(raterItems.slice(0, 8), { unit:' 条' })
+    + insight('给出评价最多的是 <b>' + esc(raterTop.label) + '</b>，共 <b>' + raterTop.value + '</b> 条；'
+      + '平均每人给出 <b>' + avgPer.toFixed(1) + '</b> 条评价。'
+      + (avgPer < 2 ? '互评还可以再热闹一点。' : '互评气氛不错。'), '')
+    + '</div>';
+
+  var html = '<div class="charts">' + c1 + c2 + '</div>';
+
+  /* ========== 3. 最受欢迎的作品 ========== */
   var rank = Object.keys(agg).map(function(id){
     var w = wmap[id], a = agg[id];
-    return { w:w, avg:a.sum/a.n, n:a.n };
-  }).filter(function(x){ return x.w; }).sort(function(a,b){ return b.avg - a.avg || b.n - a.n; });
-  var rrows = rank.map(function(x,i){
-    return '<tr><td class="num">'+(i+1)+'</td><td class="who">'+esc(x.w.author||'')+'</td>'
-      + '<td>'+esc(x.w.content||'')+'</td><td class="num">'+x.avg.toFixed(2)+'</td><td class="num">'+x.n+'</td></tr>';
+    return { w:w, avg: a.sum / a.n, n:a.n };
+  }).filter(function(x){ return x.w; }).sort(function(a, b){ return b.avg - a.avg || b.n - a.n; });
+  var topList = rank.slice(0, 6);
+  var c3 = '<div class="chartcard"><h3>🏅 最受欢迎的作品'
+    + '<span class="cnt">' + rank.length + ' 件被评价过</span></h3>'
+    + '<p class="cap">按平均星级排序；评价人数越多，这个分数越可信。</p>'
+    + (topList.length
+        ? '<div class="lboard">' + topList.map(function(x, i){ return lbItem(x, i, 'ok'); }).join('') + '</div>'
+        : '<div class="lboard"><div class="none">还没有作品被评价。</div></div>')
+    + insight('排在前面的作品可以直接当范本，读给大家听一听：「这句话好在哪里」。', 'good')
+    + '</div>';
+  html += '<div class="charts one">' + c3 + '</div>';
+
+  /* ========== 4. 平均分排行表（每页 30 行） ========== */
+  var Rr = pgRows('rates/rank', rank);
+  var rrows = Rr.rows.map(function(x, i){
+    var col = starColor(x.avg);
+    return '<tr><td class="num">' + (Rr.from + i + 1) + '</td>'
+      + '<td class="who">' + esc(x.w.author || '') + '</td>'
+      + '<td><span class="tag">' + (EMJ[x.w.topic] || '🏵️') + ' ' + esc(x.w.topic_name || '') + '</span> '
+      + esc(x.w.content || '') + '</td>'
+      + '<td class="num"><b style="color:' + col + ';font-size:15px;">' + x.avg.toFixed(2) + '</b></td>'
+      + '<td class="num">' + x.n + '</td></tr>';
   }).join('');
-  /* 评分明细（谁给谁） */
-  var drows = RATINGS.slice().sort(function(a,b){ return (b.id||0)-(a.id||0); }).slice(0,200).map(function(r){
+  html += '<div class="panel"><h2>作品平均分排行'
+    + '<span class="n">共 ' + rank.length + ' 件被赞 · 每页 ' + PGSZ + ' 行 · 绿 ≥4 星 / 黄 3 星 / 红 &lt;3 星</span></h2>'
+    + '<table><thead><tr><th style="text-align:center;width:52px;">名次</th><th>作者</th><th>主题 / 内容</th>'
+    + '<th style="text-align:center;">平均★</th><th style="text-align:center;">评价人数</th></tr></thead><tbody>'
+    + rrows + '</tbody></table>' + pgBar(Rr) + '</div>';
+
+  return html;
+}
+
+/* ============================================================
+   评语详情：看得见同学们到底说了什么
+   ============================================================ */
+function panelComments(){
+  if (!RATINGS.length) return '<div class="panel"><div class="empty">还没有评价数据。</div></div>';
+  var wmap = {};
+  WORKS.forEach(function(w){ wmap[w.id] = w; });
+
+  /* 有留言的评价（去掉只有星星没有文字的） */
+  var all = spreadByWork(RATINGS.filter(function(r){ return r.comment && String(r.comment).trim(); })
+    .map(function(r){ return { r:r, s:parseInt(r.stars, 10) || 0, txt:String(r.comment).trim() }; })
+    .sort(function(a, b){ return (b.r.id || 0) - (a.r.id || 0); }));
+
+  var nAll = RATINGS.length, nCmt = all.length;
+  var rate = nAll ? Math.round(nCmt / nAll * 100) : 0;
+  var sumLen = all.reduce(function(s, x){ return s + x.txt.length; }, 0);
+  var avgLen = nCmt ? sumLen / nCmt : 0;
+  var nGood = all.filter(function(x){ return x.s >= 4; }).length;
+  var nLow = all.filter(function(x){ return x.s <= 3; }).length;
+
+  /* 评语最多的作品 */
+  var byW = {};
+  all.forEach(function(x){ byW[x.r.work_id] = (byW[x.r.work_id] || 0) + 1; });
+  var wRank = Object.keys(byW).map(function(id){
+    var w = wmap[id];
+    return { label:(w ? (w.author || '') + '｜' + (EMJ[w.topic] || '🏵️') + ' ' + (w.topic_name || '') : '（作品已删）'), value:byW[id], id:id };
+  }).sort(function(a, b){ return b.value - a.value; });
+  var topW = wRank[0] || { label:'—', value:0 };
+
+  var c1 = '<div class="chartcard"><h3>💬 评语留言率'
+    + '<span class="cnt">' + nCmt + ' / ' + nAll + ' 条评价写了话</span></h3>'
+    + '<p class="cap">点赞时顺手写一句的比例；越高说明同学们越愿意表达。</p>'
+    + chartGauge(rate, 100, {
+        fmt:function(v){ return v + '%'; },
+        level: rate >= 70 ? { t:'同学们很愿意写', c:'#2A9D8F' }
+             : rate >= 40 ? { t:'还不错，可以再引导', c:'#E0A22B' }
+             : { t:'多数只打星不留言', c:'#C0392B' },
+        cap:'共 ' + nAll + ' 条评价'
+      })
+    + insight('平均每条评语 <b>' + avgLen.toFixed(1) + '</b> 个字；'
+      + '4 星及以上的好评留言 <b>' + nGood + '</b> 条，3 星及以下 <b>' + nLow + '</b> 条。'
+      + (rate < 40 ? '建议互评前请两位同学示范"怎么夸得具体一点"。' : '可以挑几条读出来，当众表扬写评语的同学。'),
+      rate >= 70 ? 'good' : rate >= 40 ? '' : 'warn')
+    + '</div>';
+
+  var c2 = '<div class="chartcard"><h3>🏅 谁的评语最多'
+    + '<span class="cnt">' + wRank.length + ' 件作品收到评语</span></h3>'
+    + '<p class="cap">按收到的评语条数排序，说明这些作品最值得当堂拿出来讲。</p>'
+    + (wRank.length
+        ? chartRank(wRank.slice(0, 8), { unit:' 条' })
+          + insight('评语最多的是 <b>' + esc(topW.label) + '</b>，共 <b>' + topW.value + '</b> 条评语。', '')
+        : '<div class="lboard"><div class="none">还没有文字评语。</div></div>')
+    + '</div>';
+
+  var html = '<div class="charts">' + c1 + c2 + '</div>';
+
+  /* ---- 筛选 + 评语流 ---- */
+  var shown = cmtFilter === 'good' ? all.filter(function(x){ return x.s >= 4; })
+            : cmtFilter === 'low' ? all.filter(function(x){ return x.s <= 3; })
+            : all;
+  var F = [
+    { k:'all', n:'全部留言', c:all.length },
+    { k:'good', n:'好评留言（≥4★）', c:all.filter(function(x){ return x.s >= 4; }).length },
+    { k:'low', n:'待改进留言（≤3★）', c:all.filter(function(x){ return x.s <= 3; }).length }
+  ];
+  var filt = '<div class="cfilter">' + F.map(function(x){
+    return '<button data-cmf="' + x.k + '"' + (cmtFilter === x.k ? ' class="on"' : '') + '>'
+      + x.n + ' <b>' + x.c + '</b></button>';
+  }).join('') + '</div>';
+
+  var Rc = pgRows('cmt/list', shown);
+  var items = Rc.rows.map(function(x){
+    var r = x.r, w = wmap[r.work_id];
+    var who = (((r.rater_klass || '') + ' ' + (r.rater_name || '')).trim()) || '匿名同学';
+    return '<div class="cmcard ' + starTone(x.s) + '">'
+      + '<div class="cmtxt">' + esc(x.txt) + '</div>'
+      + '<div class="cmfoot">'
+      +   '<span class="cmstars">' + rep('★', x.s) + '<i>' + rep('★', 5 - x.s) + '</i></span>'
+      +   '<span class="cmwho">' + esc(who) + '</span>'
+      +   '<span class="cmto">评价了 <b>' + esc(w ? (w.author || '') : '（作品已删）') + '</b>'
+      +     (w ? ' 的「' + esc(w.content || '').slice(0, 40) + '」' : '') + '</span>'
+      +   '<span class="cmtime">' + fmt(r.created_at) + '</span>'
+      + '</div></div>';
+  }).join('');
+
+  html += '<div class="panel" style="margin-bottom:16px;"><h2>同学们写的评语'
+    + '<span class="n">共 ' + shown.length + ' 条 · 每页 ' + PGSZ + ' 条 · 绿=好评 / 黄=一般 / 红=待改进</span></h2>'
+    + filt
+    + (items || '<div class="empty" style="padding:40px;">这个筛选下没有评语。</div>')
+    + pgBar(Rc) + '</div>';
+
+  /* ---- 评分明细（谁给谁打分），每页 30 行 ---- */
+  var detail = RATINGS.slice().sort(function(a, b){ return (b.id || 0) - (a.id || 0); });
+  var Rd = pgRows('cmt/detail', detail);
+  var drows = Rd.rows.map(function(r, i){
     var w = wmap[r.work_id];
-    return '<tr><td>'+esc(w ? (w.author||'') : '（作品已删）')+'</td>'
-      + '<td>'+esc(w ? (w.content||'').slice(0,26) : '')+'</td>'
-      + '<td class="num">'+(parseInt(r.stars,10)||0)+'★</td>'
-      + '<td>'+esc(r.comment||'')+'</td>'
-      + '<td style="white-space:nowrap;color:#8A96A3;font-size:13px;">'+fmt(r.created_at)+'</td></tr>';
+    var rater = (((r.rater_klass || '') + ' ' + (r.rater_name || '')).trim()) || '匿名';
+    var s = parseInt(r.stars, 10) || 0;
+    return '<tr><td class="num">' + (Rd.from + i + 1) + '</td>'
+      + '<td class="who">' + esc(w ? (w.author || '') : '（作品已删）') + '</td>'
+      + '<td>' + esc(rater) + '</td>'
+      + '<td>' + esc(w ? (w.content || '').slice(0, 24) : '') + '</td>'
+      + '<td class="num"><b style="color:' + starColor(s) + '">' + s + '★</b></td>'
+      + '<td>' + (r.comment ? esc(r.comment) : '<span style="color:#C3CCD6;">（未留言）</span>') + '</td>'
+      + '<td style="white-space:nowrap;color:#8A96A3;font-size:13px;">' + fmt(r.created_at) + '</td></tr>';
   }).join('');
-  return '<div class="panel" style="margin-bottom:16px;"><h2>作品平均分排行<span class="n">共 '+rank.length+' 件被赞</span></h2>'
-    + '<table><thead><tr><th style="text-align:center;">名次</th><th>作者</th><th>内容</th>'
-    + '<th style="text-align:center;">平均★</th><th style="text-align:center;">人数</th></tr></thead><tbody>'+rrows+'</tbody></table></div>'
-    + '<div class="panel"><h2>评分明细<span class="n">最多显示最近 200 条</span></h2>'
-    + '<table><thead><tr><th>被评学生</th><th>内容</th><th style="text-align:center;">给分</th>'
-    + '<th>留言</th><th>时间</th></tr></thead><tbody>'+drows+'</tbody></table></div>';
+  html += '<div class="panel"><h2>评分明细（谁给谁打分）'
+    + '<span class="n">共 ' + detail.length + ' 条 · 每页 ' + PGSZ + ' 行 · 最新在前</span></h2>'
+    + '<table><thead><tr><th style="text-align:center;width:52px;">序号</th><th>被评学生</th><th>评价人</th>'
+    + '<th>作品内容</th><th style="text-align:center;">给分</th><th>留言</th><th>时间</th></tr></thead><tbody>'
+    + drows + '</tbody></table>' + pgBar(Rd) + '</div>';
+
+  return html;
+}
+
+function panelSurvey(kind){
+  var meta = META[kind];
+  var list = SURVEYS.filter(function(s){ return s.kind === kind; });
+  if (!list.length) return '<div class="panel"><div class="empty">还没有「' + meta.name + '」的数据。</div></div>';
+  var N = list.length;
+
+  var cards = meta.qs.map(function(q, qi){
+    /* ---- 文本题：原话列表 ---- */
+    if (q.text){
+      var written = list.map(function(s){
+        var v = (s.answers || {})[q.id];
+        return v ? { who:s.author, txt:v } : null;
+      }).filter(Boolean);
+      return '<div class="chartcard wide"><h3>✍️ ' + esc(q.t) + '<span class="cnt">' + written.length + ' 人填写</span></h3>'
+        + '<p class="cap">同学们写给老师的原话，未做任何修改。</p>'
+        + (written.length
+            ? '<div style="max-height:270px;overflow-y:auto;padding-right:4px;">'
+              + written.map(function(x){
+                  return '<div class="freetxt"><b>' + esc(x.who) + '</b>：' + esc(x.txt) + '</div>';
+                }).join('') + '</div>'
+            : '<div style="font-size:13px;color:#9AA6B2;padding:10px 0;">这一题没有人填写。</div>')
+        + '</div>';
+    }
+
+    /* ---- 选项统计 ---- */
+    var count = {};
+    q.opts.forEach(function(o){ count[o] = 0; });
+    var answered = 0;
+    list.forEach(function(s){
+      var v = (s.answers || {})[q.id];
+      if (q.multi){
+        var arr = Array.isArray(v) ? v : [];
+        if (arr.length) answered++;
+        arr.forEach(function(o){ if (count[o] !== undefined) count[o]++; });
+      } else {
+        if (count[v] !== undefined){ count[v]++; answered++; }
+      }
+    });
+    var items = q.opts.map(function(o){ return { label:o, value:count[o] }; });
+    var sorted = items.slice().sort(function(a, b){ return b.value - a.value; });
+    var top = sorted[0] || { label:'—', value:0 };
+
+    var chart, note, badge;
+    if (q.multi){
+      chart = chartRank(items, { unit:' 人' });
+      note = '选得最多的是「<b>' + esc(top.label) + '</b>」，有 <b>' + top.value + '</b> 人勾选。';
+      badge = '<span class="cnt">可多选</span>';
+    } else if (q.ord){
+      chart = chartSpectrum(items.map(function(x, i){
+        return { label:x.label, value:x.value, tone:(q.tones ? q.tones[i] : null) };
+      }));
+      if (q.goodIdx != null){
+        var gi = q.goodIdx;
+        note = '人数最多的是「<b>' + esc(top.label) + '</b>」（<b>' + top.value + '</b> 人，'
+          + pct(top.value, N) + '%）；最合适的一档「<b>' + esc(items[gi].label) + '</b>」有 '
+          + items[gi].value + ' 人。';
+        badge = '<span class="cnt">最合适的是「' + esc(items[gi].label) + '」</span>';
+      } else {
+        note = '选「<b>' + esc(items[0].label) + '</b>」的人最多，有 <b>' + items[0].value + '</b> 人（'
+          + pct(items[0].value, N) + '%）；排在最后的「' + esc(items[items.length - 1].label) + '」有 '
+          + items[items.length - 1].value + ' 人。';
+        badge = '<span class="cnt">选项从左到右由好到弱</span>';
+      }
+    } else {
+      chart = chartRank(items, { unit:' 人' });
+      note = '最受欢迎的是「<b>' + esc(top.label) + '</b>」，有 <b>' + top.value + '</b> 人选择。';
+      badge = '';
+    }
+
+    return '<div class="chartcard"><h3>' + (qi + 1) + '. ' + esc(q.t) + badge + '</h3>'
+      + '<p class="cap">' + answered + ' / ' + N + ' 人作答</p>'
+      + chart
+      + insight(note, '')
+      + '</div>';
+  }).join('');
+
+  var html = '<div class="charts">' + cards + '</div>';
+
+  /* ---- 按人对照 ---- */
+  var Rp = pgRows('sv/' + kind + '/people', list);
+  var rows = Rp.rows.map(function(s, i){
+    var cells = meta.qs.filter(function(q){ return !q.text; }).map(function(q){
+      var v = (s.answers || {})[q.id];
+      if (q.multi) return esc((Array.isArray(v) ? v : []).join('、'));
+      return esc(v || '');
+    }).join('</td><td>');
+    return '<tr><td class="num">' + (Rp.from + i + 1) + '</td><td class="who">' + esc(s.author)
+      + (s.klass ? '<br><span style="font-size:12px;color:#8A96A3;font-weight:400;">' + esc(s.klass) + '</span>' : '')
+      + '</td><td>' + cells + '</td></tr>';
+  }).join('');
+  var head = meta.qs.filter(function(q){ return !q.text; }).map(function(q, i){
+    return '<th>' + (i + 1) + '. ' + esc(q.t) + '</th>';
+  }).join('');
+  html += '<div class="panel"><h2>按人对照'
+    + '<span class="n">共 ' + N + ' 份 · 每页 ' + PGSZ + ' 行 · 横向看每个学生的作答</span></h2>'
+    + '<div style="overflow-x:auto;"><table><thead><tr><th style="width:52px;">序号</th><th>学生</th>'
+    + head + '</tr></thead><tbody>'
+    + rows + '</tbody></table></div>' + pgBar(Rp) + '</div>';
+  return html;
 }
 
 /* ============================================================
@@ -2885,7 +3921,7 @@ function panelCompare(){
     + '<span class="n">' + total + ' 人两卷都交齐</span></h2>';
 
   CMP.forEach(function(q){
-    /* 各班整体：每选一项的比例 */
+    /* 全班整体：每选一项的比例 */
     var cntPre = {}, cntMid = {};
     q.opts.forEach(function(o){ cntPre[o] = 0; cntMid[o] = 0; });
     var nonePre = 0, noneMid = 0, grew = 0, same = 0, shrank = 0;
@@ -2941,7 +3977,7 @@ function panelCompare(){
     /* 每人变化统计 */
     html += '<div class="cmp-foot">'
       + '<span class="pill up">👍 变多了 ' + grew + ' 人</span>'
-      + '<span class="pill">＝ 一样 ' + same + ' 人</span>'
+      + '<span class="pill gray">＝ 一样 ' + same + ' 人</span>'
       + '<span class="pill down">变少了 ' + shrank + ' 人</span>'
       + '<span class="pill gray">课前一个都说不出 ' + nonePre + ' 人 ➜ 课中 ' + noneMid + ' 人</span>'
       + '</div></div>';
@@ -2957,12 +3993,12 @@ function panelCompare(){
     var bClean = b.filter(function(o){ return o !== '一个都不知道'; });
     var d = bClean.length - aClean.length;
     var badge = d > 0 ? '<span class="pill up">+' + d + ' 项 👍</span>'
-      : (d === 0 ? '<span class="pill">持平</span>' : '<span class="pill down">' + d + ' 项</span>');
+      : (d === 0 ? '<span class="pill gray">持平</span>' : '<span class="pill down">' + d + ' 项</span>');
     return { x:x, a:aClean, b:bClean, d:d, badge:badge };
   }).sort(function(p, r){ return r.d - p.d; });
 
   var rrows = rows.map(function(r){
-    return '<tr><td class="who">' + esc(r.x.pre.author || '') 
+    return '<tr><td class="who">' + esc(r.x.pre.author || '')
       + (r.x.pre.klass ? '<br><span style="font-size:12px;color:#8A96A3;font-weight:400;">' + esc(r.x.pre.klass) + '</span>' : '') + '</td>'
       + '<td class="num">' + r.a.length + '</td>'
       + '<td>' + (r.a.length ? esc(r.a.join('、')) : '<span style="color:#B7B1A9;">—</span>') + '</td>'
@@ -2980,66 +4016,226 @@ function panelCompare(){
   return html;
 }
 
-function panelSurvey(kind){
-  var meta = META[kind];
-  var list = SURVEYS.filter(function(s){ return s.kind === kind; });
-  if (!list.length) return '<div class="panel"><div class="empty">还没有「'+meta.name+'」的数据。</div></div>';
-  var html = '<div class="panel" style="margin-bottom:16px;"><h2>'+meta.name+' · 题目汇总<span class="n">共 '+list.length+' 份</span></h2>';
-  meta.qs.forEach(function(q){
-    if (q.text){
-      var freetxt = list.map(function(s){
-        var v = (s.answers||{})[q.id];
-        return v ? '<div class="freetxt"><b>'+esc(s.author)+'</b>：'+esc(v)+'</div>' : '';
-      }).join('');
-      html += '<div class="qblock"><div class="qt">'+esc(q.t)+'</div>'+(freetxt||'<div style="font-size:13px;color:#9AA6B2;">没人填</div>')+'</div>';
-      return;
-    }
-    var count = {};
-    q.opts.forEach(function(o){ count[o] = 0; });
-    var extraOther = 0;
-    list.forEach(function(s){
-      var v = (s.answers||{})[q.id];
-      if (q.multi){
-        (Array.isArray(v)?v:[]).forEach(function(o){
-          if (count[o] !== undefined) count[o]++; else extraOther++;
-        });
-      } else {
-        if (count[v] !== undefined) count[v]++;
-      }
-    });
-    var total = 0; Object.keys(count).forEach(function(o){ total += count[o]; });
-    var bars = q.opts.map(function(o){
-      var n = count[o];
-      var pct = total ? Math.round(n/total*100) : 0;
-      return '<div class="bar"><div class="bl"><span>'+esc(o)+'</span><b>'+n+' 人 · '+pct+'%</b></div>'
-        + '<div class="track"><div class="fill" style="width:'+pct+'%"></div></div></div>';
-    }).join('');
-    html += '<div class="qblock"><div class="qt">'+esc(q.t)+(q.multi?'（多选）':'')+'</div><div class="bars">'+bars+'</div></div>';
+function renderAll(){ renderKpis(); renderTabs(); renderPanel(); }
+
+/* ============================================================
+   课次快照：把每一轮课的数据分开存档，下一轮从干净库重开
+   ============================================================ */
+function jfetch(r){
+  return r.text().then(function(t){
+    var j = null; try { j = JSON.parse(t); } catch(e){}
+    if (!r.ok) throw new Error((j && j.error) || ('HTTP ' + r.status));
+    if (!j) throw new Error('返回内容不是 JSON');
+    if (j.error) throw new Error(j.error);
+    return j;
   });
-  html += '</div>';
-  /* 按人对照 */
-  var rows = list.map(function(s){
-    var cells = meta.qs.filter(function(q){ return !q.text; }).map(function(q){
-      var v = (s.answers||{})[q.id];
-      if (q.multi) return esc((Array.isArray(v)?v:[]).join('、'));
-      return esc(v||'');
-    }).join('</td><td>');
-    return '<tr><td class="who">'+esc(s.author)+(s.klass?'<br><span style="font-size:12px;color:#8A96A3;font-weight:400;">'+esc(s.klass)+'</span>':'')+'</td><td>'+cells+'</td></tr>';
-  }).join('');
-  var head = meta.qs.filter(function(q){ return !q.text; }).map(function(q,i){
-    return '<th>'+(i+1)+'. '+esc(q.t)+'</th>';
-  }).join('');
-  html += '<div class="panel"><h2>按人对照<span class="n">横向看每个学生的作答</span></h2>'
-    + '<div style="overflow-x:auto;"><table><thead><tr><th>学生</th>'+head+'</tr></thead><tbody>'+rows+'</tbody></table></div></div>';
-  return html;
 }
 
-function renderAll(){ renderKpis(); renderTabs(); renderPanel(); }
+function panelSnaps(){
+  return '<div class="panel">'
+    + '<h2>课次快照<span class="n">每上完一轮课存一次档，下一轮从干净库重新开始</span></h2>'
+    + '<div class="snapbar">'
+    +   '<input id="snapName" maxlength="60" placeholder="课次名，例如：10月8日 四（2）班 第一节">'
+    +   '<input id="snapNote" maxlength="60" placeholder="备注（可不写）">'
+    +   '<button class="primary" id="snapSave">📸 只存档</button>'
+    +   '<button class="newc" id="snapSaveClear">📸 存档并开启新课</button>'
+    + '</div>'
+    + '<p class="snaptip">'
+    +   '<b>只存档</b>：把当前数据存一份快照，当前数据保留、不清空，可以接着用。<br>'
+    +   '<b>存档并开启新课</b>：先完整存一份档，再清空作品／点赞／问卷，下一节课从零开始——'
+    +   '上一轮随时能在下面回来看、导出。'
+    + '</p>'
+    + '<div id="snapList"><div class="empty">正在读取快照…</div></div>'
+    + '</div>';
+}
+
+function loadSnaps(){
+  var b1 = $('snapSave'), b2 = $('snapSaveClear');
+  if (b1) b1.onclick = function(){ askSnap('save', null, false); };
+  if (b2) b2.onclick = function(){ askSnap('save', null, true); };
+  var box = $('snapList');
+  if (!box) return;
+  box.innerHTML = '<div class="empty">正在读取快照…</div>';
+  fetch(apiBase() + 'snapshots', { headers: { 'Accept': 'application/json' } })
+    .then(jfetch)
+    .then(function(j){
+      var list = j.data || [];
+      if (!list.length){
+        box.innerHTML = '<div class="empty">还没有快照。<br>上完这节课，点上面的按钮存一次档吧～</div>';
+        return;
+      }
+      var rows = list.map(function(s){
+        var c = s.counts || {};
+        return '<tr>'
+          + '<td><span class="snapname">' + esc(s.name) + '</span>'
+          +   (s.note ? '<span class="snapnote">' + esc(s.note) + '</span>' : '') + '</td>'
+          + '<td style="white-space:nowrap;color:#8A96A3;font-size:13px;">' + fmt(s.created_at) + '</td>'
+          + '<td class="num">' + (c.works || 0) + '</td>'
+          + '<td class="num">' + (c.ratings || 0) + '</td>'
+          + '<td class="num">' + (c.surveys || 0) + '</td>'
+          + '<td class="snapacts">'
+          +   '<button data-act="view" data-id="' + esc(s.id) + '">👁 查看</button>'
+          +   '<button data-act="export" data-id="' + esc(s.id) + '">⬇ 导出</button>'
+          +   '<button class="warn" data-act="restore" data-id="' + esc(s.id) + '">♻️ 恢复</button>'
+          +   '<button class="del" data-act="del" data-id="' + esc(s.id) + '">🗑 删除</button>'
+          + '</td></tr>';
+      }).join('');
+      box.innerHTML = '<table><thead><tr><th>课次</th><th>存档时间</th>'
+        + '<th style="text-align:center;">作品</th><th style="text-align:center;">点赞</th>'
+        + '<th style="text-align:center;">问卷</th><th>操作</th></tr></thead><tbody>'
+        + rows + '</tbody></table>';
+      box.querySelectorAll('button[data-act]').forEach(function(b){
+        b.onclick = function(){
+          var act = b.getAttribute('data-act'), id = b.getAttribute('data-id');
+          if (act === 'view') viewSnap(id);
+          else if (act === 'export') exportSnap(id);
+          else if (act === 'restore') askSnap('restore', id, false);
+          else if (act === 'del') askSnap('del', id, false);
+        };
+      });
+    })
+    .catch(function(e){
+      box.innerHTML = '<div class="empty">读取快照失败：' + esc(e && e.message || '网络问题') + '</div>';
+    });
+}
+
+function askSnap(kind, id, clear){
+  if (VIEWING && kind === 'save'){ alert('正在查看历史快照，先点上方「返回当前课次」再存档。'); return; }
+  SNAP_ACTION = { kind: kind, id: id, clear: !!clear };
+  var t = $('snapMTitle'), p = $('snapMText'), w = $('snapMWarn'), ok = $('snapMOk');
+  $('snapMPw').value = '';
+  var m = $('snapMMsg'); m.textContent = ''; m.style.color = '';
+  w.style.display = 'none'; w.innerHTML = '';
+  ok.textContent = '确认';
+  if (kind === 'save' && !clear){
+    t.textContent = '📸 存档（保留当前数据）';
+    p.innerHTML = '把当前 <b>' + WORKS.length + '</b> 件作品、<b>' + RATINGS.length
+      + '</b> 条点赞、<b>' + SURVEYS.length + '</b> 份问卷存成一份快照，当前数据<strong>不会被清空</strong>。';
+  } else if (kind === 'save' && clear){
+    t.textContent = '📸 存档并开启新课';
+    p.innerHTML = '先把当前数据存成一份快照，然后<strong>清空</strong>作品／点赞／问卷，下一轮从零开始。';
+    w.style.display = '';
+    w.innerHTML = '⚠️ 清空后页面会变空——但数据已经存进快照，随时可以「恢复」回来。';
+    ok.textContent = '存档并清空';
+  } else if (kind === 'restore'){
+    t.textContent = '♻️ 恢复这份快照';
+    p.innerHTML = '这份快照的数据会<strong>覆盖当前库</strong>，现在的内容会被替换掉。';
+    w.style.display = '';
+    w.innerHTML = '⚠️ 覆盖不可撤销。建议先把当前数据也存一份档，再恢复。';
+    ok.textContent = '确认恢复';
+  } else {
+    t.textContent = '🗑 删除快照';
+    p.innerHTML = '删除这份快照，<strong>删了就找不回来</strong>。';
+    ok.textContent = '确认删除';
+  }
+  $('snapMask').classList.add('on');
+  setTimeout(function(){ $('snapMPw').focus(); }, 60);
+}
+
+$('snapMCancel').onclick = function(){ $('snapMask').classList.remove('on'); SNAP_ACTION = null; };
+$('snapMPw').addEventListener('keydown', function(e){ if (e.key === 'Enter') $('snapMOk').click(); });
+$('snapMOk').onclick = function(){
+  var a = SNAP_ACTION; if (!a) return;
+  var m = $('snapMMsg'), btn = $('snapMOk');
+  var pw = $('snapMPw').value;
+  if (pw !== ADMIN_PW){ m.style.color = '#B0392B'; m.textContent = '密码不对，请再试一次。'; return; }
+  btn.disabled = true; m.style.color = '#2A7F73'; m.textContent = '处理中…';
+  var done = function(msg){
+    m.style.color = '#2A7F73'; m.textContent = msg;
+    setTimeout(function(){
+      $('snapMask').classList.remove('on'); m.textContent = ''; SNAP_ACTION = null;
+    }, 700);
+  };
+  var fail = function(e){
+    m.style.color = '#B0392B';
+    m.textContent = '操作失败：' + (e && e.message ? e.message : '网络问题');
+  };
+
+  if (a.kind === 'save'){
+    var name = ($('snapName') && $('snapName').value || '').trim();
+    var note = ($('snapNote') && $('snapNote').value || '').trim();
+    fetch(apiBase() + 'snapshots', {
+      method:'POST', headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ name:name, note:note, password:pw, clear:a.clear, meta:META_DEFAULT })
+    }).then(jfetch).then(function(){
+      done(a.clear ? '已存档并清空，可以开始新一轮课了 ✓' : '已存档 ✓');
+      if (a.clear){ WORKS = []; RATINGS = []; SURVEYS = []; }
+      if (tab === 'snaps') loadSnaps();
+      renderAll();
+    }).catch(fail).finally(function(){ btn.disabled = false; });
+
+  } else if (a.kind === 'restore'){
+    fetch(apiBase() + 'snapshots/restore?id=' + encodeURIComponent(a.id), {
+      method:'POST', headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ password:pw })
+    }).then(jfetch).then(function(){ done('已恢复到当前库 ✓'); loadAll(); })
+      .catch(fail).finally(function(){ btn.disabled = false; });
+
+  } else {
+    fetch(apiBase() + 'snapshots?id=' + encodeURIComponent(a.id), {
+      method:'DELETE', headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ password:pw })
+    }).then(jfetch).then(function(){
+      done('已删除 ✓');
+      if (VIEWING && VIEWING.id === a.id) exitView();
+      else if (tab === 'snaps') loadSnaps();
+    }).catch(fail).finally(function(){ btn.disabled = false; });
+  }
+};
+
+/* ---------- 查看历史快照（只读，复用全部统计面板） ---------- */
+function renderViewbar(){
+  var el = $('viewbar'); if (!el) return;
+  if (!VIEWING){ el.innerHTML = ''; el.style.display = 'none'; return; }
+  el.style.display = '';
+  el.innerHTML = '<div class="viewbar">👀 正在查看历史快照：<b>' + esc(VIEWING.name) + '</b>'
+    + '<span class="vt">' + fmt(VIEWING.created_at) + ' 存档 · 只读</span>'
+    + '<button id="exitView">← 返回当前课次</button></div>';
+  $('exitView').onclick = exitView;
+}
+function viewSnap(id){
+  $('panels').innerHTML = '<div class="panel"><div class="empty">正在读取快照…</div></div>';
+  fetch(apiBase() + 'snapshots?id=' + encodeURIComponent(id))
+    .then(jfetch)
+    .then(function(j){
+      var s = (j.data || [])[0];
+      if (!s) throw new Error('快照不存在');
+      WORKS = s.works || []; RATINGS = s.ratings || []; SURVEYS = s.surveys || [];
+      META = s.meta || META_DEFAULT;                    /* 用快照当时的题面，历史不错乱 */
+      VIEWING = { id:s.id, name:s.name || s.id, created_at:s.created_at || '' };
+      tab = 'overview';
+      renderViewbar(); renderAll();
+      try { window.scrollTo({ top:0, behavior:'smooth' }); } catch(e){}
+    })
+    .catch(function(e){
+      $('panels').innerHTML = '<div class="panel"><div class="empty">读取失败：'
+        + esc(e && e.message || '网络问题') + '</div></div>';
+    });
+}
+function exitView(){
+  VIEWING = null; META = META_DEFAULT;
+  tab = 'overview';
+  renderViewbar(); loadAll();
+}
+function exportSnap(id){
+  fetch(apiBase() + 'snapshots?id=' + encodeURIComponent(id))
+    .then(jfetch)
+    .then(function(j){
+      var s = (j.data || [])[0]; if (!s) throw new Error('快照不存在');
+      var bW = WORKS, bR = RATINGS, bS = SURVEYS, bM = META;
+      WORKS = s.works || []; RATINGS = s.ratings || []; SURVEYS = s.surveys || [];
+      META = s.meta || META_DEFAULT;
+      try { exportAll(s.name || s.id); }
+      finally { WORKS = bW; RATINGS = bR; SURVEYS = bS; META = bM; }
+    })
+    .catch(function(e){ alert('导出失败：' + (e && e.message ? e.message : '网络问题')); });
+}
 
 /* ============================================================
    一键清除
    ============================================================ */
 $('clearBtn').onclick = function(){
+  if (VIEWING){ alert('正在查看历史快照，先点上方「返回当前课次」再清除。'); return; }
   $('ckWorks').checked = $('ckRatings').checked = true;
   $('ckSurveys').checked = false;
   $('clearPw').value = ''; $('cmsg').textContent = '';
@@ -3087,27 +4283,29 @@ function downloadCsv(name, rows){
   a.click();
   setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1500);
 }
-$('exportBtn').onclick = function(){
+function exportAll(label){
+  var tag = label ? '（' + label + '）' : '';
   if (!WORKS.length && !RATINGS.length && !SURVEYS.length){ alert('现在还没有数据可以导出。'); return; }
   var agg = workAgg();
   /* 1. 作品 */
-  var rows = [['学号','班级','主题','内容','被赞人数','平均星级','提交时间']];
+  var rows = [['作者','班级','主题','内容','被赞人数','平均星级','提交时间']];
   WORKS.forEach(function(w){
     var a = agg[w.id] || { sum:0, n:0 };
     rows.push([w.author||'', w.klass||'', w.topic_name||'', w.content||'', a.n||0,
       a.n ? (a.sum/a.n).toFixed(2) : '', w.created_at||'']);
   });
-  downloadCsv('家乡文化二维码-作品', rows);
+  downloadCsv('家乡文化二维码-作品' + tag, rows);
   /* 2. 评分 */
   if (RATINGS.length){
     var wmap = {}; WORKS.forEach(function(w){ wmap[w.id] = w; });
-    var rr = [['被评学生','作品内容','给分','留言','时间']];
+    var rr = [['被评学生','评价人','作品内容','给分','留言','时间']];
     RATINGS.forEach(function(r){
       var w = wmap[r.work_id];
-      rr.push([w?(w.author||''):'（已删）', w?(w.content||''):'', parseInt(r.stars,10)||0,
+      var rater = (((r.rater_klass||'') + ' ' + (r.rater_name||'')).trim()) || '匿名';
+      rr.push([w?(w.author||''):'（已删）', rater, w?(w.content||''):'', parseInt(r.stars,10)||0,
         r.comment||'', r.created_at||'']);
     });
-    setTimeout(function(){ downloadCsv('家乡文化二维码-评分', rr); }, 400);
+    setTimeout(function(){ downloadCsv('家乡文化二维码-评分' + tag, rr); }, 400);
   }
   /* 3. 问卷 */
   if (SURVEYS.length){
@@ -3115,7 +4313,7 @@ $('exportBtn').onclick = function(){
       var list = SURVEYS.filter(function(s){ return s.kind === kind; });
       if (!list.length) return;
       var meta = META[kind];
-      var head = ['学号','班级'].concat(meta.qs.map(function(q){ return q.t; }));
+      var head = ['姓名','班级'].concat(meta.qs.map(function(q){ return q.t; }));
       var body = [head];
       list.forEach(function(s){
         var row = [s.author||'', s.klass||''];
@@ -3125,29 +4323,109 @@ $('exportBtn').onclick = function(){
         });
         body.push(row);
       });
-      setTimeout(function(){ downloadCsv('家乡文化二维码-'+meta.name, body); }, 800 + ki*400);
+      setTimeout(function(){ downloadCsv('家乡文化二维码-'+meta.name + tag, body); }, 800 + ki*400);
     });
   }
-};
+}
+$('exportBtn').onclick = function(){ exportAll(VIEWING ? VIEWING.name : ''); };
 
-/* ---------- 登录 ---------- */
+/* ---------- 登录：一次输入，本机 1 小时内免重复登录 ---------- */
+var SESS_KEY = 'cx_admin_sess';
+var SESS_MS  = 60 * 60 * 1000;   /* 有效期 1 小时 */
+var relockT  = null, sessTickT = null;
+
+/* 轻量签名：防止随手改本地存储伪造登录态 */
+function sessSig(t){
+  var s = t + '|' + ADMIN_PW + '|hometown-qr-jz';
+  var h = 5381;
+  for (var i = 0; i < s.length; i++){ h = ((h << 5) + h + s.charCodeAt(i)) & 0x7FFFFFFF; }
+  return (h >>> 0).toString(36);
+}
+function sessRead(){
+  try {
+    var raw = localStorage.getItem(SESS_KEY);
+    if (!raw) return null;
+    var o = JSON.parse(raw);
+    if (!o || !o.t || !o.sig || o.sig !== sessSig(o.t)) return null;
+    return o;
+  } catch(e){ return null; }
+}
+function sessAlive(){
+  var o = sessRead();
+  if (!o) return null;
+  var left = SESS_MS - (Date.now() - o.t);
+  return left > 0 ? { o:o, left:left } : null;
+}
+function sessSave(){
+  var t = Date.now();
+  try { localStorage.setItem(SESS_KEY, JSON.stringify({ t:t, sig:sessSig(t) })); } catch(e){}
+  return t;
+}
+function sessClear(){ try { localStorage.removeItem(SESS_KEY); } catch(e){} }
+function p2(n){ return (n < 10 ? '0' : '') + n; }
+
+/* 顶栏显示「已登录 · 免密至 09:40」 */
+function paintSess(){
+  var el = $('sess'), lo = $('logout'), a = sessAlive();
+  if (!a){ el.style.display = 'none'; lo.style.display = 'none'; return; }
+  var min = Math.ceil(a.left / 60000);
+  var d = new Date(a.o.t + SESS_MS);
+  el.className = 'sess' + (min <= 10 ? ' exp' : '');
+  el.innerHTML = '🔓 已登录 · <i>免密至 ' + p2(d.getHours()) + ':' + p2(d.getMinutes()) + '</i>'
+    + (min <= 1 ? ' · 不到 1 分钟' : (min <= 10 ? ' · 剩 ' + min + ' 分钟' : ''));
+  el.style.display = '';
+  lo.style.display = '';
+}
+
+function showDash(on){
+  $('lock').style.display = on ? 'none' : '';
+  $('dashboard').style.display = on ? '' : 'none';
+  clearTimeout(relockT); clearInterval(sessTickT);
+  paintSess();
+  if (!on) return;
+  var a = sessAlive();
+  if (!a) return;
+  relockT = setTimeout(relock, a.left);                 /* 到点自动回锁屏 */
+  sessTickT = setInterval(paintSess, 30000);            /* 剩余时间保持最新 */
+}
+
+function relock(){
+  sessClear();
+  showDash(false);
+  $('lmsg').className = 'msg err';
+  $('lmsg').textContent = '登录已满 1 小时，为安全起见请重新输入密码。';
+  try { window.scrollTo({ top:0, behavior:'smooth' }); } catch(e){ window.scrollTo(0, 0); }
+}
+
 $('loginBtn').onclick = doLogin;
 $('pw').addEventListener('keydown', function(e){ if (e.key === 'Enter') doLogin(); });
 function doLogin(){
-  if ($('pw').value === ADMIN_PW){
-    try { sessionStorage.setItem('cx_admin', '1'); } catch(e){}
-    $('lock').style.display = 'none';
-    $('dashboard').style.display = '';
-    loadAll();
-  } else {
+  if ($('pw').value !== ADMIN_PW){
+    $('lmsg').className = 'msg err';
     $('lmsg').textContent = '密码不对，请再试一次。';
     $('pw').value = ''; $('pw').focus();
+    return;
   }
+  $('lmsg').textContent = '';
+  $('pw').value = '';
+  sessSave();
+  showDash(true);
+  loadAll();
 }
-$('refresh').onclick = loadAll;
+$('logout').onclick = function(){
+  sessClear();
+  showDash(false);
+  $('lmsg').className = 'msg err';
+  $('lmsg').textContent = '已退出登录。';
+  $('pw').value = '';
+  try { window.scrollTo({ top:0, behavior:'smooth' }); } catch(e){ window.scrollTo(0, 0); }
+};
+$('refresh').onclick = function(){ if (VIEWING) exitView(); else loadAll(); };
 
-/* 会话内已登录则跳过 */
-try { if (sessionStorage.getItem('cx_admin') === '1'){ $('lock').style.display='none'; $('dashboard').style.display=''; loadAll(); } } catch(e){}
+/* 打开页面：1 小时内登录过就直接进面板，否则回锁屏 */
+try { sessionStorage.removeItem('cx_admin'); } catch(e){}
+if (sessAlive()){ showDash(true); loadAll(); }
+else { sessClear(); showDash(false); }   /* 过期或被篡改的票据一律清掉 */
 })();
 </script>
 </body>
